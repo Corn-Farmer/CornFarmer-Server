@@ -48,7 +48,19 @@ public class ReviewService {
             }
         } catch(Exception exception){
             exception.printStackTrace();
-            throw new BaseException((BaseResponseStatus.DATABASE_ERROR));
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public void deleteReview(int reviewIdx) throws BaseException {
+        try{
+            int result = reviewDao.deleteReview(reviewIdx);
+            if(result == 0){
+                throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEW);
+            }
+        } catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 }

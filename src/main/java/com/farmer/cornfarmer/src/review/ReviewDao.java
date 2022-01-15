@@ -42,4 +42,11 @@ public class ReviewDao {
         int result = this.jdbcTemplate.update(modifyReviewQuery,modifyReviewParams);
         return result;
     }
+
+    public int deleteReview(int reviewIdx) {
+        String deleteReviewQuery = "UPDATE review SET active = ? WHERE review_idx = ?";
+        Object[] deleteReviewParams = new Object[]{ 0, reviewIdx};
+        int result = this.jdbcTemplate.update(deleteReviewQuery,deleteReviewParams);
+        return result;
+    }
 }
