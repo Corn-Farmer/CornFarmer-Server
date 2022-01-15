@@ -3,9 +3,7 @@ package com.farmer.cornfarmer.src.review;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
-import com.farmer.cornfarmer.src.review.model.PutReviewReq;
-import com.farmer.cornfarmer.src.review.model.PostReviewReq;
-import com.farmer.cornfarmer.src.review.model.PostReviewRes;
+import com.farmer.cornfarmer.src.review.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,13 +106,14 @@ public class ReviewController {
     @PostMapping("/{reviewIdx}/like")
     public BaseResponse likeReview(@PathVariable int reviewIdx){
         try{
-            //int userIdx = jwtService.getUserIdx();
-            int userIdx = 1; //가정
             //좋아요를 누른 리뷰가 삭제된 리뷰인지 확인
             boolean isReviewExist = reviewProvider.checkReviewExist(reviewIdx);
             if(isReviewExist == false){
                 return new BaseResponse(BaseResponseStatus.FAILED_TO_REVIEWLIKE);
             }
+            //int userIdx = jwtService.getUserIdx();
+            int userIdx = 1; //가정
+
             //좋아요 누른 기록이 있는지 검사 후, 없다면 좋아요 DB 생성, 있다면 좋아요 DB 삭제
             boolean isReviewLikeExist = reviewProvider.checkReviewLike(reviewIdx,userIdx);
             if(isReviewLikeExist == false){
@@ -137,4 +136,22 @@ public class ReviewController {
      * [POST] /reviews/{reviewIdx}/report
      * 개발자: 제트(김예지)
      */
+    @ResponseBody
+    @PostMapping("/{reviewIdx}/report")
+    public BaseResponse<PostReportRes> createReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq){
+        try{
+            //신고한 리뷰가 삭제된 리뷰인지 확인
+            boolean isReviewExist = reviewProvider.checkReviewExist(reviewIdx);
+            if(isReviewExist == false){
+                return new BaseResponse(BaseResponseStatus.FAILED_TO_REVIEWLIKE);
+            }
+            //int userIdx = jwtService.getUserIdx();
+            int userIdx = 1; //가정
+            PostReportRes postReportRes = reviewService.createReviewReport(reviewIdx,userIdx,postReportReq);
+            return new BaseResponse<>(postReportRes);
+        }catch(BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }

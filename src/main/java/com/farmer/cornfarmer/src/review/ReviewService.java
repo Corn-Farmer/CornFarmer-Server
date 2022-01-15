@@ -2,9 +2,7 @@ package com.farmer.cornfarmer.src.review;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
-import com.farmer.cornfarmer.src.review.model.PostReviewReq;
-import com.farmer.cornfarmer.src.review.model.PostReviewRes;
-import com.farmer.cornfarmer.src.review.model.PutReviewReq;
+import com.farmer.cornfarmer.src.review.model.*;
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.utils.JwtService;
@@ -86,6 +84,16 @@ public class ReviewService {
             if(result == 0){
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEWLIKE);
             }
+        } catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public PostReportRes createReviewReport(int reviewIdx, int userIdx, PostReportReq postReportReq) throws BaseException {
+        try{
+            PostReportRes postReportRes = reviewDao.createReviewReport(reviewIdx,userIdx,postReportReq);
+            return postReportRes;
         } catch(Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);

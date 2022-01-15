@@ -1,8 +1,6 @@
 package com.farmer.cornfarmer.src.review;
 
-import com.farmer.cornfarmer.src.review.model.PostReviewReq;
-import com.farmer.cornfarmer.src.review.model.PostReviewRes;
-import com.farmer.cornfarmer.src.review.model.PutReviewReq;
+import com.farmer.cornfarmer.src.review.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -77,5 +75,16 @@ public class ReviewDao {
         String query = "select active from review where review_idx = ?";
         boolean result = this.jdbcTemplate.queryForObject(query,boolean.class,reviewIdx);
         return result;
+    }
+
+    public PostReportRes createReviewReport(int reviewIdx, int userIdx, PostReportReq postReportReq) {
+        String query = "insert into report (review_idx,user_idx,contents,created_at) values (?,?,?,?) ";
+        Object[] params = new Object[]{reviewIdx,userIdx,postReportReq.getReport(),LocalDateTime.now()};
+        this.jdbcTemplate.update(query,params);
+
+        String lastInsertIdQuery = "select last_insert_id()"; // 가장 마지막에 삽입된(생성된) id값은 가져온다.
+        int lastReviewIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+        PostReportRes postReportRes = new PostReportRes(lastReviewIdx);
+        return postReportRes;
     }
 }
