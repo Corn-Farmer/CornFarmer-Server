@@ -1,9 +1,11 @@
 package com.farmer.cornfarmer.src.admin;
 
+import com.farmer.cornfarmer.src.admin.model.GetOttRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class AdminDao {
@@ -15,4 +17,14 @@ public class AdminDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    // User 테이블에 존재하는 전체 유저들의 정보 조회
+    public List<GetOttRes> getOtts() {
+        String getUsersQuery = "select * from ott"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
+        return this.jdbcTemplate.query(getUsersQuery,
+                (rs, rowNum) -> new GetOttRes(
+                        rs.getInt("ottIdx"),
+                        rs.getString("name"),
+                        rs.getString("photo"))
+        );
+    }
 }
