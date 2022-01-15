@@ -98,4 +98,43 @@ public class ReviewController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    /**
+     * 리뷰 좋아요 API
+     * [POST] /reviews/{reviewIdx}/like
+     * 개발자: 제트(김예지)
+     */
+    @ResponseBody
+    @PostMapping("/{reviewIdx}/like")
+    public BaseResponse likeReview(@PathVariable int reviewIdx){
+        try{
+            //int userIdx = jwtService.getUserIdx();
+            int userIdx = 1; //가정
+            //좋아요를 누른 리뷰가 삭제된 리뷰인지 확인
+            boolean isReviewExist = reviewProvider.checkReviewExist(reviewIdx);
+            if(isReviewExist == false){
+                return new BaseResponse(BaseResponseStatus.FAILED_TO_REVIEWLIKE);
+            }
+            //좋아요 누른 기록이 있는지 검사 후, 없다면 좋아요 DB 생성, 있다면 좋아요 DB 삭제
+            boolean isReviewLikeExist = reviewProvider.checkReviewLike(reviewIdx,userIdx);
+            if(isReviewLikeExist == false){
+                //좋아요 생성, review 테이블의 like_cnt를 +1
+                reviewService.createReviewLike(reviewIdx,userIdx);
+            }else{
+                //좋아요 삭제, review 테이블의 like_cnt를 -1
+                reviewService.deleteReviewLike(reviewIdx,userIdx);
+            }
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch(BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+    /**
+     * 리뷰 신고 API
+     * [POST] /reviews/{reviewIdx}/report
+     * 개발자: 제트(김예지)
+     */
 }

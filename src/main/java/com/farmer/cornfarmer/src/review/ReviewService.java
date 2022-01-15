@@ -40,6 +40,7 @@ public class ReviewService {
         }
     }
 
+    @Transactional
     public void modifyReview(int reviewIdx, PutReviewReq putReviewReq) throws BaseException {
         try{
             int result = reviewDao.modifyReview(reviewIdx,putReviewReq);
@@ -52,11 +53,38 @@ public class ReviewService {
         }
     }
 
+    @Transactional
     public void deleteReview(int reviewIdx) throws BaseException {
         try{
             int result = reviewDao.deleteReview(reviewIdx);
             if(result == 0){
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEW);
+            }
+        } catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void createReviewLike(int reviewIdx, int userIdx) throws BaseException {
+        try{
+            int result = reviewDao.createReviewLike(reviewIdx,userIdx);
+            if(result == 0){
+                throw new BaseException(BaseResponseStatus.CREATE_FAIL_REVIEWLIKE);
+            }
+        } catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void deleteReviewLike(int reviewIdx, int userIdx) throws BaseException {
+        try{
+            int result = reviewDao.deleteReviewLike(reviewIdx,userIdx);
+            if(result == 0){
+                throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEWLIKE);
             }
         } catch(Exception exception){
             exception.printStackTrace();

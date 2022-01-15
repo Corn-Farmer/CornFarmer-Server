@@ -34,4 +34,25 @@ public class ReviewProvider {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
+    @Transactional(readOnly = true)
+    public boolean checkReviewLike(int reviewIdx, int userIdx) throws BaseException {
+        try{
+            boolean result = reviewDao.checkReviewLike(reviewIdx,userIdx);
+            return result;
+        } catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public boolean checkReviewExist(int reviewIdx) throws BaseException {
+        try{
+            boolean result = reviewDao.checkReviewExist(reviewIdx);
+            return result;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }

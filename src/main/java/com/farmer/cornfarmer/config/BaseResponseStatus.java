@@ -42,6 +42,9 @@ public enum BaseResponseStatus {
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
     FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
 
+    // [POST] /reviews/{reviewIdx}/like
+    FAILED_TO_REVIEWLIKE(false,3020,"없는 리뷰입니다."),
+
 
 
     /**
@@ -60,7 +63,11 @@ public enum BaseResponseStatus {
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
 
     //[DELETE] /reviews/{reviewIdx}
-    DELETE_FAIL_REVIEW(false,4030,"리뷰 삭제에 실패하였습니다.");
+    DELETE_FAIL_REVIEW(false,4030,"리뷰 삭제에 실패하였습니다."),
+
+    //[POST] /reviews/{reviewIdx}/like
+    CREATE_FAIL_REVIEWLIKE(false, 4040,"리뷰 좋아요에 실패하였습니다."),
+    DELETE_FAIL_REVIEWLIKE(false,4041,"리뷰 좋아요 취소에 실패하였습니다.");
 
     // 5000 : 필요시 만들어서 쓰세요
     // 6000 : 필요시 만들어서 쓰세요
