@@ -2,6 +2,8 @@ package com.farmer.cornfarmer.src.admin;
 
 import com.farmer.cornfarmer.src.admin.model.GetGenreRes;
 import com.farmer.cornfarmer.src.admin.model.GetOttRes;
+import com.farmer.cornfarmer.src.admin.model.PostGenreReq;
+import com.farmer.cornfarmer.src.admin.model.PostGenreRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -23,7 +25,7 @@ public class AdminDao {
         String getOttsQuery = "select * from ott"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
         return this.jdbcTemplate.query(getOttsQuery,
                 (rs, rowNum) -> new GetOttRes(
-                        rs.getInt("ottIdx"),
+                        rs.getInt("ott_idx"),
                         rs.getString("name"),
                         rs.getString("photo"))
         );
@@ -34,8 +36,17 @@ public class AdminDao {
         String getGenresQuery = "select * from genre"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
         return this.jdbcTemplate.query(getGenresQuery,
                 (rs, rowNum) -> new GetGenreRes(
-                        rs.getInt("genreIdx"),
-                        rs.getString("genreName"))
+                        rs.getInt("genre_idx"),
+                        rs.getString("genre_name"))
         );
+    }
+
+    public int createGenre(PostGenreReq postGenreReq){
+        String createGenreQuery = "insert into genre (genre_name) VALUES (?)";
+        Object[] createGenreParams = new Object[]{postGenreReq.getGenreName()};
+        this.jdbcTemplate.update(createGenreQuery, createGenreParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery, int.class);
     }
 }
