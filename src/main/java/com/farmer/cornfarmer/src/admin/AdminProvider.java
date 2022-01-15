@@ -30,11 +30,19 @@ public class AdminProvider {
 
     public List<GetOttRes> getOtts() throws BaseException {
         try {
-            List<GetOttRes> getOttResList = adminDao.getOtts();
-            return getOttResList;
+            List<GetOttRes> getOttList = adminDao.getOtts();
+            return getOttList;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
+    public List<GetGenreRes> getGenres() throws BaseException {
+        try {
+            List<GetGenreRes> getGenreList = adminDao.getGenres();
+            return getGenreList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.farmer.cornfarmer.src.admin;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
+import com.farmer.cornfarmer.src.admin.model.GetGenreRes;
 import com.farmer.cornfarmer.src.admin.model.GetOttRes;
 import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.src.user.UserService;
@@ -47,6 +48,22 @@ public class AdminController {
         try {
             List<GetOttRes> getUsersRes = adminProvider.getOtts();
             return new BaseResponse<>(getUsersRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 모든 장르 정보 조회 API
+     * [GET] /admin/genres
+     * 개발자 : 홍민주(앨리)
+     */
+    @ResponseBody
+    @GetMapping("/genres")
+    public BaseResponse<List<GetGenreRes>> getGenres() {
+        try {
+            List<GetGenreRes> getUGenresRes = adminProvider.getGenres();
+            return new BaseResponse<>(getUGenresRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
