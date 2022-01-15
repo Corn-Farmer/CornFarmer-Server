@@ -2,10 +2,10 @@ package com.farmer.cornfarmer.src.review;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
+import com.farmer.cornfarmer.src.review.model.PutReviewReq;
 import com.farmer.cornfarmer.src.review.model.PostReviewReq;
 import com.farmer.cornfarmer.src.review.model.PostReviewRes;
-import com.farmer.cornfarmer.src.user.UserProvider;
-import com.farmer.cornfarmer.src.user.UserService;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,6 @@ public class ReviewController {
         this.jwtService = jwtService;
     }
 
-
     /**
      * 리뷰 생성 API
      * [POST] /reviews
@@ -49,6 +48,29 @@ public class ReviewController {
             PostReviewRes postReviewRes = reviewService.createReview(userIdx,postReviewReq);
             return new BaseResponse<>(postReviewRes);
         } catch(BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 리뷰 수정 API
+     * [PUT] /reviews
+     * 개발자: 제트(김예지)
+     */
+    @ResponseBody
+    @PutMapping("/{reviewIdx}")
+    public BaseResponse modifyReview(@PathVariable int reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq){
+        try{
+            //int userIdx = jwtService.getUserIdx();
+            int userIdx = 1; //가정
+            int reviewUserIdx = reviewProvider.getUserIdx(reviewIdx);    //수정하려는 후기의 userIdx와 일치하는지 확인
+            if(userIdx != reviewUserIdx){
+                return new BaseResponse(BaseResponseStatus.INVALID_USER_JWT);
+            }
+            reviewService.modifyReview(reviewIdx,putReviewReq);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        }catch(BaseException exception){
             exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }

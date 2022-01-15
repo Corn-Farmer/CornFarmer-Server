@@ -4,6 +4,7 @@ import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.review.model.PostReviewReq;
 import com.farmer.cornfarmer.src.review.model.PostReviewRes;
+import com.farmer.cornfarmer.src.review.model.PutReviewReq;
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.utils.JwtService;
@@ -36,6 +37,18 @@ public class ReviewService {
         }catch(Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public void modifyReview(int reviewIdx, PutReviewReq putReviewReq) throws BaseException {
+        try{
+            int result = reviewDao.modifyReview(reviewIdx,putReviewReq);
+            if (result == 0) {
+                throw new BaseException(BaseResponseStatus.MODIFY_FAIL_REVIEW);
+            }
+        } catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException((BaseResponseStatus.DATABASE_ERROR));
         }
     }
 }

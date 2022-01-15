@@ -2,6 +2,7 @@ package com.farmer.cornfarmer.src.review;
 
 import com.farmer.cornfarmer.src.review.model.PostReviewReq;
 import com.farmer.cornfarmer.src.review.model.PostReviewRes;
+import com.farmer.cornfarmer.src.review.model.PutReviewReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,13 +21,25 @@ public class ReviewDao {
     }
 
     public PostReviewRes createReview(int userIdx, PostReviewReq postReviewReq) {
-        String createReviewQuery = "INSERT INTO review (movie_idx,user_idx,contents,active,created_at) VALUES (?,?,?,?,?)";
-        Object[] createReviewParams = new Object[]{postReviewReq.getMovieIdx(),userIdx,postReviewReq.getContent(),1, LocalDateTime.now()};
+        String createReviewQuery = "INSERT INTO review (movie_idx,user_idx,rate,contents,active,created_at) VALUES (?,?,?,?,?,?)";
+        Object[] createReviewParams = new Object[]{postReviewReq.getMovieIdx(),userIdx,postReviewReq.getRate(),postReviewReq.getContent(),1, LocalDateTime.now()};
         this.jdbcTemplate.update(createReviewQuery,createReviewParams);
 
         String lastInsertIdQuery = "SELECT last_insert_id()"; // 가장 마지막에 삽입된(생성된) id값은 가져온다.
         int lastReviewIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
         PostReviewRes postReviewRes = new PostReviewRes(lastReviewIdx);
         return postReviewRes;
+    }
+
+    public int getUserIdx(int reviewIdx) {
+        String getUserIdxQuery = "SELECT user_idx FROM review WHERE review_idx = ?";
+        return this.jdbcTemplate.queryForObject(getUserIdxQuery,int.class,reviewIdx);
+    }
+
+    public int modifyReview(int reviewIdx, PutReviewReq putReviewReq) {
+        String modifyReviewQuery = "UPDATE review SET contents = ?, rate = ? WHERE review_idx = ?";
+        Object[] modifyReviewParams = new Object[]{putReviewReq.getContent(),putReviewReq.getRate(),reviewIdx};
+        int result = this.jdbcTemplate.update(modifyReviewQuery,modifyReviewParams);
+        return result;
     }
 }

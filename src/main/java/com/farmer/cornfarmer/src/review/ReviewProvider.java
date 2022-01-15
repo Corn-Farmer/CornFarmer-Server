@@ -1,11 +1,14 @@
 package com.farmer.cornfarmer.src.review;
 
+import com.farmer.cornfarmer.config.BaseException;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReviewProvider {
@@ -21,4 +24,14 @@ public class ReviewProvider {
         this.jwtService = jwtService;
     }
 
+    @Transactional(readOnly = true)
+    public int getUserIdx(int reviewIdx) throws BaseException {
+        try{
+            int reviewUserIdx = reviewDao.getUserIdx(reviewIdx);
+            return reviewUserIdx;
+        } catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }
