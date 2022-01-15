@@ -2,18 +2,19 @@ package com.farmer.cornfarmer.src.movie;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
+import com.farmer.cornfarmer.src.movie.model.GetGenre;
+import com.farmer.cornfarmer.src.movie.model.GetKeywordRecommandRes;
 import com.farmer.cornfarmer.src.movie.model.GetKeywordRes;
+import com.farmer.cornfarmer.src.movie.model.GetMovieInfo;
 import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.src.user.UserService;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,10 +41,15 @@ public class MovieController {
     /**
      * 키워드 조회 API
      * [Get] /movies/keywords
+     * 키워드 랜덤 추천 기능을 담당하는 API
+     *
+     *
+     *
+     * 개발자 : 쉐리(강혜연)
      */
     // Body
     @ResponseBody
-    @GetMapping("/keywords")    // Get 방식의 요청을 매핑하기 위한 어노테이션
+    @GetMapping("/keywords")    // Get 방식의 요청을 매핑하기 위한 어노테이션d
     public BaseResponse<List<GetKeywordRes>> viewKeyword() {
         try{
             List<GetKeywordRes> GetKeywordRes = movieProvider.getKeywords();
@@ -70,6 +76,40 @@ public class MovieController {
         catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
+    }
+
+    /**
+     * API 설명
+     * 키워드별 작품 추천결과 조회
+     * [GET] /movies/keywords/keywordIdx
+     * 예시 : localhost:9000/movies/keywords/2
+     *
+     *
+     * 개발자 : 쉐리(강혜연)
+     */
+    @ResponseBody
+    @GetMapping("keywords/{keywordIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
+    public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
+        try {
+            GetKeywordRecommandRes getKeywordRes = movieProvider.getKeyword(keywordIdx);
+
+            List <GetMovieInfo> movieinfoss=movieProvider.getmovies(keywordIdx);
+            for(int i=0;i<movieinfoss.size();i++){
+                System.out.println(movieinfoss.get(i).getMovieIdx());
+                List <GetGenre> movieGenre = movieProvider.getMovieGenre(movieinfoss.get(i).getMovieIdx());
+                List <String> genre=new ArrayList<>();
+                for(int j=0;j<movieGenre.size();j++){
+                    System.out.println("장르는"+movieGenre.get(j).getGenre());
+                    genre.add(movieGenre.get(j).getGenre());
+                }
+                movieinfoss.get(i).setMovieGenreList(genre);
+            }
+            getKeywordRes.setMovieList(movieinfoss);
+            return new BaseResponse<>(getKeywordRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
     }
 
     /**

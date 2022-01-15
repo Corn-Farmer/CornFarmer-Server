@@ -1,7 +1,10 @@
 package com.farmer.cornfarmer.src.movie;
 
 import com.farmer.cornfarmer.config.BaseException;
+import com.farmer.cornfarmer.src.movie.model.GetGenre;
+import com.farmer.cornfarmer.src.movie.model.GetKeywordRecommandRes;
 import com.farmer.cornfarmer.src.movie.model.GetKeywordRes;
+import com.farmer.cornfarmer.src.movie.model.GetMovieInfo;
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
@@ -32,6 +35,35 @@ public class MovieProvider {
         try {
             List<GetKeywordRes> GetKeywordRes = movieDao.getKeywords();
             return GetKeywordRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetMovieInfo> getmovies(int keywordIdx) throws BaseException {
+        try {
+            List<GetMovieInfo> movieinfo = movieDao.getMovieInfo(keywordIdx);
+            return movieinfo;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 해당 keywordIdx 갖는 Keyword의 정보 조회
+    public GetKeywordRecommandRes getKeyword(int keywordIdx) throws BaseException {
+        try {
+            System.out.println("movieProvider실행됨");
+            GetKeywordRecommandRes getKeywordRecommandRes = movieDao.getKeyword(keywordIdx);
+            return getKeywordRecommandRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    public List<GetGenre> getMovieGenre(int movieIdx) throws BaseException {
+        try {
+            System.out.println("movieProvider실행됨");
+            List <GetGenre> movieGenre = movieDao.getMovieGenre(movieIdx);
+            return movieGenre;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
