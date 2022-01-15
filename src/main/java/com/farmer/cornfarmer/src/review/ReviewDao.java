@@ -37,8 +37,8 @@ public class ReviewDao {
     }
 
     public int modifyReview(int reviewIdx, PutReviewReq putReviewReq) {
-        String modifyReviewQuery = "UPDATE review SET contents = ?, rate = ? WHERE review_idx = ?";
-        Object[] modifyReviewParams = new Object[]{putReviewReq.getContent(),putReviewReq.getRate(),reviewIdx};
+        String modifyReviewQuery = "UPDATE review SET contents = ?, rate = ?,updated_at = ? WHERE review_idx = ?";
+        Object[] modifyReviewParams = new Object[]{putReviewReq.getContent(),putReviewReq.getRate(),LocalDateTime.now(),reviewIdx};
         int result = this.jdbcTemplate.update(modifyReviewQuery,modifyReviewParams);
         return result;
     }
