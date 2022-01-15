@@ -1,13 +1,18 @@
 package com.farmer.cornfarmer.src.review;
 
+import com.farmer.cornfarmer.config.BaseException;
+import com.farmer.cornfarmer.config.BaseResponse;
+import com.farmer.cornfarmer.src.review.model.PostReviewReq;
+import com.farmer.cornfarmer.src.review.model.PostReviewRes;
 import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.src.user.UserService;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/reviews")
@@ -29,9 +34,23 @@ public class ReviewController {
         this.jwtService = jwtService;
     }
 
+
     /**
-     * API 설명
-     * [HTTP METHOD] URL
-     * 개발자 : 이름
+     * 리뷰 생성 API
+     * [POST] /reviews
+     * 개발자: 제트(김예지)
      */
+    @ResponseBody
+    @PostMapping()    // POST 방식의 요청을 매핑하기 위한 어노테이션
+    public BaseResponse<PostReviewRes> createReview(@RequestBody @Valid PostReviewReq postReviewReq) {
+        try{
+            //int userIdx = jwtService.getUserIdx();
+            int userIdx = 1; //가정
+            PostReviewRes postReviewRes = reviewService.createReview(userIdx,postReviewReq);
+            return new BaseResponse<>(postReviewRes);
+        } catch(BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }
