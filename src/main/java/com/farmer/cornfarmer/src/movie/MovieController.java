@@ -95,11 +95,9 @@ public class MovieController {
 
             List <GetMovieInfo> movieinfoss=movieProvider.getmovies(keywordIdx);
             for(int i=0;i<movieinfoss.size();i++){
-                System.out.println(movieinfoss.get(i).getMovieIdx());
                 List <GetGenre> movieGenre = movieProvider.getMovieGenre(movieinfoss.get(i).getMovieIdx());
                 List <String> genre=new ArrayList<>();
                 for(int j=0;j<movieGenre.size();j++){
-                    System.out.println("장르는"+movieGenre.get(j).getGenre());
                     genre.add(movieGenre.get(j).getGenre());
                 }
                 movieinfoss.get(i).setMovieGenreList(genre);

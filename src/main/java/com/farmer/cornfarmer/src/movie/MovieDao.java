@@ -32,7 +32,6 @@ public class MovieDao {
     }
     // 해당 userIdx를 갖는 유저조회
     public GetKeywordRecommandRes getKeyword(int keywordIdx) {
-        System.out.println("movidDao실행됨");
         String getUserQuery = "select keyword from keyword where keyword_Idx = ?"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
         int getUserParams = keywordIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
@@ -42,7 +41,6 @@ public class MovieDao {
     }
 
     public List<GetGenre> getMovieGenre(int movieIdx) {
-        System.out.println("movidDao실행됨");
         String getUserQuery = "Select genre_name from genre where genre_idx IN( select genre_idx from movie_genre where movie_idx=?)"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
         int getUserParams = movieIdx;
         return this.jdbcTemplate.query(getUserQuery,

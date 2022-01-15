@@ -52,7 +52,6 @@ public class MovieProvider {
     // 해당 keywordIdx 갖는 Keyword의 정보 조회
     public GetKeywordRecommandRes getKeyword(int keywordIdx) throws BaseException {
         try {
-            System.out.println("movieProvider실행됨");
             GetKeywordRecommandRes getKeywordRecommandRes = movieDao.getKeyword(keywordIdx);
             return getKeywordRecommandRes;
         } catch (Exception exception) {
@@ -61,7 +60,6 @@ public class MovieProvider {
     }
     public List<GetGenre> getMovieGenre(int movieIdx) throws BaseException {
         try {
-            System.out.println("movieProvider실행됨");
             List <GetGenre> movieGenre = movieDao.getMovieGenre(movieIdx);
             return movieGenre;
         } catch (Exception exception) {
