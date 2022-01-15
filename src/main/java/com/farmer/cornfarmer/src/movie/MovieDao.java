@@ -1,10 +1,7 @@
 package com.farmer.cornfarmer.src.movie;
 
 
-import com.farmer.cornfarmer.src.movie.model.GetGenre;
-import com.farmer.cornfarmer.src.movie.model.GetKeywordRecommandRes;
-import com.farmer.cornfarmer.src.movie.model.GetKeywordRes;
-import com.farmer.cornfarmer.src.movie.model.GetMovieInfo;
+import com.farmer.cornfarmer.src.movie.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -61,6 +58,16 @@ public class MovieDao {
                         rs.getString("photo")),// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
 
+    }
+
+    public GetLike getLike(int userIdx, int movieIdx) {
+        String getUserQuery = "Select Exists(Select movie_idx from user_movie where user_idx=? and movie_idx=?) as ex;"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+        int getUserParams = userIdx;
+        int param=movieIdx;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new GetLike(
+                        rs.getInt("ex")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                getUserParams,param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
 }

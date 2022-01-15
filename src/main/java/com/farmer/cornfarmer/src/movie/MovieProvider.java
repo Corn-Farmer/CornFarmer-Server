@@ -1,10 +1,7 @@
 package com.farmer.cornfarmer.src.movie;
 
 import com.farmer.cornfarmer.config.BaseException;
-import com.farmer.cornfarmer.src.movie.model.GetGenre;
-import com.farmer.cornfarmer.src.movie.model.GetKeywordRecommandRes;
-import com.farmer.cornfarmer.src.movie.model.GetKeywordRes;
-import com.farmer.cornfarmer.src.movie.model.GetMovieInfo;
+import com.farmer.cornfarmer.src.movie.model.*;
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
@@ -62,6 +59,15 @@ public class MovieProvider {
         try {
             List <GetGenre> movieGenre = movieDao.getMovieGenre(movieIdx);
             return movieGenre;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetLike getLike(int userIdx,int movieIdx) throws BaseException {
+        try {
+            GetLike like = movieDao.getLike(userIdx,movieIdx);
+            return like;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

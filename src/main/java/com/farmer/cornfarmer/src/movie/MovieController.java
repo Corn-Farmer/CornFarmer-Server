@@ -2,10 +2,7 @@ package com.farmer.cornfarmer.src.movie;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
-import com.farmer.cornfarmer.src.movie.model.GetGenre;
-import com.farmer.cornfarmer.src.movie.model.GetKeywordRecommandRes;
-import com.farmer.cornfarmer.src.movie.model.GetKeywordRes;
-import com.farmer.cornfarmer.src.movie.model.GetMovieInfo;
+import com.farmer.cornfarmer.src.movie.model.*;
 import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.src.user.UserService;
 import com.farmer.cornfarmer.utils.JwtService;
@@ -80,7 +77,7 @@ public class MovieController {
 
     /**
      * API 설명
-     * 키워드별 작품 추천결과 조회
+     * 키워드별 작품 추천결과 조회 API
      * [GET] /movies/keywords/keywordIdx
      * 예시 : localhost:9000/movies/keywords/2
      *
@@ -90,9 +87,13 @@ public class MovieController {
     @ResponseBody
     @GetMapping("keywords/{keywordIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
     public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
+
+        // TODO: 2022-01-16  나중에 jwt를 통해 받아와야 함, 테스트를 위해 1이라고 가정.
+        int useridx=1;
         try {
             GetKeywordRecommandRes getKeywordRes = movieProvider.getKeyword(keywordIdx);
 
+            //장르 추가하는 코드
             List <GetMovieInfo> movieinfoss=movieProvider.getmovies(keywordIdx);
             for(int i=0;i<movieinfoss.size();i++){
                 List <GetGenre> movieGenre = movieProvider.getMovieGenre(movieinfoss.get(i).getMovieIdx());
@@ -101,8 +102,20 @@ public class MovieController {
                     genre.add(movieGenre.get(j).getGenre());
                 }
                 movieinfoss.get(i).setMovieGenreList(genre);
+
+                //isLiked추가하는 코드
+                GetLike like=movieProvider.getLike(useridx,movieinfoss.get(i).getMovieIdx());
+                if(like.getIsLike()==1){
+                    movieinfoss.get(i).setLiked(true);
+                }
+                else{
+                    movieinfoss.get(i).setLiked(false);
+                }
             }
             getKeywordRes.setMovieList(movieinfoss);
+
+
+
             return new BaseResponse<>(getKeywordRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

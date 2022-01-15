@@ -28,5 +28,5 @@ public class GetMovieInfo {
     private String movieName;
     private String moviePhoto;
     private List<String> movieGenreList;
-//    private boolean isLiked;
+    private boolean isLiked;
 }
