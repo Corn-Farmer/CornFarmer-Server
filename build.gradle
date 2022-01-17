@@ -57,7 +57,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter')
     compile('org.springframework.boot:spring-boot-starter-web')
 
-
+    implementation('com.google.code.gson:gson:2.8.7')
 
 
 

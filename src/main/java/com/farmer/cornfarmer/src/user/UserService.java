@@ -37,7 +37,8 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    public int getKakaoOauthId(String accessToken){
+    public int getKakaoOauthId(String accessToken) throws BaseException {
+        //access token 으로 oauth_id 가져오기
         int id = 0;
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         try{
@@ -50,7 +51,7 @@ public class UserService {
 
             /*int responseCode = conn.getResponseCode();
             //System.out.println("responseCode : "+responseCode);
-            //응답코드 200번대인지 확인?*/
+            //응답코드 200번대인지 확인*/
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
             String line = "";
@@ -65,8 +66,9 @@ public class UserService {
             JsonElement element = parser.parseString(result);
 
             id = element.getAsJsonObject().get("id").getAsInt();
-        }  catch (IOException e) {
+        }  catch (IOException e) { //
             e.printStackTrace();
+            throw new BaseException(BaseResponseStatus.SERVER_ERROR);
         }
 
         return id;

@@ -2,6 +2,7 @@ package com.farmer.cornfarmer.src.user;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.user.domain.PostLoginRes;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
@@ -41,17 +42,21 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/outh/kakao")
-    public BaseResponse<PostLoginRes> KakaoLogin(@RequestParam String accessToken) throws BaseException {
-        int oauth_id = userService.getKakaoOauthId(accessToken);
-
-        if(userProvider.checkOauthId(oauth_id)) {
-            PostLoginRes postLoginRes = userProvider.kakaoLogIn(oauth_id);
-            return new BaseResponse<>(postLoginRes);
+    public BaseResponse<PostLoginRes> KakaoLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
+        try {
+            int oauth_id = userService.getKakaoOauthId(accessToken);
+            if (userProvider.checkOauthId(oauth_id)) {
+                //db에 존재하는경우 ->login
+                PostLoginRes postLoginRes = userProvider.kakaoLogIn(oauth_id);
+                return new BaseResponse<>(postLoginRes);
+            } else {
+                //db에 oauthid 존재하지 않는경우 ->회원가입
+                PostLoginRes postLoginRes = new PostLoginRes(true, null, -1);
+                return new BaseResponse<>(postLoginRes);
+            }
         }
-        else
-        { //존재하지 않는경우
-            PostLoginRes postLoginRes = new PostLoginRes(true, null, -1);
-            return new BaseResponse<>(postLoginRes);
+        catch (BaseException exception){
+            return new BaseResponse<>(BaseResponseStatus.FAILED_TO_LOGIN);
         }
     }
 }
