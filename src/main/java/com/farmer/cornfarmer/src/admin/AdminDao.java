@@ -20,38 +20,22 @@ public class AdminDao {
 
     public List<GetReviewRes> getAllReviews() {
         //review 테이블의 정보 저장
-        String query = "select * from review where active = ?";
+        String query = "select * , (select p.photo from movie_photo p where p.movie_idx = r.movie_idx limit 1) as movie_photo from review as r " +
+                "left join movie as m on r.movie_idx = m.movie_idx " +
+                "left join user u on r.user_idx = u.user_idx where r.active = ?";
         List<GetReviewRes> getReviewResList = jdbcTemplate.query(query,
                 (rs, rowNum) -> new GetReviewRes(
-                        rs.getInt("review_idx"),
-                        rs.getInt("movie_idx"),
-                        rs.getInt("user_idx"),
-                        rs.getString("contents"),
-                        rs.getFloat("rate"),
-                        rs.getInt("like_cnt"),
-                        rs.getString("created_at")
+                        rs.getInt("r.review_idx"),
+                        rs.getInt("r.movie_idx"),
+                        rs.getInt("r.user_idx"),
+                        rs.getString("r.contents"),
+                        rs.getFloat("r.rate"),
+                        rs.getInt("r.like_cnt"),
+                        rs.getString("r.created_at"),
+                        rs.getString("m.movie_title"),
+                        rs.getString("movie_photo"),
+                        rs.getString("u.nickname")
                 ),1);
-
-        //userNickname 과 movie 정보 저장
-        for(GetReviewRes g : getReviewResList){
-            String nickName = this.jdbcTemplate.queryForObject("select nickname from user where user_idx = ?",
-                    String.class,g.getUserIdx());
-            g.setUserNickName(nickName);
-            Movie movie = this.jdbcTemplate.queryForObject("select movie_idx,movie_title from movie where movie_idx = ?",
-                    (rs, rowNum) -> new Movie(
-                            rs.getInt("movie_idx"),
-                            rs.getString("movie_title")
-                    ),g.getMovie().getMovieIdx());
-            List<String> moviePhoto = this.jdbcTemplate.query("select photo from movie_photo where movie_idx = ?",
-                    (rs, rowNum) -> new String(
-                            rs.getString("photo")
-                    ),movie.getMovieIdx());
-            if(moviePhoto.isEmpty()){   //반환 값이 없을 경우
-                moviePhoto.add("");
-            }
-            movie.setMoviePhoto(moviePhoto.get(0));
-            g.setMovie(movie);
-        }
 
        return getReviewResList;
     }
