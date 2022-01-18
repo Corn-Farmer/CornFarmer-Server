@@ -73,4 +73,11 @@ public class MovieProvider {
         }
     }
 
+    public void deleteFromWish(int userIdx,int movieIdx){
+        movieDao.deleteFromWish(userIdx,movieIdx);
+    }
+    public void addFromWish(int userIdx,int movieIdx){
+        movieDao.addFromWish(userIdx,movieIdx);
+    }
+
 }

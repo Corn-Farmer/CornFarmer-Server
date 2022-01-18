@@ -70,4 +70,15 @@ public class MovieDao {
                 getUserParams,param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
+    public void deleteFromWish(int userIdx,int movieIdx){
+        String getUserQuery="Delete from user_movie where movie_idx=? and user_idx=?;";
+        int result=jdbcTemplate.update(getUserQuery,movieIdx,userIdx);
+    }
+    public void addFromWish(int userIdx,int movieIdx){
+        String getUserQuery="Insert Into user_movie(user_idx,movie_idx,created_at) values (?,?,?);";
+        java.util.Date date=new java.util.Date();
+        java.sql.Timestamp time=new java.sql.Timestamp(date.getTime());
+        int result=jdbcTemplate.update(getUserQuery,userIdx,movieIdx,time);
+    }
+
 }

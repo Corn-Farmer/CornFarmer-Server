@@ -125,7 +125,35 @@ public class MovieController {
 
     /**
      * API 설명
+     * 작품 찜하기, 취소하기 API(2022-01-18 )
      * [HTTP METHOD] URL
-     * 개발자 : 이름
+     * [put] localhost:9000/movies/5/like
+     * 개발자 : 쉐리(강혜연)
      */
+
+    @ResponseBody
+    @PutMapping("{movieIdx}/like") //ex localhost:9000/movies/5/like
+    public BaseResponse<PutUserWishRes> userWish(@PathVariable("movieIdx") int movieIdx){
+        // TODO: 2022-01-18 userIdx를 1이라고 가정, 나중에 jwt로부터 userIdx 받아와야함
+        int userIdx=1;
+
+        try{
+            GetLike like=movieProvider.getLike(userIdx,movieIdx);
+            PutUserWishRes putUserWishRes=new PutUserWishRes();
+            if(like.getIsLike()==1){
+                putUserWishRes.setMsg("찜한 작품에서 삭제되었습니다.");
+                movieProvider.deleteFromWish(userIdx,movieIdx);
+            }
+            else{
+                putUserWishRes.setMsg("찜한 작품에 추가되었습니다.");
+                movieProvider.addFromWish(userIdx,movieIdx);
+            }
+            return new BaseResponse<>(putUserWishRes);
+        }
+
+        catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
 }
