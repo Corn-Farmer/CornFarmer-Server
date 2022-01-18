@@ -2,6 +2,7 @@ package com.farmer.cornfarmer.src.admin;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.admin.model.GetReviewRes;
 import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.src.user.UserService;
@@ -9,10 +10,7 @@ import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,7 +36,7 @@ public class AdminController {
 
 
     /**
-     * API 설명
+     * 모든 후기 보기 (관리자용)
      * [GET] /admin/reviews
      * 개발자 : 제트(김예지)
      */
@@ -55,4 +53,21 @@ public class AdminController {
         }
     }
 
+    /**
+     * 후기 삭제 (관리자용) API
+     * [DELETE] /admin/reviews/{reviewId}
+     * 개발자 : 제트(김예지)
+     */
+    @ResponseBody
+    @DeleteMapping("/reviews/{reviewIdx}")
+    public BaseResponse deleteReview(@PathVariable int reviewIdx){
+        try{
+            //admin 계정인지 검증
+            adminService.deleteReview(reviewIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch(BaseException exception){
+            exception.printStackTrace();
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }

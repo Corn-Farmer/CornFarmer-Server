@@ -45,6 +45,8 @@ public enum BaseResponseStatus {
     // [POST] /reviews/{reviewIdx}/like
     FAILED_TO_REVIEWLIKE(false,3020,"없는 리뷰입니다."),
 
+    // [DELETE] /reviews/{reviewId}
+    FAILED_TO_FIND_REVIEW(false,3030,"해당 리뷰를 찾을 수 없습니다."),
 
 
     /**

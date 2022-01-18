@@ -55,4 +55,16 @@ public class AdminDao {
 
        return getReviewResList;
     }
+
+    public int deleteReview(int reviewIdx) {
+        String deleteReviewQuery = "update review set active = ? where review_idx = ?";
+        Object[] deleteReviewParams = new Object[]{ 0, reviewIdx};
+        int result = this.jdbcTemplate.update(deleteReviewQuery,deleteReviewParams);
+        return result;
+    }
+
+    public int getReviewIdx(int reviewIdx) {
+        String getReviewIdxQuery = "select count(*) from review where review_idx = ? and active = ?";
+        return this.jdbcTemplate.queryForObject(getReviewIdxQuery,int.class,reviewIdx,1);
+    }
 }

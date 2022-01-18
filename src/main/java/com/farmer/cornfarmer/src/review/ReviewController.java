@@ -33,7 +33,7 @@ public class ReviewController {
     }
 
     /**
-     * 리뷰 생성 API
+     * 후기 작성 API
      * [POST] /reviews
      * 개발자: 제트(김예지)
      */
@@ -52,7 +52,7 @@ public class ReviewController {
     }
 
     /**
-     * 리뷰 수정 API
+     * 후기 수정 API
      * [PUT] /reviews/{reviewIdx}
      * 개발자: 제트(김예지)
      */
@@ -75,7 +75,7 @@ public class ReviewController {
     }
 
     /**
-     * 리뷰 삭제 API
+     * 후기 삭제 API
      * [DELETE] /reviews/{reviewIdx}
      * 개발자: 제트(김예지)
      */
@@ -98,7 +98,7 @@ public class ReviewController {
     }
 
     /**
-     * 리뷰 좋아요 API
+     * 후기 좋아요 API
      * [POST] /reviews/{reviewIdx}/like
      * 개발자: 제트(김예지)
      */
@@ -130,9 +130,8 @@ public class ReviewController {
         }
     }
 
-
     /**
-     * 리뷰 신고 API
+     * 후기 신고 API
      * [POST] /reviews/{reviewIdx}/report
      * 개발자: 제트(김예지)
      */
