@@ -4,18 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
+import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class User {
-    private int user_idx;
-    private String oauth_channel;
-    private int oauth_id;
-    private String photo;
+public class PostUserReq {
+    private String oauth_id;
     private String nickname;
+    private String photo;
     private boolean is_male;
-    private Date birth;
-
+    private String birth;
+    private List<Integer> ottList;
+    private List<Integer> genreList;
 }

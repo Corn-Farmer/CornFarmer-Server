@@ -7,8 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostLoginRes {
-    private boolean isNew;
-    private String id;
+public class PostUserRes {
     private int userIdx;
 }
