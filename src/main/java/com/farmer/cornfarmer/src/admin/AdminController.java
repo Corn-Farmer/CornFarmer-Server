@@ -116,7 +116,7 @@ public class AdminController {
 
     /**
      * 모든 장르 정보 조회 API
-     * [GET] /admin/genres
+     * [GET] /admin/genres/{genreIdx}/movies
      * 개발자 : 홍민주(앨리)
      */
     @ResponseBody

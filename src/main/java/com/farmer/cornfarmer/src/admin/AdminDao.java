@@ -40,13 +40,15 @@ public class AdminDao {
 
     // 특정 장르에 해당하는 영화 전체 조회
     public List<GetMovieRes> getGenreMovies(int genreIdx) {
-        String getGenreMoviesQuery = "select * from genre where genre_idx = ?";
+        String getGenreMoviesQuery = "select movie.movie_idx, movie_title, photo, like_cnt " +
+                                    "from (select * from movie_genre where genre_idx = ?)genre " +
+                                    "natural join movie join movie_photo mp on movie.movie_idx = mp.movie_idx group by movie.movie_idx";
         int getGenreMoviesParams = genreIdx;
         return this.jdbcTemplate.query(getGenreMoviesQuery,
                 (rs, rowNum) -> new GetMovieRes(
                         rs.getInt("movie_idx"),
                         rs.getString("movie_title"),
-                        rs.getString("movie_photo"),
+                        rs.getString("photo"),
                         rs.getInt("like_cnt")),
                 getGenreMoviesParams);
     }
