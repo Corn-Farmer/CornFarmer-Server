@@ -11,10 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.farmer.cornfarmer.config.BaseResponseStatus.REQUEST_ERROR;
 
 @RestController
 @RequestMapping("/admin")
@@ -120,6 +126,32 @@ public class AdminController {
         try {
             List<GetMovieRes> getMovieResList = adminProvider.getGenreMovies(genreIdx);
             return new BaseResponse<>(getMovieResList);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 영화 추가 API
+     * [POST] /admin/movies
+     * 개발자 : 홍민주(앨리)
+     */
+    @ResponseBody
+    @PostMapping("/movies")
+    public BaseResponse<PostMovieRes> postMovies(@Valid @ModelAttribute PostMovieReq postMovieReq, BindingResult validResult){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            if (validResult.hasErrors()) {
+                throw new BaseException(REQUEST_ERROR);
+            }
+            // 받은 이미지파일들 S3에 업로드 후 URL리스트 저장
+            List<String> moviePhotoURLs = new ArrayList<>();
+            for(MultipartFile moviePhoto : postMovieReq.getMoviePhoto())
+                moviePhotoURLs.add(S3Uploader.upload(moviePhoto,"movie"));
+
+            // movie 데이터베이스에 저장
+            PostMovieRes postMovieRes = adminService.createMovie(moviePhotoURLs, postMovieReq);
+            return new BaseResponse<>(postMovieRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
