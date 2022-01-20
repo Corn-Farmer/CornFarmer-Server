@@ -2,6 +2,7 @@ package com.farmer.cornfarmer.src.admin;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.src.admin.model.GetGenreRes;
+import com.farmer.cornfarmer.src.admin.model.GetMovieRes;
 import com.farmer.cornfarmer.src.admin.model.GetOttRes;
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.utils.JwtService;
@@ -41,6 +42,15 @@ public class AdminProvider {
         try {
             List<GetGenreRes> getGenreList = adminDao.getGenres();
             return getGenreList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetMovieRes> getGenreMovies(int genreIdx) throws BaseException {
+        try {
+            List<GetMovieRes> getMovieResList = adminDao.getGenreMovies(genreIdx);
+            return getMovieResList;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

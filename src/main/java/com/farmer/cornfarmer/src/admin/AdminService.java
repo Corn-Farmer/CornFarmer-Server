@@ -3,7 +3,10 @@ package com.farmer.cornfarmer.src.admin;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.src.admin.model.PostGenreReq;
 import com.farmer.cornfarmer.src.admin.model.PostGenreRes;
+import com.farmer.cornfarmer.src.admin.model.PostOttReq;
+import com.farmer.cornfarmer.src.admin.model.PostOttRes;
 import com.farmer.cornfarmer.utils.JwtService;
+import com.farmer.cornfarmer.utils.S3Uploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,15 @@ public class AdminService {
         try {
             int genreIdx = adminDao.createGenre(postGenreReq);
             return new PostGenreRes(genreIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostOttRes createOtt(String ottName, String ottFileURL) throws BaseException {
+        try {
+            int ottIdx = adminDao.createOtt(ottName, ottFileURL);
+            return new PostOttRes(ottIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
