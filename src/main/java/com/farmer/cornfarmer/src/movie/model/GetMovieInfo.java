@@ -24,6 +24,10 @@ public class GetMovieInfo {
         this.movieName=movieName;
         this.moviePhoto=moviePhoto;
     }
+
+    public GetMovieInfo(int movieIdx){
+        this.movieIdx=movieIdx;
+    }
     private int movieIdx;
     private String movieName;
     private String moviePhoto;

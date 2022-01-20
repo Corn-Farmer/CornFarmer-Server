@@ -80,4 +80,23 @@ public class MovieProvider {
         movieDao.addFromWish(userIdx,movieIdx);
     }
 
+    public List<GetMovieInfo> getMovieIdx_Today()throws BaseException{
+        try {
+            List<GetMovieInfo> movieidx = movieDao.getMovieIdx_Today();
+            return movieidx;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
+    public GetMovieInfo getMovieToday(int movieIdx)throws BaseException{
+        try {
+            GetMovieInfo movieinfo = movieDao.getMovieToday(movieIdx);
+            return movieinfo;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

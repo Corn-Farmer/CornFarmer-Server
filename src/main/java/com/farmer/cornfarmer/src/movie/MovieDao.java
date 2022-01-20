@@ -81,4 +81,27 @@ public class MovieDao {
         int result=jdbcTemplate.update(getUserQuery,userIdx,movieIdx,time);
     }
 
+    public List<GetMovieInfo> getMovieIdx_Today(){
+        String query="SELECT user_movie.movie_idx FROM cornFarmer.user_movie where DAY(created_at)=DAY(curdate()-interval 1 day) group by movie_idx order by count(*) desc;";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetMovieInfo(
+                        rs.getInt("user_movie.movie_idx"))// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+        );
+    }
+
+    public GetMovieInfo getMovieToday(int movieIdx) {
+        String getUserQuery = "Select movie.movie_idx,movie_title,photo from movie left Join movie_photo on movie.movie_idx=movie_photo.movie_idx where movie.movie_idx=?;";
+        int param=movieIdx;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new GetMovieInfo(
+                        rs.getInt("movie.movie_idx"),
+                        rs.getString("movie_title"),
+                        rs.getString("photo")),// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+
+    }
+
+
+
+
 }

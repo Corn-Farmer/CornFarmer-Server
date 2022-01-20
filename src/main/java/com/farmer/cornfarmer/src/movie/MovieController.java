@@ -156,4 +156,84 @@ public class MovieController {
         }
 
     }
+
+
+    /**
+     * API 설명
+     * 날짜별 작품 추천결과 조회(메인화면)API(2022-01-20)
+     * [HTTP METHOD] URL
+     * [GET] localhost:9000/movies/today
+     * 개발자 : 쉐리(강혜연)
+     */
+
+    @ResponseBody
+    @GetMapping("/today")
+    public BaseResponse<List<GetMovieInfo>> getMoviesToday(){
+        int userIdx=1;
+
+
+        try {
+            //1. 어제 좋아요 받은 영화 정렬해서 가져오기
+            List <GetMovieInfo> getMovieIdx=movieProvider.getMovieIdx_Today();
+
+            if(getMovieIdx.size()<=10){
+                //영화 정보 추가
+                for(int i=0;i<getMovieIdx.size();i++){
+                    GetMovieInfo tmp=movieProvider.getMovieToday(getMovieIdx.get(i).getMovieIdx());
+                    getMovieIdx.set(i,tmp);
+                }
+
+                for(int i=0;i<getMovieIdx.size();i++){
+                    List <GetGenre> movieGenre = movieProvider.getMovieGenre(getMovieIdx.get(i).getMovieIdx());
+                    List <String> genre=new ArrayList<>();
+
+                    for(int j=0;j<movieGenre.size();j++){
+                        genre.add(movieGenre.get(j).getGenre());
+                    }
+                    getMovieIdx.get(i).setMovieGenreList(genre);
+
+                    //isLiked추가하는 코드
+                    GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
+                    if(like.getIsLike()==1){
+                        getMovieIdx.get(i).setLiked(true);
+                    }
+                    else{
+                        getMovieIdx.get(i).setLiked(false);
+                    }
+                }
+            }
+            else{
+                //영화 정보 추가(10개 넘으면 10개 까지만)
+                for(int i=0;i<10;i++){
+                    GetMovieInfo tmp=movieProvider.getMovieToday(getMovieIdx.get(i).getMovieIdx());
+                    getMovieIdx.set(i,tmp);
+                }
+
+                for(int i=0;i<10;i++){
+                    List <GetGenre> movieGenre = movieProvider.getMovieGenre(getMovieIdx.get(i).getMovieIdx());
+                    List <String> genre=new ArrayList<>();
+
+                    for(int j=0;j<movieGenre.size();j++){
+                        genre.add(movieGenre.get(j).getGenre());
+                    }
+                    getMovieIdx.get(i).setMovieGenreList(genre);
+
+                    //isLiked추가하는 코드
+                    GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
+                    if(like.getIsLike()==1){
+                        getMovieIdx.get(i).setLiked(true);
+                    }
+                    else{
+                        getMovieIdx.get(i).setLiked(false);
+                    }
+                }
+            }
+
+
+            return new BaseResponse<>(getMovieIdx);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }
