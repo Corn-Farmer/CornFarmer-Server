@@ -72,13 +72,17 @@ public class MovieDao {
 
     public void deleteFromWish(int userIdx,int movieIdx){
         String getUserQuery="Delete from user_movie where movie_idx=? and user_idx=?;";
+        String query="Update movie SET like_cnt=like_cnt-1 where movie_idx=?;";
         int result=jdbcTemplate.update(getUserQuery,movieIdx,userIdx);
+        int res=jdbcTemplate.update(query,movieIdx);
     }
     public void addFromWish(int userIdx,int movieIdx){
         String getUserQuery="Insert Into user_movie(user_idx,movie_idx,created_at) values (?,?,?);";
         java.util.Date date=new java.util.Date();
         java.sql.Timestamp time=new java.sql.Timestamp(date.getTime());
         int result=jdbcTemplate.update(getUserQuery,userIdx,movieIdx,time);
+        String query="Update movie SET like_cnt=like_cnt+1 where movie_idx=?;";
+        int res=jdbcTemplate.update(query,movieIdx);
     }
 
     public List<GetMovieInfo> getMovieIdx_Today(){

@@ -39,9 +39,6 @@ public class MovieController {
      * 키워드 조회 API
      * [Get] /movies/keywords
      * 키워드 랜덤 추천 기능을 담당하는 API
-     *
-     *
-     *
      * 개발자 : 쉐리(강혜연)
      */
     // Body
@@ -80,12 +77,10 @@ public class MovieController {
      * 키워드별 작품 추천결과 조회 API
      * [GET] /movies/keywords/keywordIdx
      * 예시 : localhost:9000/movies/keywords/2
-     *
-     *
      * 개발자 : 쉐리(강혜연)
      */
     @ResponseBody
-    @GetMapping("keywords/{keywordIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
+    @GetMapping("keywords/{keywordIdx}")
     public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
 
         // TODO: 2022-01-16  나중에 jwt를 통해 받아와야 함, 테스트를 위해 1이라고 가정.
