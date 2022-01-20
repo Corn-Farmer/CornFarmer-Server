@@ -99,4 +99,13 @@ public class MovieProvider {
         }
     }
 
+    public List<GetGenre> getMoviePhoto(int movieIdx) throws BaseException {
+        try {
+            List <GetGenre> moviePhoto = movieDao.getMoviePhoto(movieIdx);
+            return moviePhoto;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

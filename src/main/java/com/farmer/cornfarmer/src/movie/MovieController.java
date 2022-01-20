@@ -95,6 +95,7 @@ public class MovieController {
 
             //장르 추가하는 코드
             List <GetMovieInfo> movieinfoss=movieProvider.getmovies(keywordIdx);
+
             for(int i=0;i<movieinfoss.size();i++){
                 List <GetGenre> movieGenre = movieProvider.getMovieGenre(movieinfoss.get(i).getMovieIdx());
                 List <String> genre=new ArrayList<>();
@@ -111,6 +112,14 @@ public class MovieController {
                 else{
                     movieinfoss.get(i).setLiked(false);
                 }
+
+                //moviePhoto 추가하는 코드
+                List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(movieinfoss.get(i).getMovieIdx());
+                List <String> photo=new ArrayList<>();
+                for(int j=0;j<moviePhoto.size();j++){
+                    photo.add(moviePhoto.get(j).getGenre());
+                }
+                movieinfoss.get(i).setMoviePhotoList(photo);
             }
             getKeywordRes.setMovieList(movieinfoss);
 
@@ -167,7 +176,7 @@ public class MovieController {
      */
 
     @ResponseBody
-    @GetMapping("/today")
+    @GetMapping("/today") //ex) localhost:9000/movies/today
     public BaseResponse<List<GetMovieInfo>> getMoviesToday(){
         int userIdx=1;
 
@@ -200,7 +209,17 @@ public class MovieController {
                     else{
                         getMovieIdx.get(i).setLiked(false);
                     }
+
+                    //moviePhoto 추가하는 코드
+                    List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(getMovieIdx.get(i).getMovieIdx());
+                    List <String> photo=new ArrayList<>();
+                    for(int j=0;j<moviePhoto.size();j++){
+                        photo.add(moviePhoto.get(j).getGenre());
+                    }
+                    getMovieIdx.get(i).setMoviePhotoList(photo);
                 }
+
+
             }
             else{
                 //영화 정보 추가(10개 넘으면 10개 까지만)
@@ -226,6 +245,14 @@ public class MovieController {
                     else{
                         getMovieIdx.get(i).setLiked(false);
                     }
+
+                    //moviePhoto 추가하는 코드
+                    List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(getMovieIdx.get(i).getMovieIdx());
+                    List <String> photo=new ArrayList<>();
+                    for(int j=0;j<moviePhoto.size();j++){
+                        photo.add(moviePhoto.get(j).getGenre());
+                    }
+                    getMovieIdx.get(i).setMoviePhotoList(photo);
                 }
             }
 

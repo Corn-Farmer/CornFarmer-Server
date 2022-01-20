@@ -49,13 +49,13 @@ public class MovieDao {
 
     public List<GetMovieInfo> getMovieInfo(int movieIdx) {
 
-        String getUserQuery = "Select movie.movie_idx,movie_title,photo from movie join movie_photo on movie.movie_idx = movie_photo.movie_idx where movie.movie_idx in (select movie_idx from keyword_movie where keyword_idx=?);"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+        String getUserQuery = "Select movie.movie_idx,movie_title from movie where movie.movie_idx in (select movie_idx from keyword_movie where keyword_idx=?);"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
         int getUserParams = movieIdx;
         return this.jdbcTemplate.query(getUserQuery,
                 (rs, rowNum) -> new GetMovieInfo(
                         rs.getInt("movie.movie_idx"),
-                        rs.getString("movie_title"),
-                        rs.getString("photo")),// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                        rs.getString("movie_title")),
+                // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
 
     }
@@ -90,15 +90,25 @@ public class MovieDao {
     }
 
     public GetMovieInfo getMovieToday(int movieIdx) {
-        String getUserQuery = "Select movie.movie_idx,movie_title,photo from movie left Join movie_photo on movie.movie_idx=movie_photo.movie_idx where movie.movie_idx=?;";
+        String getUserQuery = "Select movie_idx,movie_title from movie where movie_idx=?";
         int param=movieIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetMovieInfo(
-                        rs.getInt("movie.movie_idx"),
-                        rs.getString("movie_title"),
-                        rs.getString("photo")),// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                        rs.getInt("movie_idx"),
+                        rs.getString("movie_title")),
+                // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
 
+    }
+
+    public List<GetGenre> getMoviePhoto(int movieIdx){
+        String getUserQuery = "Select photo from movie_photo where movie_idx=?";
+        int param=movieIdx;
+        return this.jdbcTemplate.query(getUserQuery,
+                (rs, rowNum) -> new GetGenre(
+                        rs.getString("photo")),
+                // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
 

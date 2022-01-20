@@ -1,6 +1,6 @@
 package com.farmer.cornfarmer.src.movie.model;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,18 +19,18 @@ import java.util.List;
  * User 클래스는 스프링에서 사용하는 Objec이다.
  */
 public class GetMovieInfo {
-    public GetMovieInfo(int movieIdx, String movieName, String moviePhoto){
+    public GetMovieInfo(int movieIdx, String movieName){
         this.movieIdx=movieIdx;
         this.movieName=movieName;
-        this.moviePhoto=moviePhoto;
     }
-
     public GetMovieInfo(int movieIdx){
         this.movieIdx=movieIdx;
     }
+
+
     private int movieIdx;
     private String movieName;
-    private String moviePhoto;
+    private List<String> moviePhotoList;
     private List<String> movieGenreList;
     private boolean isLiked;
 }
