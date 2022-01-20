@@ -115,6 +115,72 @@ public class MovieDao {
                 param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
+    public GetMovieDetail getMovieDetail(int movieIdx) {
+        String getUserQuery = "Select movie_title,release_year,like_cnt,synopsis from movie left join movie_ott on movie.movie_idx=movie_ott.movie_idx where movie.movie_idx=? group by movie_title;";
+        int param=movieIdx;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new GetMovieDetail(
+                        rs.getString("movie_title"),
+                        rs.getInt("release_year"),
+                        rs.getInt("like_cnt"),
+                        rs.getString("synopsis")),
+                // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+
+    }
+
+    public List<Ott> getOtt(int movieIdx){
+        String getUserQuery = "select ott.ott_idx,ott.name,photo from movie_ott left join ott on ott.ott_idx=movie_ott.ott_idx where movie_idx=?;";
+        int param=movieIdx;
+        return this.jdbcTemplate.query(getUserQuery,
+                (rs, rowNum) -> new Ott(
+                        rs.getInt("ott.ott_idx"),
+                        rs.getString("ott.name"),
+                        rs.getString("photo")),
+                param);
+    }
+    public List<Review> getReview_recent(int movieIdx){
+        String getUserQuery = "select review_idx,user_idx,contents,rate,like_cnt,created_at from review where movie_idx=? order by created_at desc;";
+        int param=movieIdx;
+        return this.jdbcTemplate.query(getUserQuery,
+                (rs, rowNum) -> new Review(
+                        rs.getInt("review_idx"),
+                        rs.getInt("user_idx"),
+                        rs.getString("contents"),
+                        rs.getFloat("rate"),
+                        rs.getInt("like_cnt"),
+                        rs.getString("created_at")),
+                param);
+    }
+
+    public List<Review> getReview_like(int movieIdx){
+        String getUserQuery = "select review_idx,user_idx,contents,rate,like_cnt,created_at from review where movie_idx=? order by like_cnt desc;";
+        int param=movieIdx;
+        return this.jdbcTemplate.query(getUserQuery,
+                (rs, rowNum) -> new Review(
+                        rs.getInt("review_idx"),
+                        rs.getInt("user_idx"),
+                        rs.getString("contents"),
+                        rs.getFloat("rate"),
+                        rs.getInt("like_cnt"),
+                        rs.getString("created_at")),
+                param);
+    }
+
+
+    public Writer getWriter(int userIdx) {
+        String getUserQuery = "Select user_idx,nickname,photo from user where user_idx=?;";
+        int param=userIdx;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new Writer(
+                        rs.getInt("user_idx"),
+                        rs.getString("nickname"),
+                        rs.getString("photo")),
+                // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+
+    }
+
 
 
 

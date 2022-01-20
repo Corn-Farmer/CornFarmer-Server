@@ -108,4 +108,48 @@ public class MovieProvider {
         }
     }
 
+    public GetMovieDetail getMovieDetail(int movieIdx)throws BaseException{
+        try {
+            GetMovieDetail getMovieDetail = movieDao.getMovieDetail(movieIdx);
+            return getMovieDetail;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    public List<Ott> getOtt(int movieIdx)throws BaseException{
+        try {
+            List<Ott> ott = movieDao.getOtt(movieIdx);
+            return ott;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<Review> getReview_recent(int movieIdx)throws BaseException{
+        try {
+            List<Review> reviewList = movieDao.getReview_recent(movieIdx);
+            return reviewList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    public List<Review> getReview_like(int movieIdx)throws BaseException{
+        try {
+            List<Review> reviewList = movieDao.getReview_like(movieIdx);
+            return reviewList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
+    public Writer getWriter(int userIdx)throws BaseException{
+        try {
+            Writer writer = movieDao.getWriter(userIdx);
+            return writer;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

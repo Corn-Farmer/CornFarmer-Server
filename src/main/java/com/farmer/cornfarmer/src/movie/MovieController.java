@@ -258,4 +258,74 @@ public class MovieController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    /**
+     * API 설명
+     * 작품 상세 조회 API(2022-01-21)
+     * [HTTP METHOD] URL
+     * [GET] localhost:9000/movies/1?sort=1 sort=1이면 리뷰 최신순 정렬, sort=2이면 리뷰 좋아요순 정렬
+     * 개발자 : 쉐리(강혜연)
+     */
+
+    @ResponseBody
+    @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=1
+    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort") int sort) throws BaseException {
+        try {
+            // TODO: 2022-01-21 나중에 jwt에서 userIdx가져와야함
+            int userIdx = 1;
+            GetMovieDetail getMovieDetail = movieProvider.getMovieDetail(movieIdx);
+
+            //영화 장르 추가 코드
+            List<GetGenre> movieGenre = movieProvider.getMovieGenre(movieIdx);
+            List<String> genre = new ArrayList<>();
+            for (int j = 0; j < movieGenre.size(); j++) {
+                genre.add(movieGenre.get(j).getGenre());
+            }
+            getMovieDetail.setMovieGenreList(genre);
+
+            //isLiked추가하는 코드
+            GetLike like = movieProvider.getLike(userIdx, movieIdx);
+            if (like.getIsLike() == 1) {
+                getMovieDetail.setLiked(true);
+            } else {
+                getMovieDetail.setLiked(false);
+            }
+
+            //moviePhoto 추가하는 코드
+            List<GetGenre> moviePhoto = movieProvider.getMoviePhoto(movieIdx);
+            List<String> photo = new ArrayList<>();
+            for (int j = 0; j < moviePhoto.size(); j++) {
+                photo.add(moviePhoto.get(j).getGenre());
+            }
+            getMovieDetail.setMoviePhotoList(photo);
+            System.out.println("moviephoto");
+
+            //ottList 추가하는 코드
+            List<Ott> ott = movieProvider.getOtt(movieIdx);
+            getMovieDetail.setOttList(ott);
+
+            //review list 가져오는 코드
+            //sort=1이면 최신, sort=2이면 좋아요순
+            List<Review> reviewList = new ArrayList<Review>();
+            if (sort == 1) {
+                reviewList = movieProvider.getReview_recent(movieIdx);
+            } else {
+                reviewList = movieProvider.getReview_like(movieIdx);
+            }
+
+            //writer 정보 채우기
+            for (int k = 0; k < reviewList.size(); k++) {
+                int writeridx = reviewList.get(k).getUserIdx();
+                Writer writer = movieProvider.getWriter(writeridx);
+
+                reviewList.get(k).setWriter(writer);
+            }
+            getMovieDetail.setReviewList(reviewList);
+
+            return new BaseResponse<>(getMovieDetail);
+        } catch (BaseException exception) {
+
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }
