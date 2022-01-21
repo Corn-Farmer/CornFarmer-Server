@@ -1,15 +1,19 @@
 package com.farmer.cornfarmer.src.admin;
 
 import com.farmer.cornfarmer.config.BaseException;
-import com.farmer.cornfarmer.src.admin.model.GetGenreRes;
-import com.farmer.cornfarmer.src.admin.model.GetMovieRes;
-import com.farmer.cornfarmer.src.admin.model.GetOttRes;
+import com.farmer.cornfarmer.config.BaseResponse;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
+import com.farmer.cornfarmer.src.admin.model.*;
+
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -29,6 +33,22 @@ public class AdminProvider {
         this.jwtService = jwtService;
     }
 
+    @Transactional(readOnly = true)
+    public List<GetReviewRes> getAllReviews() throws BaseException {
+        try{
+            List<GetReviewRes> result = adminDao.getAllReviews();
+            return result;
+        } catch(Exception exception){
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+    public void validateReviewExist(int reviewIdx) throws BaseException {
+        int reviewCount = adminDao.getReviewIdx(reviewIdx);
+        if(reviewCount == 0){
+            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
+        }
+    }
+  
     public List<GetOttRes> getOtts() throws BaseException {
         try {
             List<GetOttRes> getOttList = adminDao.getOtts();

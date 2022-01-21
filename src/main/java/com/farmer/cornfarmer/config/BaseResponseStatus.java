@@ -42,6 +42,8 @@ public enum BaseResponseStatus {
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
     FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
 
+    // [DELETE] /reviews/{reviewId}
+    FAILED_TO_FIND_REVIEW(false,3030,"해당 리뷰를 찾을 수 없습니다."),
 
     /**
      * 4000 : Database, Server 오류
@@ -52,8 +54,18 @@ public enum BaseResponseStatus {
     //[PATCH] /users/{userIdx}
     MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
 
+    //[PATCH] /reviews/{reviewIdx}
+    MODIFY_FAIL_REVIEW(false,4020,"리뷰 수정 실패"),
+
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
+
+    //[DELETE] /reviews/{reviewIdx}
+    DELETE_FAIL_REVIEW(false,4030,"리뷰 삭제에 실패하였습니다."),
+
+    //[POST] /reviews/{reviewIdx}/like
+    CREATE_FAIL_REVIEWLIKE(false, 4040,"리뷰 좋아요에 실패하였습니다."),
+    DELETE_FAIL_REVIEWLIKE(false,4041,"리뷰 좋아요 취소에 실패하였습니다.");
 
     /**
      * 5000 : File 오류

@@ -1,6 +1,9 @@
 package com.farmer.cornfarmer.src.admin;
 
 import com.farmer.cornfarmer.config.BaseException;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
+import com.farmer.cornfarmer.src.user.UserDao;
+import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.src.admin.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.utils.S3Uploader;
@@ -8,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -30,6 +34,21 @@ public class AdminService {
         this.adminProvider = adminProvider;
         this.jwtService = jwtService;
     }
+
+    @Transactional
+    public void deleteReview(int reviewIdx) throws BaseException {
+        adminProvider.validateReviewExist(reviewIdx); //이미 삭제된 리뷰인지 확인
+        try{
+            int result = adminDao.deleteReview(reviewIdx);
+            if (result == 0) {
+                throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEW);
+            }
+        } catch(Exception exception){
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+
+        }
+    }
+
 
     public PostGenreRes createGenre(PostGenreReq postGenreReq) throws BaseException {
 
