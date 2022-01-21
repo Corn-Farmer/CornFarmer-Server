@@ -44,6 +44,7 @@ CREATE TABLE `review` (
                           `movie_Idx`	int  unsigned 	NOT NULL,
                           `user_idx`	int  unsigned 	NOT NULL,
                           `contents`	TEXT	NULL,
+                          `rate`	float	NULL	DEFAULT 0,
                           `likeCnt`	int	NULL	DEFAULT 0,
                           `active`	bool	NULL	DEFAULT true,
                           `created_at`	timestamp	NULL	DEFAULT CURRENT_TIMESTAMP,
@@ -60,8 +61,8 @@ CREATE TABLE `keyword` (
 DROP TABLE IF EXISTS `keyword-movie`;
 
 CREATE TABLE `keyword-movie` (
-                                 `movie_Idx`	int  unsigned	NOT NULL,
-                                 `keyword_idx`	int  unsigned 	NOT NULL
+                                 `keyword_idx`	int  unsigned	NOT NULL,
+                                 `movie_Idx`	int  unsigned 	NOT NULL
 );
 
 DROP TABLE IF EXISTS `movie-genre`;
@@ -144,18 +145,18 @@ ALTER TABLE `review` ADD CONSTRAINT `FK_user_TO_review_1` FOREIGN KEY (
                        `user_idx`
         );
 
-ALTER TABLE `keyword-movie` ADD CONSTRAINT `FK_movie_TO_keyword-movie_1` FOREIGN KEY (
-                                                                                      `movie_Idx`
-    )
-    REFERENCES `movie` (
-                        `movie_Idx`
-        );
-
 ALTER TABLE `keyword-movie` ADD CONSTRAINT `FK_keyword_TO_keyword-movie_1` FOREIGN KEY (
                                                                                         `keyword_idx`
     )
     REFERENCES `keyword` (
                           `keyword_idx`
+        );
+
+ALTER TABLE `keyword-movie` ADD CONSTRAINT `FK_movie_TO_keyword-movie_1` FOREIGN KEY (
+                                                                                      `movie_Idx`
+    )
+    REFERENCES `movie` (
+                        `movie_Idx`
         );
 
 ALTER TABLE `movie-genre` ADD CONSTRAINT `FK_movie_TO_movie-genre_1` FOREIGN KEY (
