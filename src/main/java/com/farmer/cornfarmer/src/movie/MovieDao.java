@@ -38,7 +38,7 @@ public class MovieDao {
     }
 
     public List<GetGenre> getMovieGenre(int movieIdx) {
-        String getUserQuery = "Select genre_name from genre where genre_idx IN( select genre_idx from movie_genre where movie_idx=?)"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+        String getUserQuery = "select genre_name from genre where genre_idx in( select genre_idx from movie_genre where movie_idx=?)"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
         int getUserParams = movieIdx;
         return this.jdbcTemplate.query(getUserQuery,
                 (rs, rowNum) -> new GetGenre(
@@ -61,7 +61,7 @@ public class MovieDao {
     }
 
     public GetLike getLike(int userIdx, int movieIdx) {
-        String getUserQuery = "Select Exists(Select movie_idx from user_movie where user_idx=? and movie_idx=?) as ex;"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+        String getUserQuery = "select exists(select movie_idx from user_movie where user_idx=? and movie_idx=?) as ex;"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
         int getUserParams = userIdx;
         int param=movieIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
@@ -71,22 +71,22 @@ public class MovieDao {
     }
 
     public void deleteFromWish(int userIdx,int movieIdx){
-        String getUserQuery="Delete from user_movie where movie_idx=? and user_idx=?;";
+        String getUserQuery="delete from user_movie where movie_idx=? and user_idx=?;";
         String query="Update movie SET like_cnt=like_cnt-1 where movie_idx=?;";
         int result=jdbcTemplate.update(getUserQuery,movieIdx,userIdx);
         int res=jdbcTemplate.update(query,movieIdx);
     }
     public void addFromWish(int userIdx,int movieIdx){
-        String getUserQuery="Insert Into user_movie(user_idx,movie_idx,created_at) values (?,?,?);";
+        String getUserQuery="insert Into user_movie(user_idx,movie_idx,created_at) values (?,?,?);";
         java.util.Date date=new java.util.Date();
         java.sql.Timestamp time=new java.sql.Timestamp(date.getTime());
         int result=jdbcTemplate.update(getUserQuery,userIdx,movieIdx,time);
-        String query="Update movie SET like_cnt=like_cnt+1 where movie_idx=?;";
+        String query="update movie set like_cnt=like_cnt+1 where movie_idx=?;";
         int res=jdbcTemplate.update(query,movieIdx);
     }
 
     public List<GetMovieInfo> getMovieIdx_Today(){
-        String query="SELECT user_movie.movie_idx FROM cornFarmer.user_movie where DAY(created_at)=DAY(curdate()-interval 1 day) group by movie_idx order by count(*) desc;";
+        String query="select user_movie.movie_idx from cornFarmer.user_movie where day(created_at)=day(curdate()-interval 1 day) group by movie_idx order by count(*) desc;";
         return this.jdbcTemplate.query(query,
                 (rs, rowNum) -> new GetMovieInfo(
                         rs.getInt("user_movie.movie_idx"))// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
@@ -94,7 +94,7 @@ public class MovieDao {
     }
 
     public GetMovieInfo getMovieToday(int movieIdx) {
-        String getUserQuery = "Select movie_idx,movie_title from movie where movie_idx=?";
+        String getUserQuery = "select movie_idx,movie_title from movie where movie_idx=?";
         int param=movieIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetMovieInfo(
@@ -106,7 +106,7 @@ public class MovieDao {
     }
 
     public List<GetGenre> getMoviePhoto(int movieIdx){
-        String getUserQuery = "Select photo from movie_photo where movie_idx=?";
+        String getUserQuery = "select photo from movie_photo where movie_idx=?";
         int param=movieIdx;
         return this.jdbcTemplate.query(getUserQuery,
                 (rs, rowNum) -> new GetGenre(
@@ -116,7 +116,7 @@ public class MovieDao {
     }
 
     public GetMovieDetail getMovieDetail(int movieIdx) {
-        String getUserQuery = "Select movie_title,release_year,like_cnt,synopsis from movie left join movie_ott on movie.movie_idx=movie_ott.movie_idx where movie.movie_idx=? group by movie_title;";
+        String getUserQuery = "select movie_title,release_year,like_cnt,synopsis from movie left join movie_ott on movie.movie_idx=movie_ott.movie_idx where movie.movie_idx=? group by movie_title;";
         int param=movieIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetMovieDetail(
@@ -169,7 +169,7 @@ public class MovieDao {
 
 
     public Writer getWriter(int userIdx) {
-        String getUserQuery = "Select user_idx,nickname,photo from user where user_idx=?;";
+        String getUserQuery = "select user_idx,nickname,photo from user where user_idx=?;";
         int param=userIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new Writer(
