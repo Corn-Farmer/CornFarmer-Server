@@ -3,7 +3,8 @@ package com.farmer.cornfarmer.src.admin;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
-import com.farmer.cornfarmer.src.admin.model.GetReviewRes;
+import com.farmer.cornfarmer.src.admin.model.*;
+
 import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import java.util.List;
+
+import static com.farmer.cornfarmer.config.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
 public class AdminProvider {
@@ -41,6 +46,33 @@ public class AdminProvider {
         int reviewCount = adminDao.getReviewIdx(reviewIdx);
         if(reviewCount == 0){
             throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
+        }
+    }
+  
+    public List<GetOttRes> getOtts() throws BaseException {
+        try {
+            List<GetOttRes> getOttList = adminDao.getOtts();
+            return getOttList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetGenreRes> getGenres() throws BaseException {
+        try {
+            List<GetGenreRes> getGenreList = adminDao.getGenres();
+            return getGenreList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetMovieRes> getGenreMovies(int genreIdx) throws BaseException {
+        try {
+            List<GetMovieRes> getMovieResList = adminDao.getGenreMovies(genreIdx);
+            return getMovieResList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 }

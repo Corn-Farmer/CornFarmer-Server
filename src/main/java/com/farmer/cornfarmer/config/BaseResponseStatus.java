@@ -45,7 +45,6 @@ public enum BaseResponseStatus {
     // [DELETE] /reviews/{reviewId}
     FAILED_TO_FIND_REVIEW(false,3030,"해당 리뷰를 찾을 수 없습니다."),
 
-
     /**
      * 4000 : Database, Server 오류
      */
@@ -68,8 +67,10 @@ public enum BaseResponseStatus {
     CREATE_FAIL_REVIEWLIKE(false, 4040,"리뷰 좋아요에 실패하였습니다."),
     DELETE_FAIL_REVIEWLIKE(false,4041,"리뷰 좋아요 취소에 실패하였습니다.");
 
-    // 5000 : 필요시 만들어서 쓰세요
-    // 6000 : 필요시 만들어서 쓰세요
+    /**
+     * 5000 : File 오류
+     */
+    FILE_CONVERT_ERROR(false, 5000, "file 변환에 실패하였습니다.");
 
 
     private final boolean isSuccess;

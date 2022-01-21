@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BaseException extends Exception {
-    private BaseResponseStatus status;  //BaseResoinseStatus 객체에 매핑
+    private BaseResponseStatus status;
 }
