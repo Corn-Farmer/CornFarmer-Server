@@ -34,8 +34,13 @@ public class AdminProvider {
             List<GetReviewRes> result = adminDao.getAllReviews();
             return result;
         } catch(Exception exception){
-            exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+    public void validateReviewExist(int reviewIdx) throws BaseException {
+        int reviewCount = adminDao.getReviewIdx(reviewIdx);
+        if(reviewCount == 0){
+            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
         }
     }
 }

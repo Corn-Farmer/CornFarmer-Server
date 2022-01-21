@@ -46,7 +46,6 @@ public class ReviewController {
             PostReviewRes postReviewRes = reviewService.createReview(userIdx,postReviewReq);
             return new BaseResponse<>(postReviewRes);
         } catch(BaseException exception){
-            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -62,14 +61,9 @@ public class ReviewController {
         try{
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 1; //가정
-            int reviewUserIdx = reviewProvider.getUserIdx(reviewIdx);    //수정하려는 후기의 userIdx와 일치하는지 확인
-            if(userIdx != reviewUserIdx){
-                return new BaseResponse(BaseResponseStatus.INVALID_USER_JWT);
-            }
-            reviewService.modifyReview(reviewIdx,putReviewReq);
+            reviewService.modifyReview(reviewIdx,userIdx,putReviewReq);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         }catch(BaseException exception){
-            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -85,14 +79,9 @@ public class ReviewController {
         try{
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 1; //가정
-            int reviewUserIdx = reviewProvider.getUserIdx(reviewIdx);    //삭제하려는 후기의 userIdx와 일치하는지 확인
-            if(userIdx != reviewUserIdx){
-                return new BaseResponse(BaseResponseStatus.INVALID_USER_JWT);
-            }
-            reviewService.deleteReview(reviewIdx);
+            reviewService.deleteReview(reviewIdx,userIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         } catch(BaseException exception){
-            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -106,26 +95,11 @@ public class ReviewController {
     @PostMapping("/{reviewIdx}/like")
     public BaseResponse likeReview(@PathVariable int reviewIdx){
         try{
-            //좋아요를 누른 리뷰가 삭제된 리뷰인지 확인
-            boolean isReviewExist = reviewProvider.checkReviewExist(reviewIdx);
-            if(isReviewExist == false){
-                return new BaseResponse(BaseResponseStatus.FAILED_TO_REVIEWLIKE);
-            }
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 1; //가정
-
-            //좋아요 누른 기록이 있는지 검사 후, 없다면 좋아요 DB 생성, 있다면 좋아요 DB 삭제
-            boolean isReviewLikeExist = reviewProvider.checkReviewLike(reviewIdx,userIdx);
-            if(isReviewLikeExist == false){
-                //좋아요 생성, review 테이블의 like_cnt를 +1
-                reviewService.createReviewLike(reviewIdx,userIdx);
-            }else{
-                //좋아요 삭제, review 테이블의 like_cnt를 -1
-                reviewService.deleteReviewLike(reviewIdx,userIdx);
-            }
+            reviewService.likeReview(reviewIdx,userIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         } catch(BaseException exception){
-            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -139,17 +113,11 @@ public class ReviewController {
     @PostMapping("/{reviewIdx}/report")
     public BaseResponse<PostReportRes> createReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq){
         try{
-            //신고한 리뷰가 삭제된 리뷰인지 확인
-            boolean isReviewExist = reviewProvider.checkReviewExist(reviewIdx);
-            if(isReviewExist == false){
-                return new BaseResponse(BaseResponseStatus.FAILED_TO_REVIEWLIKE);
-            }
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 1; //가정
             PostReportRes postReportRes = reviewService.createReviewReport(reviewIdx,userIdx,postReportReq);
             return new BaseResponse<>(postReportRes);
         }catch(BaseException exception){
-            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }

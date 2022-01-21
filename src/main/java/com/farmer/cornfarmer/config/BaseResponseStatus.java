@@ -42,9 +42,6 @@ public enum BaseResponseStatus {
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
     FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
 
-    // [POST] /reviews/{reviewIdx}/like
-    FAILED_TO_REVIEWLIKE(false,3020,"없는 리뷰입니다."),
-
     // [DELETE] /reviews/{reviewId}
     FAILED_TO_FIND_REVIEW(false,3030,"해당 리뷰를 찾을 수 없습니다."),
 

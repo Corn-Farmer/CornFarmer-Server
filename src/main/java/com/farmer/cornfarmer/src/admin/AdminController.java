@@ -48,7 +48,6 @@ public class AdminController {
             List<GetReviewRes> result = adminProvider.getAllReviews();
             return new BaseResponse<>(result);
         }catch(BaseException exception){
-            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -66,7 +65,6 @@ public class AdminController {
             adminService.deleteReview(reviewIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         } catch(BaseException exception){
-            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }

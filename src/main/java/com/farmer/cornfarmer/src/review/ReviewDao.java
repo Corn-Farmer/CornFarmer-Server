@@ -71,12 +71,6 @@ public class ReviewDao {
         return result1 & resutl2;
     }
 
-    public boolean checkReviewExist(int reviewIdx) {
-        String query = "select active from review where review_idx = ?";
-        boolean result = this.jdbcTemplate.queryForObject(query,boolean.class,reviewIdx);
-        return result;
-    }
-
     public PostReportRes createReviewReport(int reviewIdx, int userIdx, PostReportReq postReportReq) {
         String query = "insert into report (review_idx,user_idx,contents,created_at) values (?,?,?,?) ";
         Object[] params = new Object[]{reviewIdx,userIdx,postReportReq.getReport(),LocalDateTime.now()};
@@ -86,5 +80,10 @@ public class ReviewDao {
         int lastReviewIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
         PostReportRes postReportRes = new PostReportRes(lastReviewIdx);
         return postReportRes;
+    }
+
+    public int getReviewIdx(int reviewIdx) {
+        String getReviewIdxQuery = "select count(*) from review where review_idx = ? and active = ?";
+        return this.jdbcTemplate.queryForObject(getReviewIdxQuery,int.class,reviewIdx,1);
     }
 }

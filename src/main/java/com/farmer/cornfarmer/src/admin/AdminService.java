@@ -29,29 +29,17 @@ public class AdminService {
 
     @Transactional
     public void deleteReview(int reviewIdx) throws BaseException {
-        try {
-            validateReviewExist(reviewIdx); //이미 삭제된 리뷰인지 확인
-        }catch (BaseException exception) {
-            exception.printStackTrace();
-            throw new BaseException(exception.getStatus());
-        }
+        adminProvider.validateReviewExist(reviewIdx); //이미 삭제된 리뷰인지 확인
         try{
             int result = adminDao.deleteReview(reviewIdx);
             if (result == 0) {
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEW);
             }
         } catch(Exception exception){
-            exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
 
         }
     }
 
-    public void validateReviewExist(int reviewIdx) throws BaseException {
-            int reviewCount = adminDao.getReviewIdx(reviewIdx);
-            if(reviewCount == 0){
-                throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
-            }
-    }
 
 }

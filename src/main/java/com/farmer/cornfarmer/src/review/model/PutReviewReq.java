@@ -2,6 +2,7 @@ package com.farmer.cornfarmer.src.review.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Max;
@@ -11,7 +12,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 public class PutReviewReq {
 
     @NotBlank(message = "content 값이 유효하지 않습니다.")
