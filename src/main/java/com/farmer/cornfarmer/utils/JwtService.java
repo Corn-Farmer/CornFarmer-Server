@@ -35,8 +35,9 @@ public class JwtService {
                 .compact();
     }
 
+
     public boolean checkJwt(String jwt) throws Exception {
-        try {
+        try { //jwt 유효성 검증
             String accessToken = getJwt();
             Claims claims = Jwts.parser().setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken).getBody(); // 정상 수행된다면 해당 토큰은 정상토큰

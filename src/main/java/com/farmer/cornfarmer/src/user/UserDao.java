@@ -45,7 +45,7 @@ public class UserDao {
 
     public GetUserInfo getKakaoUser(String oauth_id)
     {
-        String getUserQuery = "select * from User where  oauth_id = ? AND oauth_channel = 'kakao'";
+        String getUserQuery = "select * from User where  oauth_id = ? and oauth_channel = 'kakao'";
 
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserInfo(
@@ -72,7 +72,7 @@ public class UserDao {
 
 
     public int createUser(String id, String oauth_channel){
-        String createUserQuery = "insert into User (oauth_id, oauth_channel, active) VALUES (?,?,?)";
+        String createUserQuery = "insert into User (oauth_id, oauth_channel, active) values (?,?,?)";
         Object[] createUserParams = new Object[]{id, oauth_channel, false };
 
         this.jdbcTemplate.update(createUserQuery, createUserParams);
@@ -82,7 +82,7 @@ public class UserDao {
     }
 
     public int createUserInfo(PostUserReq postUserReq){
-        String createUserInfoQuery = "update User set (nickname, photo, is_male, birth, ottList, genreList, active) VALUES(?,?,?,?,?,?) where oauth_id=?";
+        String createUserInfoQuery = "update User set (nickname, photo, is_male, birth, ottList, genreList, active) values(?,?,?,?,?,?) where oauth_id=?";
         Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(), postUserReq.getOttList(), postUserReq.getGenreList(), true,postUserReq.getOauth_id()};
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
 

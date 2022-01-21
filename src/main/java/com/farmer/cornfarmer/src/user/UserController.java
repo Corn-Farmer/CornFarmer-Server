@@ -42,7 +42,7 @@ public class UserController {
      */
     /**
      * 카카오 로그인
-     * [HTTP METHOD] /users/outh/kakao
+     * [GET] /users/outh/kakao
      * 개발자 : 팡코(조대환)
      */
     @ResponseBody
@@ -74,7 +74,11 @@ public class UserController {
             return new BaseResponse<>(BaseResponseStatus.FAILED_TO_LOGIN);
         }
     }
-
+    /**
+     * 네이버 로그인
+     * [GET] /users/outh/naver
+     * 개발자 : 팡코(조대환)
+     */
     @ResponseBody
     @GetMapping("/outh/naver")
     public BaseResponse<PostLoginRes> naverLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
@@ -111,6 +115,11 @@ public class UserController {
 
         return new BaseResponse<>(null);
     }*/
+    /**
+     * 회원가입
+     * [POST] /users
+     * 개발자 : 팡코(조대환)
+     */
     @ResponseBody
     @PostMapping("/")
     public BaseResponse<PostUserRes> join(@RequestBody PostUserReq postUserReq) throws BaseException{
