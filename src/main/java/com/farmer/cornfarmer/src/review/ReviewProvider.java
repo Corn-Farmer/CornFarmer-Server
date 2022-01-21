@@ -30,7 +30,6 @@ public class ReviewProvider {
             boolean result = reviewDao.checkReviewLike(reviewIdx,userIdx);
             return result;
         } catch(Exception exception){
-            exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
