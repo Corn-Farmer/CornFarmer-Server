@@ -3,10 +3,7 @@ package com.farmer.cornfarmer.utils;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.secret.Secret;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -38,6 +35,25 @@ public class JwtService {
                 .compact();
     }
 
+    public boolean checkJwt(String jwt) throws Exception {
+        try {
+            String accessToken = getJwt();
+            Claims claims = Jwts.parser().setSigningKey(Secret.JWT_SECRET_KEY)
+                    .parseClaimsJws(accessToken).getBody(); // 정상 수행된다면 해당 토큰은 정상토큰
+
+            System.out.println("expireTime :" + claims.getExpiration());
+            System.out.println("name :" + claims.get("name"));
+            System.out.println("Email :" + claims.get("email"));
+
+            return true;
+        } catch (ExpiredJwtException exception) {
+            System.out.println("토큰 만료");
+            return false;
+        } catch (JwtException exception) {
+            System.out.println("토큰 변조");
+            return false;
+        }
+    }
     /*
     Header에서 X-ACCESS-TOKEN 으로 JWT 추출
     @return String
