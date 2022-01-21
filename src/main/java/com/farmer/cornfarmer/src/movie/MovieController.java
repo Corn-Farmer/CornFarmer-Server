@@ -263,13 +263,13 @@ public class MovieController {
      * API 설명
      * 작품 상세 조회 API(2022-01-21)
      * [HTTP METHOD] URL
-     * [GET] localhost:9000/movies/1?sort=1 sort=1이면 리뷰 최신순 정렬, sort=2이면 리뷰 좋아요순 정렬
+     * [GET] localhost:9000/movies/1?sort=likeCnt sort=recent이면 리뷰 최신순 정렬, sort=likeCnt이면 리뷰 좋아요순 정렬
      * 개발자 : 쉐리(강혜연)
      */
 
     @ResponseBody
-    @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=1
-    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort") int sort) throws BaseException {
+    @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=likeCnt
+    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort") String sort) throws BaseException {
         try {
             // TODO: 2022-01-21 나중에 jwt에서 userIdx가져와야함
             int userIdx = 1;
@@ -307,7 +307,7 @@ public class MovieController {
             //review list 가져오는 코드
             //sort=1이면 최신, sort=2이면 좋아요순
             List<Review> reviewList = new ArrayList<Review>();
-            if (sort == 1) {
+            if (sort == "recent") {
                 reviewList = movieProvider.getReview_recent(movieIdx);
             } else {
                 reviewList = movieProvider.getReview_like(movieIdx);
