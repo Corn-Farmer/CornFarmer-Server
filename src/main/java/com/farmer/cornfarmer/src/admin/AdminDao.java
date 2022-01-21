@@ -90,50 +90,50 @@ public class AdminDao {
 
     // genre 테이블에 genre 추가
     public int createGenre(PostGenreReq postGenreReq){
-        String createGenreQuery = "insert into genre (genre_name) VALUES (?)";
+        String createGenreQuery = "insert into genre (genre_name) values (?)";
         Object[] createGenreParams = new Object[]{postGenreReq.getGenreName()};
         this.jdbcTemplate.update(createGenreQuery, createGenreParams);
 
-        String lastInserIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInserIdQuery, int.class);
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
     // ott 테이블에 ott 추가
     public int createOtt(String ottName, String ottFileURL){
-        String createOttQuery = "insert into ott (name, photo) VALUES (?, ?)";
+        String createOttQuery = "insert into ott (name, photo) values (?, ?)";
         Object[] createOttParams = new Object[]{ottName, ottFileURL};
         this.jdbcTemplate.update(createOttQuery, createOttParams);
 
-        String lastInserIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInserIdQuery, int.class);
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
     // movie 테이블에 movie 추가
     public int createMovie(String title,int release_year, String synopsis, String director){
-        String createMovieQuery = "insert into movie (movie_title, release_year, synopsis, director) VALUES (?, ?, ?, ?)";
+        String createMovieQuery = "insert into movie (movie_title, release_year, synopsis, director) values (?, ?, ?, ?)";
         Object[] createMovieParams = new Object[]{title, release_year, synopsis, director};
         this.jdbcTemplate.update(createMovieQuery, createMovieParams);
-        String lastInserIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInserIdQuery, int.class);
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
     // movie의 genre 추가(movie_genre 테이블)
     public void createMovieGenre(int movie_idx, int genre_idx){
-        String createMovieGenreQuery = "insert into movie_genre (movie_idx, genre_idx) VALUES (?, ?)";
+        String createMovieGenreQuery = "insert into movie_genre (movie_idx, genre_idx) values (?, ?)";
         Object[] createMovieGenreParams = new Object[]{movie_idx, genre_idx};
         this.jdbcTemplate.update(createMovieGenreQuery, createMovieGenreParams);
     }
 
     // movie의 ott 추가(movie_ott 테이블)
     public void createMovieOtt(int movie_idx, int ott_idx){
-        String createMovieOttQuery = "insert into movie_ott(movie_idx, ott_idx) VALUES (?, ?)";
+        String createMovieOttQuery = "insert into movie_ott(movie_idx, ott_idx) values (?, ?)";
         Object[] createMovieOttParams = new Object[]{movie_idx, ott_idx};
         this.jdbcTemplate.update(createMovieOttQuery, createMovieOttParams);
     }
 
     // movie의 photo 추가(movie_photo 테이블)
     public void createMoviePhoto(int movie_idx, String photo){
-        String createMoviePhotoQuery = "insert into movie_photo(movie_idx, photo) VALUES (?, ?)";
+        String createMoviePhotoQuery = "insert into movie_photo(movie_idx, photo) values (?, ?)";
         Object[] createMoviePhotoParams = new Object[]{movie_idx, photo};
         this.jdbcTemplate.update(createMoviePhotoQuery, createMoviePhotoParams);
     }

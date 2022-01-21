@@ -168,7 +168,7 @@ public class AdminController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
-  
+    /**
      * 영화 추가 API
      * [POST] /admin/movies
      * 개발자 : 홍민주(앨리)

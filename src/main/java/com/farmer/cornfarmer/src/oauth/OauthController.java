@@ -29,9 +29,4 @@ public class OauthController {
         this.jwtService = jwtService;
     }
 
-    /**
-     * API 설명
-     * [HTTP METHOD] URL
-     * 개발자 : 이름
-     */
 }

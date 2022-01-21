@@ -1,20 +1,15 @@
 package com.farmer.cornfarmer.src.admin;
 
 import com.farmer.cornfarmer.config.BaseException;
-import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.admin.model.*;
 
-import com.farmer.cornfarmer.src.user.UserDao;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
 import java.util.List;
 
 import static com.farmer.cornfarmer.config.BaseResponseStatus.DATABASE_ERROR;

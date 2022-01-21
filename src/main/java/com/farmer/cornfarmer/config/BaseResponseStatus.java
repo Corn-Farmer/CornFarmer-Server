@@ -65,7 +65,7 @@ public enum BaseResponseStatus {
 
     //[POST] /reviews/{reviewIdx}/like
     CREATE_FAIL_REVIEWLIKE(false, 4040,"리뷰 좋아요에 실패하였습니다."),
-    DELETE_FAIL_REVIEWLIKE(false,4041,"리뷰 좋아요 취소에 실패하였습니다.");
+    DELETE_FAIL_REVIEWLIKE(false,4041,"리뷰 좋아요 취소에 실패하였습니다."),
 
     /**
      * 5000 : File 오류
