@@ -1,5 +1,6 @@
 package com.farmer.cornfarmer.src.user;
 
+import com.farmer.cornfarmer.src.user.domain.PostUserInfoReq;
 import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.src.user.domain.GetUserInfo;
 import com.farmer.cornfarmer.src.user.domain.PostUserReq;
@@ -109,5 +110,25 @@ public class UserDao {
         String getUserQuery = "select user_idx from User where  oauth_id = ? ";
 
         return this.jdbcTemplate.queryForObject(getUserQuery, int.class, postUserReq.getOauth_id());
+    }
+
+    public String getPhoto(int userIdx){
+        String getPhotoQuery = "select photo from Users where user_idx = ?";
+        return this.jdbcTemplate.queryForObject(getPhotoQuery, String.class, userIdx);
+    }
+
+    public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq){
+        String modifyMyInfoQuery = "update User set (nickname, photo, ottList, genreList) values(?,?,?,?) where user_idx=?";
+        Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getUserNickname(), postUserInfoReq.getPhoto(), postUserInfoReq.getUserOtt(), postUserInfoReq.getGenreList(), userIdx};
+        this.jdbcTemplate.queryForObject(modifyMyInfoQuery, int.class, modifyMyInfoQuery);
+    }
+
+    public int inactive(int userIdx){
+        String inactiveQuery = "update User set (active) values(?) where user_id=?";
+        Object[] inactiveParams = new Object[]{false, userIdx};
+        this.jdbcTemplate.queryForObject(inactiveQuery, int.class, inactiveParams);
+
+        return userIdx;
+
     }
 }

@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostUserRes {
-    private int userIdx;
-
-
+public class GenreInfo {
+    Integer genreIdx;
+    String genreName;
 }

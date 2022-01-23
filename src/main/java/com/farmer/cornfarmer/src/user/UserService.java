@@ -3,8 +3,10 @@ package com.farmer.cornfarmer.src.user;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.secret.Secret;
+import com.farmer.cornfarmer.src.user.domain.PostUserInfoReq;
 import com.farmer.cornfarmer.src.user.domain.PostUserReq;
 import com.farmer.cornfarmer.src.user.domain.PostUserRes;
+import com.farmer.cornfarmer.src.user.domain.UserMyInfo;
 import com.farmer.cornfarmer.utils.AES128;
 import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
@@ -143,4 +145,36 @@ public class UserService {
         }
     }
 
+    public UserMyInfo modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq) throws BaseException {
+            try{
+                if(userIdx == jwtService.getUserIdx()){
+                    userDao.modifyMyInfo(userIdx, postUserInfoReq);
+                    return userProvider.getMyInfo();
+                }
+                else
+                {
+                    throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
+                }
+
+            } catch (BaseException exception) {
+                exception.printStackTrace();
+                throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+            }
+
+    }
+
+    public PostUserRes inactive(int userIdx) throws BaseException {
+        try{
+            if(userIdx == jwtService.getUserIdx()) {
+                int result = userDao.inactive(userIdx);
+                return new PostUserRes(result);
+            }
+            else
+            {
+                throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
+            }
+        }catch (BaseException exception){
+                throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }

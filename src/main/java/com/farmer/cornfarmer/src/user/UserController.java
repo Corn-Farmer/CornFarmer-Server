@@ -3,11 +3,8 @@ package com.farmer.cornfarmer.src.user;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
+import com.farmer.cornfarmer.src.user.domain.*;
 import com.farmer.cornfarmer.src.user.model.*;
-import com.farmer.cornfarmer.src.user.domain.PostLoginRes;
-import com.farmer.cornfarmer.src.user.domain.PostUserReq;
-import com.farmer.cornfarmer.src.user.domain.PostUserRes;
-import com.farmer.cornfarmer.src.user.domain.User;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,8 +131,68 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
-  
-  
+
+    /**
+     * 나의 정보보기
+     * [GET] /users/{userIdx}
+     * 개발자 : 팡코(조대환)
+     */
+    @ResponseBody
+    @GetMapping("/{userIdx}")
+    public BaseResponse<UserMyInfo> getMyInfo(@PathVariable int userIdx){
+        try{
+            int tokenIdx = jwtService.getUserIdx();
+            if(userIdx == tokenIdx) {
+                return new BaseResponse<>(userProvider.getMyInfo());
+            }
+            else
+            {
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 나의 정보수정
+     * [POST] /users/{userIdx}
+     * 개발자 : 팡코(조대환)
+     */
+    @ResponseBody
+    @PostMapping("/{userIdx}")
+    public BaseResponse<UserMyInfo> modifyMyInfo(@PathVariable int userIdx, @RequestBody PostUserInfoReq postUserInfoReq){
+        try{
+            int tokenIdx = jwtService.getUserIdx();
+            if(userIdx == tokenIdx) {
+                return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq));
+            }
+            else
+            {
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+    /**
+     * 회원탈퇴
+     * [POST] /users/{userIdx}/delete
+     * 개발자 : 팡코(조대환)
+     */
+
+    @ResponseBody
+    @PutMapping("/{userIdx}/delete")
+    public BaseResponse<PostUserRes> deleteUser(@PathVariable int userIdx){
+        try{
+            PostUserRes userRes = userService.inactive(userIdx);
+            return new BaseResponse<>(userRes);
+        }
+        catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
     /**
      * 나의 후기 모두 보기

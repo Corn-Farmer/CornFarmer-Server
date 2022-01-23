@@ -2,6 +2,7 @@ package com.farmer.cornfarmer.src.user;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.secret.Secret;
+import com.farmer.cornfarmer.src.user.domain.UserMyInfo;
 import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.utils.AES128;
 import com.farmer.cornfarmer.utils.JwtService;
@@ -108,4 +109,18 @@ public class UserProvider {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
+    @Transactional(readOnly = true)
+    public UserMyInfo getMyInfo() throws BaseException {
+        try {
+            UserMyInfo userMyInfo = new UserMyInfo();
+            userMyInfo.setNickname(jwtService.getNickname());
+            userMyInfo.setPhoto(userDao.getPhoto(jwtService.getUserIdx()));
+            return userMyInfo;
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
 }

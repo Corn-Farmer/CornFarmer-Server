@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostUserRes {
-    private int userIdx;
-
-
+public class OttInfo {
+    Integer ottIdx;
+    String ottName;
+    String ottPhoto;
 }
