@@ -2,13 +2,14 @@ package com.farmer.cornfarmer.src.review.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PostReviewReq {
 
     @NotNull(message = "movieIdx 값이 유효하지 않습니다.")
@@ -21,7 +22,8 @@ public class PostReviewReq {
     private String content;
 
     @NotNull(message = "rate 값이 유효하지 않습니다.")
-    @PositiveOrZero
+    @DecimalMax(value = "5.0")
+    @DecimalMin(value = "0")
     //float이 NULL이거나 음수이면 ExceptionAdvisor가 REQUEST_ERROR에러를 발생시킨다.
     private float rate;
 }
