@@ -116,7 +116,6 @@ public class UserProvider {
             List<GetMyMovieLikedRes> result = userDao.getMyMoviesLiked(userIdx);
             return result;
         }catch(Exception exception){
-            exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }

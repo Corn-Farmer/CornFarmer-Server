@@ -70,4 +70,18 @@ public class AdminProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void validateMovieExist(int movieIdx) throws BaseException {
+        int reviewCount = adminDao.getMovieIdx(movieIdx);
+        if(reviewCount == 0){
+            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_MOVIE);
+        }
+    }
+
+    public void validateKeywordExist(int keywordIdx) throws BaseException {
+        int reviewCount = adminDao.getKeywordIdx(keywordIdx);
+        if(reviewCount == 0){
+            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_KEYWORD);
+        }
+    }
 }
