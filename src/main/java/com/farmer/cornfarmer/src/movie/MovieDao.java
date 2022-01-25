@@ -167,7 +167,6 @@ public class MovieDao {
                 param);
     }
 
-
     public Writer getWriter(int userIdx) {
         String getUserQuery = "select user_idx,nickname,photo from user where user_idx=?;";
         int param=userIdx;
@@ -180,8 +179,32 @@ public class MovieDao {
                 param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
 
     }
+    public List<GetMovieInfo> getMovieIdx_Search(String keyword,String sort){
+        String query="";
+        String param="%"+keyword+"%";
+        if(sort.equals("likeCnt")){ //좋아요순
+            query="SELECT movie.movie_idx FROM cornFarmer.movie where movie.movie_title like ? order by like_Cnt desc;";
 
+        }
+        else if(sort.equals("recent")){ //최신순
+            query="SELECT movie.movie_idx FROM cornFarmer.movie where movie.movie_title like ? order by release_year desc;";
+        }
+        else{ //후기 많은 순
+            query="SELECT movie.movie_idx FROM cornFarmer.movie left join review on (review.movie_idx=movie.movie_idx) where movie.movie_title like ? group by movie.movie_idx order by count(*) desc;";
+        }
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetMovieInfo(
+                        rs.getInt("movie.movie_idx")),param// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+        );
+    }
+    public GetLike getLikeCnt(int movieIdx) {
+        String getUserQuery = "select like_cnt from movie where movie_idx=?;";
+        int param=movieIdx;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new GetLike(
+                        rs.getInt("like_cnt")),
+                // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
 
-
-
+    }
 }

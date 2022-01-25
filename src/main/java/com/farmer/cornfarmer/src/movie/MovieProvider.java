@@ -152,4 +152,21 @@ public class MovieProvider {
         }
     }
 
+    public List<GetMovieInfo> getMovieIdx_Search(String keyword,String sort)throws BaseException{
+        try {
+            List<GetMovieInfo> movieidx = movieDao.getMovieIdx_Search(keyword,sort);
+            return movieidx;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    public GetLike getLikeCnt(int movieIdx)throws BaseException{
+        try {
+            GetLike getLike = movieDao.getLikeCnt(movieIdx);
+            return getLike;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }
