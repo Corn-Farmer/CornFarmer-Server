@@ -137,5 +137,40 @@ public class AdminDao {
         Object[] createMoviePhotoParams = new Object[]{movie_idx, photo};
         this.jdbcTemplate.update(createMoviePhotoQuery, createMoviePhotoParams);
     }
+
+    public int getMovieIdx(int movieIdx) {
+        String getMovieIdxQuery = "select count(*) from movie where movie_idx = ?";
+        return this.jdbcTemplate.queryForObject(getMovieIdxQuery,int.class,movieIdx);
+    }
+
+    public int deleteMovie(int movieIdx) {
+        String deleteMovieQuery = "delete from movie_ott where movie_idx = ?";
+        int result1 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        deleteMovieQuery = "delete from movie_genre where movie_idx = ?";
+        int result2 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        deleteMovieQuery = "delete from movie_photo where movie_idx = ?";
+        int result3 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        deleteMovieQuery = "delete from user_movie where movie_idx = ?";
+        int result4 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        deleteMovieQuery = "delete from keyword_movie where movie_idx = ?";
+        int result5 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        deleteMovieQuery = "delete from movie where movie_idx = ?";
+        int result6 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+
+        return ( result1 | result2 | result3 | result4 | result5 ) & result6;
+    }
+
+    public int getKeywordIdx(int keywordIdx) {
+        String getKeywordIdxQuery = "select count(*) from keyword where keyword_idx = ?";
+        return this.jdbcTemplate.queryForObject(getKeywordIdxQuery,int.class,keywordIdx);
+    }
+
+    public int deleteKeyword(int keywordIdx) {
+        String deleteKeywordQuery = "delete from keyword_movie where keyword_idx = ?";
+        int result1 = this.jdbcTemplate.update(deleteKeywordQuery,keywordIdx);
+        deleteKeywordQuery = "delete from keyword where keyword_idx = ?";
+        int result2 = this.jdbcTemplate.update(deleteKeywordQuery,keywordIdx);
+        return result1 | result2;
+    }
 }
 
