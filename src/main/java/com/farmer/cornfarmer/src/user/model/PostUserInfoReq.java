@@ -1,4 +1,4 @@
-package com.farmer.cornfarmer.src.user.domain;
+package com.farmer.cornfarmer.src.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

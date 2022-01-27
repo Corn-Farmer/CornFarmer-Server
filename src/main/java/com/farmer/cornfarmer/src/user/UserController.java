@@ -3,7 +3,6 @@ package com.farmer.cornfarmer.src.user;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
-import com.farmer.cornfarmer.src.user.domain.*;
 import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -45,7 +43,7 @@ public class UserController {
     @GetMapping("/outh/kakao")
     public BaseResponse<PostLoginRes> kakaoLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
         try {
-            String id = Integer.toString(userService.getKakaoOauthId(accessToken));
+            String id = userService.getKakaoOauthId(accessToken);
             if (userProvider.checkOauthId(id)) {
                 //db에 존재하는경우 ->login
                 if(userProvider.checkNickname(id)) { 
@@ -67,7 +65,7 @@ public class UserController {
             }
         }
         catch (BaseException exception){
-            return new BaseResponse<>(BaseResponseStatus.FAILED_TO_LOGIN);
+            return new BaseResponse<>(exception.getStatus());
         }
     }
     /**
@@ -101,7 +99,7 @@ public class UserController {
             }
         }
         catch (BaseException exception){
-            return new BaseResponse<>(BaseResponseStatus.FAILED_TO_LOGIN);
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 
@@ -143,7 +141,7 @@ public class UserController {
         try{
             int tokenIdx = jwtService.getUserIdx();
             if(userIdx == tokenIdx) {
-                return new BaseResponse<>(userProvider.getMyInfo());
+                return new BaseResponse<>(userProvider.getMyInfo(userIdx));
             }
             else
             {

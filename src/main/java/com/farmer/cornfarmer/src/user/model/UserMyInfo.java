@@ -1,4 +1,4 @@
-package com.farmer.cornfarmer.src.user.domain;
+package com.farmer.cornfarmer.src.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +15,6 @@ public class UserMyInfo {
     private List<OttInfo> ottList;
     private List<GenreInfo> genreList;
 
-    public UserMyInfo() {
-    }
 }
 
 

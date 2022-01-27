@@ -1,10 +1,10 @@
 package com.farmer.cornfarmer.src.user;
 
-import com.farmer.cornfarmer.src.user.domain.PostUserInfoReq;
+import com.farmer.cornfarmer.src.movie.model.Ott;
+import com.farmer.cornfarmer.src.user.model.PostUserInfoReq;
 import com.farmer.cornfarmer.src.user.model.*;
-import com.farmer.cornfarmer.src.user.domain.GetUserInfo;
-import com.farmer.cornfarmer.src.user.domain.PostUserReq;
-import com.farmer.cornfarmer.src.user.domain.PostUserRes;
+import com.farmer.cornfarmer.src.user.model.GetUserInfo;
+import com.farmer.cornfarmer.src.user.model.PostUserReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -72,7 +72,7 @@ public class UserDao {
                 (rs, rowNum) -> new GetUserInfo(
                         rs.getInt("user_idx"),
                         rs.getString("oauth_channel"),
-                        rs.getInt("oauth_id"),
+                        rs.getString("oauth_id"),
                         rs.getString("nickname")),oauth_id
                 );
     }
@@ -85,7 +85,7 @@ public class UserDao {
                 (rs, rowNum) -> new GetUserInfo(
                         rs.getInt("user_idx"),
                         rs.getString("oauth_channel"),
-                        rs.getInt("oauth_id"),
+                        rs.getString("oauth_id"),
                         rs.getString("nickname")),oauth_id
         );
     }
@@ -131,4 +131,27 @@ public class UserDao {
         return userIdx;
 
     }
+
+
+    public List<OttInfo> getOttInfo(int userIdx){
+        String getOttInfoQuery = "select ott.ott_idx, ott.name, ott.photo from ott left join User on ott.ott_idx = User_ott.ott_idx where user_idx=?";
+        int param = userIdx;
+
+        return this.jdbcTemplate.query(getOttInfoQuery,
+                (rs, rowNum)-> new OttInfo(
+                        rs.getInt("Ott.ott_idx"),
+                        rs.getString("ott.name"),
+                        rs.getString("ott.photo")
+                ), param);
+    }
+    public List<GenreInfo> getGenreInfo(int userIdx){
+        String getOttInfoQuery = "select genre.genre_idx, genre.genre_name from genre left join User on genre.genre_idx = User_genre.genre_idx where user_idx=?";
+        int param = userIdx;
+        return this.jdbcTemplate.query(getOttInfoQuery,
+                (rs, rowNum)-> new GenreInfo(
+                        rs.getInt("genre.genre_idx"),
+                        rs.getString("genre.genre_name")),
+                param);
+    }
+
 }

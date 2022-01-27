@@ -1,4 +1,4 @@
-package com.farmer.cornfarmer.src.user.domain;
+package com.farmer.cornfarmer.src.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class OttInfo {
-    Integer ottIdx;
-    String ottName;
-    String ottPhoto;
+    int ott_idx;
+    String name;
+    String photo;
 }

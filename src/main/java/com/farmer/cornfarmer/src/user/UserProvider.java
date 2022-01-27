@@ -1,15 +1,11 @@
 package com.farmer.cornfarmer.src.user;
 
 import com.farmer.cornfarmer.config.BaseException;
-import com.farmer.cornfarmer.config.secret.Secret;
-import com.farmer.cornfarmer.src.user.domain.UserMyInfo;
 import com.farmer.cornfarmer.src.user.model.*;
-import com.farmer.cornfarmer.utils.AES128;
 import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
-import com.farmer.cornfarmer.src.user.domain.GetUserInfo;
-import com.farmer.cornfarmer.src.user.domain.PostLoginRes;
-import com.farmer.cornfarmer.utils.JwtService;
+import com.farmer.cornfarmer.src.user.model.GetUserInfo;
+import com.farmer.cornfarmer.src.user.model.PostLoginRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +61,7 @@ public class UserProvider {
             return userDao.checkNickname(oauth_id);
         }catch(Exception exception){
             exception.printStackTrace();
-            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+            throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_NICKNAME);
         }
     }
 
@@ -111,12 +107,9 @@ public class UserProvider {
     }
 
     @Transactional(readOnly = true)
-    public UserMyInfo getMyInfo() throws BaseException {
+    public UserMyInfo getMyInfo(int userIdx) throws BaseException {
         try {
-            UserMyInfo userMyInfo = new UserMyInfo();
-            userMyInfo.setNickname(jwtService.getNickname());
-            userMyInfo.setPhoto(userDao.getPhoto(jwtService.getUserIdx()));
-            return userMyInfo;
+            return new UserMyInfo(jwtService.getNickname(), userDao.getPhoto(userIdx),userDao.getOttInfo(userIdx),userDao.getGenreInfo(userIdx));
         }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);

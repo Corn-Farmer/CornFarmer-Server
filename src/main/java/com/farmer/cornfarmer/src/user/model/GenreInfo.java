@@ -1,4 +1,4 @@
-package com.farmer.cornfarmer.src.user.domain;
+package com.farmer.cornfarmer.src.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GenreInfo {
-    Integer genreIdx;
-    String genreName;
+    Integer genre_idx;
+    String genre_name;
 }
