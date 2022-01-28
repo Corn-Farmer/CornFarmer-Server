@@ -47,26 +47,26 @@ public class UserDao {
 //    }
 
     public boolean checkOauth(String oauth_id) {
-        String checkOauthQuery = "select exists(select oauth_id from User where oauth_id = ?)";
+        String checkOauthQuery = "select exists(select oauth_id from user where oauth_id = ?)";
         Boolean result = this.jdbcTemplate.queryForObject(checkOauthQuery, boolean.class, oauth_id);
         return result;
     }
 
     public boolean checkNickname(String oauth_id) {
-        String checkOauthQuery = "select exists(select nickname from User where oauth_id = ?)";
+        String checkOauthQuery = "select exists(select nickname from user where oauth_id = ?)";
         Boolean result = this.jdbcTemplate.queryForObject(checkOauthQuery, boolean.class, oauth_id);
         return result;
     }
 
     public int getUserIdx(String oauth_id)
     {
-        String getUserIdxQuery = "select user_idx from User where  oauth_id = ?";
+        String getUserIdxQuery = "select user_idx from user where  oauth_id = ?";
         return this.jdbcTemplate.queryForObject(getUserIdxQuery, Integer.class, oauth_id);
     }
 
     public GetUserInfo getKakaoUser(String oauth_id)
     {
-        String getUserQuery = "select * from User where  oauth_id = ? and oauth_channel = 'kakao'";
+        String getUserQuery = "select * from user where  oauth_id = ? and oauth_channel = 'kakao'";
 
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserInfo(
@@ -79,7 +79,7 @@ public class UserDao {
 
     public GetUserInfo getUser(String oauth_id)
     {
-        String getUserQuery = "select * from User where  oauth_id = ? ";
+        String getUserQuery = "select * from user where  oauth_id = ? ";
 
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserInfo(
@@ -93,7 +93,7 @@ public class UserDao {
 
 
     public int createUser(String id, String oauth_channel){
-        String createUserQuery = "insert into User (oauth_id, oauth_channel, active) values (?,?,?)";
+        String createUserQuery = "insert into user (oauth_id, oauth_channel, active) values (?,?,?)";
         Object[] createUserParams = new Object[]{id, oauth_channel, false };
 
         this.jdbcTemplate.update(createUserQuery, createUserParams);
@@ -103,11 +103,11 @@ public class UserDao {
     }
 
     public int createUserInfo(PostUserReq postUserReq){
-        String createUserInfoQuery = "update User set (nickname, photo, is_male, birth, active) values(?,?,?,?,?) where oauth_id=?";
+        String createUserInfoQuery = "update user set (nickname, photo, is_male, birth, active) values(?,?,?,?,?) where oauth_id=?";
         Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
 
-        String getUserQuery = "select user_idx from User where  oauth_id = ? ";
+        String getUserQuery = "select user_idx from user where  oauth_id = ? ";
         int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, postUserReq.getOauth_id());
 
         for(int i=0; i<postUserReq.getOttList().size(); i++) {
@@ -128,12 +128,12 @@ public class UserDao {
     }
 
     public String getPhoto(int userIdx){
-        String getPhotoQuery = "select photo from Users where user_idx = ?";
+        String getPhotoQuery = "select photo from users where user_idx = ?";
         return this.jdbcTemplate.queryForObject(getPhotoQuery, String.class, userIdx);
     }
 
     public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq){
-        String modifyMyInfoQuery = "update User set (nickname, photo) values(?,?) where user_idx=?";
+        String modifyMyInfoQuery = "update user set (nickname, photo) values(?,?) where user_idx=?";
         Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getUserNickname(), postUserInfoReq.getPhoto(), userIdx};
         this.jdbcTemplate.queryForObject(modifyMyInfoQuery, int.class, modifyMyInfoQuery);
 
@@ -161,7 +161,7 @@ public class UserDao {
     }
 
     public int inactive(int userIdx){
-        String inactiveQuery = "update User set (active) values(?) where user_id=?";
+        String inactiveQuery = "update user set (active) values(?) where user_id=?";
         Object[] inactiveParams = new Object[]{false, userIdx};
         this.jdbcTemplate.update(inactiveQuery, inactiveParams);
 
@@ -170,7 +170,7 @@ public class UserDao {
     }
 
     public List<OttInfo> getOttInfo(int userIdx){
-        String getOttInfoQuery = "select ott.ott_idx, ott.name, ott.photo from ott left join User on ott.ott_idx = User_ott.ott_idx where user_idx=?";
+        String getOttInfoQuery = "select ott.ott_idx, ott.name, ott.photo from ott left join User on ott.ott_idx = user_ott.ott_idx where user_idx=?";
         int param = userIdx;
 
         return this.jdbcTemplate.query(getOttInfoQuery,
