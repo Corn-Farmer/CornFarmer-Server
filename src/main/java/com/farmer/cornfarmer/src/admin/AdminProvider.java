@@ -71,6 +71,21 @@ public class AdminProvider {
         }
     }
 
+
+    public List<GetUserRes> getUsers() throws BaseException {
+        try {
+            List<GetUserRes> getUserList = adminDao.getUser();
+            for (GetUserRes getUserRes: getUserList)
+            {
+                getUserRes.setGenreList(adminDao.getUserGenre(getUserRes.getUserIdx()));
+                getUserRes.setOttList(adminDao.getUserOtt(getUserRes.getUserIdx()));
+            }
+            return getUserList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public void validateMovieExist(int movieIdx) throws BaseException {
         int reviewCount = adminDao.getMovieIdx(movieIdx);
         if(reviewCount == 0){

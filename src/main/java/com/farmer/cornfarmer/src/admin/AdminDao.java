@@ -138,6 +138,41 @@ public class AdminDao {
         this.jdbcTemplate.update(createMoviePhotoQuery, createMoviePhotoParams);
     }
 
+    public List<GetUserRes> getUser(){
+        String getUserQuery = "select user_idx, nickname, photo from user";
+        return this.jdbcTemplate.query(getUserQuery,
+                (rs, rowNum) -> new GetUserRes(
+                        rs.getInt("user_idx"),
+                        rs.getString("nickname"),
+                        rs.getString("photo"), null,null)
+                );
+    }
+
+    public List<GetGenreRes> getUserGenre(int user_idx){
+        String getUserGenreQuery = "select user_genre.genre_idx, genre_name\n" +
+                "from (select  * from user_genre where user_idx = ?)user_genre\n" +
+                "natural join genre";
+        return this.jdbcTemplate.query(getUserGenreQuery,
+                (rs, rowNum) -> new GetGenreRes(
+                        rs.getInt("genre_idx"),
+                        rs.getString("genre_name")),
+                user_idx
+        );
+    }
+
+    public List<GetOttRes> getUserOtt(int user_idx){
+        String getUserOttQuery = "select user_ott.ott_idx, name, photo\n" +
+                "from (select  * from user_ott where user_idx = ?)user_ott\n" +
+                "natural join ott";
+        return this.jdbcTemplate.query(getUserOttQuery,
+                (rs, rowNum) -> new GetOttRes(
+                        rs.getInt("ott_idx"),
+                        rs.getString("name"),
+                        rs.getString("photo")),
+                user_idx
+        );
+    }
+
     public int getMovieIdx(int movieIdx) {
         String getMovieIdxQuery = "select count(*) from movie where movie_idx = ?";
         return this.jdbcTemplate.queryForObject(getMovieIdxQuery,int.class,movieIdx);
