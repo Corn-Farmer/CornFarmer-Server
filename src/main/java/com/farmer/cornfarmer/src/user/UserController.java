@@ -142,11 +142,25 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/{userIdx}/reviews")
-    public BaseResponse<List<GetMyReviewRes>> getMyReviews(@PathVariable int userIdx ){
+    public BaseResponse<List<GetMyReviewRes>> getMyReviews(@PathVariable int userIdx, @RequestParam(name="sort", defaultValue = "recent") String sort ){
         try{
             //int userJwtIdx = jwtService.getUserIdx();
             int userJwtIdx = 1; //가정
-            List<GetMyReviewRes> result = userProvider.getMyReviews(userIdx,userJwtIdx);
+            List<GetMyReviewRes> result;
+            switch(sort) {
+                case "recent":
+                    result = userProvider.getMyReviews(userIdx, userJwtIdx,"created_at");
+                    break;
+                case "like":
+                    result = userProvider.getMyReviews(userIdx, userJwtIdx,"r.like_cnt");
+                    break;
+                case "rate":
+                    result = userProvider.getMyReviews(userIdx, userJwtIdx,"rate");
+                    break;
+                default:
+                    result = null;
+            }
+
             return new BaseResponse<>(result);
         }catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());

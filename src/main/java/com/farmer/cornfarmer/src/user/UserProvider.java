@@ -32,13 +32,13 @@ public class UserProvider {
     }
 
     @Transactional(readOnly = true)
-    public List<GetMyReviewRes> getMyReviews(int userIdx,int userJwtIdx) throws BaseException {
+    public List<GetMyReviewRes> getMyReviews(int userIdx,int userJwtIdx,String sort) throws BaseException {
         validateUser(userIdx,userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
         try{
-            List<GetMyReviewRes> result = userDao.getMyReviews(userIdx);
+            List<GetMyReviewRes> result = userDao.getMyReviews(userIdx,sort);
             return result;
         }catch (Exception exception){
-          throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
   

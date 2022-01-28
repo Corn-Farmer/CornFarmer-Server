@@ -42,7 +42,7 @@ public class ReviewController {
     public BaseResponse<PostReviewRes> postReview(@RequestBody @Valid PostReviewReq postReviewReq) {
         try{
             //int userIdx = jwtService.getUserIdx();
-            int userIdx = 2; //가정
+            int userIdx = 1; //가정
             PostReviewRes postReviewRes = reviewService.createReview(userIdx,postReviewReq);
             return new BaseResponse<>(postReviewRes);
         } catch(BaseException exception){
