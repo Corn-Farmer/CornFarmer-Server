@@ -22,9 +22,10 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetMyReviewRes> getMyReviews(int userIdx) {
+    public List<GetMyReviewRes> getMyReviews(int userIdx, String sort) {
         String query = "select * , (select p.photo from movie_photo p where p.movie_idx = r.movie_idx limit 1) as movie_photo from review as r " +
-                "left join movie as m on r.movie_idx = m.movie_idx where r.active = ? and r.user_idx = ?";
+                "left join movie as m on r.movie_idx = m.movie_idx where r.active = ? and r.user_idx = ? " +
+                "order by " + sort + " desc";
 
         List<GetMyReviewRes> getMyReviewResList = jdbcTemplate.query(query,
                 (rs, rowNum) -> new GetMyReviewRes(

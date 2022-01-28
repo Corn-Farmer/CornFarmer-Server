@@ -93,6 +93,7 @@ public class AdminService {
         }
     }
 
+    @Transactional
     public void deleteMovie(int movieIdx) throws BaseException {
         adminProvider.validateMovieExist(movieIdx); //이미 삭제된 영화인지 확인
         try{
@@ -101,11 +102,11 @@ public class AdminService {
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_MOVIE);
             }
         }catch (Exception exception){
-            exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
+    @Transactional
     public void deleteKeyword(int keywordIdx) throws BaseException {
         adminProvider.validateKeywordExist(keywordIdx); //이미 삭제된 키워드인지 확인
         try{
@@ -114,7 +115,6 @@ public class AdminService {
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_KEYWORD);
             }
         }catch (Exception exception){
-            exception.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
         }
     }
