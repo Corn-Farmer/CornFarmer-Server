@@ -30,7 +30,7 @@ public class UserProvider {
 
     @Transactional(readOnly = true)
     public List<GetMyReviewRes> getMyReviews(int userIdx,int userJwtIdx) throws BaseException {
-        validateUser(userIdx,userJwtIdx);
+        validateUser(userIdx,userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
         try{
             List<GetMyReviewRes> result = userDao.getMyReviews(userIdx);
             return result;
@@ -50,7 +50,7 @@ public class UserProvider {
     }
 
     public void validateUser(int userIdx, int userJwtIdx) throws BaseException{
-        if(userIdx != userJwtIdx)
+        if(userIdx != userJwtIdx)   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
             throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
     }
 
@@ -115,5 +115,13 @@ public class UserProvider {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
-
+    public List<GetMyMovieLikedRes> getMyMoviesLiked(int userIdx, int userJwtIdx) throws BaseException {
+        validateUser(userIdx,userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
+        try{
+            List<GetMyMovieLikedRes> result = userDao.getMyMoviesLiked(userIdx);
+            return result;
+        }catch(Exception exception){
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }

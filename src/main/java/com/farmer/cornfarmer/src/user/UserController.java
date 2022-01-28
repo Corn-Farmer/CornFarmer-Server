@@ -102,13 +102,6 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
-
-/*    @DeleteMapping("/outh/logout")
-    public BaseResponse<Optional> logOut(){
-
-
-        return new BaseResponse<>(null);
-    }*/
     /**
      * 회원가입
      * [POST] /users
@@ -206,6 +199,24 @@ public class UserController {
             List<GetMyReviewRes> result = userProvider.getMyReviews(userIdx,userJwtIdx);
             return new BaseResponse<>(result);
         }catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 찜한 작품 모두 보기
+     * [GET] /users/{userIdx}/likes/movies
+     * 개발자 : 제트(김예지)
+     */
+    @ResponseBody
+    @GetMapping("/{userIdx}/likes/movies")
+    public BaseResponse<List<GetMyMovieLikedRes>> getMyMoviesLiked(@PathVariable int userIdx ){
+        try{
+            //int userJwtIdx = jwtService.getUserIdx();
+            int userJwtIdx = 1; //가정
+            List<GetMyMovieLikedRes> result = userProvider.getMyMoviesLiked(userIdx,userJwtIdx);
+            return new BaseResponse<>(result);
+        }catch(BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }

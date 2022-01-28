@@ -50,6 +50,10 @@ public enum BaseResponseStatus {
 
     // [DELETE] /reviews/{reviewId}
     FAILED_TO_FIND_REVIEW(false,3030,"해당 리뷰를 찾을 수 없습니다."),
+    //[DELETE] /movies/{movieIdx}
+    FAILED_TO_FIND_MOVIE(false,3031,"해당 영화를 찾을 수 없습니다."),
+    //[DELETE] /movies/keywords/{keywordIdx}
+    FAILED_TO_FIND_KEYWORD(false,3032,"해당 상황 키워드를 찾을 수 없습니다."),
 
     /**
      * 4000 : Database, Server 오류
@@ -68,6 +72,10 @@ public enum BaseResponseStatus {
 
     //[DELETE] /reviews/{reviewIdx}
     DELETE_FAIL_REVIEW(false,4030,"리뷰 삭제에 실패하였습니다."),
+    //[DELETE] /movies/{movieIdx}
+    DELETE_FAIL_MOVIE(false,4031,"영화 삭제에 실패하였습니다."),
+    //[DELETE] /movies/keywords/{keywordIdx}
+    DELETE_FAIL_KEYWORD(false,4032,"상황 키워드 삭제에 실패하였습니다."),
 
     //[POST] /reviews/{reviewIdx}/like
     CREATE_FAIL_REVIEWLIKE(false, 4040,"리뷰 좋아요에 실패하였습니다."),

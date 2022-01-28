@@ -11,15 +11,15 @@ import lombok.Setter;
 public class GetMyReviewRes {
     private int reviewIdx;
     private Movie movie;
-    private String contents;
+    private String content;
     private float rate;
     private String createdAt;
     private int likeCnt;
 
-    public GetMyReviewRes(int reviewIdx, int movieIdx, String movieTitle, String moviePhoto, String contents, float rate, String createdAt, int likeCnt) {
+    public GetMyReviewRes(int reviewIdx, int movieIdx, String movieTitle, String moviePhoto, String content, float rate, String createdAt, int likeCnt) {
         this.reviewIdx = reviewIdx;
         this.movie = new Movie(movieIdx,movieTitle,moviePhoto);
-        this.contents = contents;
+        this.content = content;
         this.rate = rate;
         this.createdAt = createdAt;
         this.likeCnt = likeCnt;
