@@ -277,7 +277,7 @@ public class MovieController {
 
     @ResponseBody
     @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=likeCnt
-    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort") String sort) throws BaseException {
+    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
         try {
             // TODO: 2022-01-21 나중에 jwt에서 userIdx가져와야함
             int userIdx = 1;
@@ -346,7 +346,7 @@ public class MovieController {
 
     @ResponseBody
     @GetMapping("/search") //ex)localhost:9000/movies/?keyword=movie&sort=likeCnt
-    public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name="keyword") String keyword,@RequestParam(name="sort") String sort) throws BaseException {
+    public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name="keyword") String keyword,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
         try {
             int userIdx = 1;
             System.out.println("검색시작");
