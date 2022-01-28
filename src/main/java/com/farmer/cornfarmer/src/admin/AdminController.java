@@ -131,7 +131,6 @@ public class AdminController {
         }
     }
 
-
     /**
      * 모든 후기 보기 (관리자용)
      * [GET] /admin/reviews
@@ -204,6 +203,24 @@ public class AdminController {
         try {
             List<GetUserRes> getUserResList = adminProvider.getUsers();
             return new BaseResponse<>(getUserResList);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 키워드 추가 API
+     * [POST] /admin/movies/keywords/{keywordIdx}
+     * 개발자 : 홍민주(앨리)
+     * 설명 : 이미 존재하는 키워드에 영화 추가
+     */
+    @ResponseBody
+    @PostMapping("/movies/keywords/{keywordIdx}")
+    public BaseResponse<PostKeywordMovieRes> postKeywordMovies(@PathVariable int keywordIdx, @RequestBody PostKeywordMovieReq postKeywordMovieReq){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            PostKeywordMovieRes postKeywordMovieRes= adminService.createKeywordMovies(keywordIdx, postKeywordMovieReq.getMovieList());
+            return new BaseResponse<>(postKeywordMovieRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

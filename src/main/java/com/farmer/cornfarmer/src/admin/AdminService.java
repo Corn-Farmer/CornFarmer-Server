@@ -7,13 +7,13 @@ import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.farmer.cornfarmer.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.farmer.cornfarmer.config.BaseResponseStatus.REQUEST_ERROR;
+import static com.farmer.cornfarmer.config.BaseResponseStatus.*;
 
 @Service
 public class AdminService {
@@ -44,7 +44,6 @@ public class AdminService {
 
         }
     }
-
 
     public PostGenreRes createGenre(PostGenreReq postGenreReq) throws BaseException {
 
@@ -88,6 +87,21 @@ public class AdminService {
             return new PostMovieRes(movieIdx);
         }catch (NumberFormatException exception) {
             throw new BaseException(REQUEST_ERROR);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostKeywordMovieRes createKeywordMovies(int keywordIdx, List<Integer> MovieList) throws BaseException {
+        // TODO : Transactional 고려하기
+        try {
+            // 영화-키워드 연관성 생성
+            for(int movieIdx : MovieList) {
+                adminDao.createMovieKeyword(keywordIdx, movieIdx);
+            }
+            return new PostKeywordMovieRes(keywordIdx);
+        } catch (DuplicateKeyException duplicateKeyException){
+            throw new BaseException(DUPLICATE_KEY_ERROR);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

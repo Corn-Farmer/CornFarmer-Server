@@ -138,6 +138,13 @@ public class AdminDao {
         this.jdbcTemplate.update(createMoviePhotoQuery, createMoviePhotoParams);
     }
 
+    // keyword의 movie 추가(keyword_movie 테이블)
+    public void createMovieKeyword(int keyword_idx, int movie_idx){
+        String createMovieKeywordQuery = "insert into keyword_movie(keyword_idx, movie_idx) values (?, ?)";
+        Object[] createMovieKeywordParams = new Object[]{keyword_idx, movie_idx};
+        this.jdbcTemplate.update(createMovieKeywordQuery, createMovieKeywordParams);
+    }
+
     public List<GetUserRes> getUser(){
         String getUserQuery = "select user_idx, nickname, photo from user";
         return this.jdbcTemplate.query(getUserQuery,
