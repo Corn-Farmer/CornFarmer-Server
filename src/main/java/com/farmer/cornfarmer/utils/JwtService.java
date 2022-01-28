@@ -21,7 +21,7 @@ public class JwtService {
     @param userIdx
     @return String
      */
-    public String createJwt(int user_idx, String oauth_channel, int oauth_id, String nickname){
+    public String createJwt(int user_idx, String oauth_channel, String oauth_id, String nickname){
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
@@ -111,7 +111,7 @@ public class JwtService {
         return claims.getBody().get("oauth_channel",String.class);  // jwt 에서 userIdx를 추출합니다.
     }
 
-    public int getOauthId() throws BaseException {
+    public String getOauthId() throws BaseException {
         //1. JWT 추출
         String accessToken = getJwt();
         if(accessToken == null || accessToken.length() == 0){
@@ -129,7 +129,7 @@ public class JwtService {
         }
 
         // 3. oauth_id 추출
-        return claims.getBody().get("oauth_id",Integer.class);  // jwt 에서 userIdx를 추출합니다.
+        return claims.getBody().get("oauth_id",String.class);  // jwt 에서 userIdx를 추출합니다.
     }
     public String getNickname() throws BaseException {
         //1. JWT 추출

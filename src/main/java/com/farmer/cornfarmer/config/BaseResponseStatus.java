@@ -24,11 +24,17 @@ public enum BaseResponseStatus {
 
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
+    POST_USERS_KAKAO_ERROR(false, 2011, "카카오 로그인에 실패했습니다."),
+    POST_USERS_NAVER_ERROR(false, 2012, "네이버 로그인에 실패했습니다."),
 
     // [POST] /users
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
     POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
+    POST_USERS_INVALID_NICKNAME(false, 2018, "닉네임이 디비에 존재하지 않습니다."),
+    POST_USERS_INVALID_OATUH_ID(false, 2019, "oauth_id가 디비에 없습니다."),
+    POST_USERS_CREATE_FAILED(false, 2020, "db 유저생성을 실패헸습니다."),
+
 
 
 

@@ -1,31 +1,21 @@
 package com.farmer.cornfarmer.src.user;
 
 import com.farmer.cornfarmer.config.BaseException;
-import com.farmer.cornfarmer.config.BaseResponse;
-import com.farmer.cornfarmer.config.secret.Secret;
-import com.farmer.cornfarmer.src.user.domain.PostUserReq;
-import com.farmer.cornfarmer.src.user.domain.PostUserRes;
-import com.farmer.cornfarmer.utils.AES128;
+import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.HashMap;
 
 @Service
 public class UserService {
@@ -42,7 +32,7 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    public int getKakaoOauthId(String accessToken) throws BaseException {
+    public String getKakaoOauthId(String accessToken) throws BaseException {
         //access token 으로 oauth_id 가져오기
         int id = 0;
         String reqURL = "https://kapi.kakao.com/v2/user/me";
@@ -73,10 +63,10 @@ public class UserService {
             id = element.getAsJsonObject().get("id").getAsInt();
         }  catch (IOException e) { //
             e.printStackTrace();
-            throw new BaseException(BaseResponseStatus.SERVER_ERROR);
+            throw new BaseException(BaseResponseStatus.POST_USERS_KAKAO_ERROR);
         }
 
-        return id;
+        return Integer.toString(id);
     }
 
     public String getNaverOauthId(String accessToken) throws BaseException{
@@ -106,26 +96,27 @@ public class UserService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parseString(response.toString());
 
-            id = (String) element.getAsJsonObject().get("id").getAsString();
+            id = element.getAsJsonObject().get("id").getAsString();
 
 
         } catch (IOException e) {
             e.printStackTrace();
+            throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
         }
         return id;
     }
 
     public int createUser(String id, String oauth_channel)throws BaseException{
         int result = 0;
-        if(false == userProvider.checkOauthId(id))
-        {
-            throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
-        }
         try {
+            if(false == userProvider.checkOauthId(id))
+            {
+                throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
+            }
            result = userDao.createUser(id, oauth_channel);
         } catch (Exception exception) {
             exception.printStackTrace();
-            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+            throw new BaseException(BaseResponseStatus.POST_USERS_CREATE_FAILED);
         }
         return result;
     }
@@ -143,4 +134,39 @@ public class UserService {
         }
     }
 
+    public UserMyInfo modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq) throws BaseException {
+            try{
+                if(userIdx == jwtService.getUserIdx()){
+                    userDao.modifyMyInfo(userIdx, postUserInfoReq);
+                    GetUserInfo getUserInfo = userDao.getUser(jwtService.getOauthId());
+
+                    jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(),getUserInfo.getOauth_id(), getUserInfo.getNickname());
+                    return userProvider.getMyInfo(userIdx);
+                }
+                else
+                {
+                    throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
+                }
+
+            } catch (BaseException exception) {
+                exception.printStackTrace();
+                throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+            }
+
+    }
+
+    public PostUserRes inactive(int userIdx) throws BaseException {
+        try{
+            if(userIdx == jwtService.getUserIdx()) {
+                int result = userDao.inactive(userIdx);
+                return new PostUserRes(result);
+            }
+            else
+            {
+                throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
+            }
+        }catch (BaseException exception){
+                throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }

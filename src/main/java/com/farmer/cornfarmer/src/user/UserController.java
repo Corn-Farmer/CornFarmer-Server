@@ -4,10 +4,6 @@ import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.user.model.*;
-import com.farmer.cornfarmer.src.user.domain.PostLoginRes;
-import com.farmer.cornfarmer.src.user.domain.PostUserReq;
-import com.farmer.cornfarmer.src.user.domain.PostUserRes;
-import com.farmer.cornfarmer.src.user.domain.User;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -48,7 +43,7 @@ public class UserController {
     @GetMapping("/outh/kakao")
     public BaseResponse<PostLoginRes> kakaoLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
         try {
-            String id = Integer.toString(userService.getKakaoOauthId(accessToken));
+            String id = userService.getKakaoOauthId(accessToken);
             if (userProvider.checkOauthId(id)) {
                 //db에 존재하는경우 ->login
                 if(userProvider.checkNickname(id)) { 
@@ -70,7 +65,7 @@ public class UserController {
             }
         }
         catch (BaseException exception){
-            return new BaseResponse<>(BaseResponseStatus.FAILED_TO_LOGIN);
+            return new BaseResponse<>(exception.getStatus());
         }
     }
     /**
@@ -104,16 +99,9 @@ public class UserController {
             }
         }
         catch (BaseException exception){
-            return new BaseResponse<>(BaseResponseStatus.FAILED_TO_LOGIN);
+            return new BaseResponse<>(exception.getStatus());
         }
     }
-
-/*    @DeleteMapping("/outh/logout")
-    public BaseResponse<Optional> logOut(){
-
-
-        return new BaseResponse<>(null);
-    }*/
     /**
      * 회원가입
      * [POST] /users
@@ -131,6 +119,68 @@ public class UserController {
             PostUserRes postUserRes = userService.createUserInfo(postUserReq);
             return new BaseResponse<>(postUserRes);
         }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 나의 정보보기
+     * [GET] /users/{userIdx}
+     * 개발자 : 팡코(조대환)
+     */
+    @ResponseBody
+    @GetMapping("/{userIdx}")
+    public BaseResponse<UserMyInfo> getMyInfo(@PathVariable int userIdx){
+        try{
+            int tokenIdx = jwtService.getUserIdx();
+            if(userIdx == tokenIdx) {
+                return new BaseResponse<>(userProvider.getMyInfo(userIdx));
+            }
+            else
+            {
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 나의 정보수정
+     * [POST] /users/{userIdx}
+     * 개발자 : 팡코(조대환)
+     */
+    @ResponseBody
+    @PostMapping("/{userIdx}")
+    public BaseResponse<UserMyInfo> modifyMyInfo(@PathVariable int userIdx, @RequestBody PostUserInfoReq postUserInfoReq){
+        try{
+            int tokenIdx = jwtService.getUserIdx();
+            if(userIdx == tokenIdx) {
+                return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq));
+            }
+            else
+            {
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
+        }catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+    /**
+     * 회원탈퇴
+     * [POST] /users/{userIdx}/delete
+     * 개발자 : 팡코(조대환)
+     */
+
+    @ResponseBody
+    @PutMapping("/{userIdx}/delete")
+    public BaseResponse<PostUserRes> deleteUser(@PathVariable int userIdx){
+        try{
+            PostUserRes userRes = userService.inactive(userIdx);
+            return new BaseResponse<>(userRes);
+        }
+        catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
     }
