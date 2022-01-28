@@ -103,13 +103,28 @@ public class UserDao {
     }
 
     public int createUserInfo(PostUserReq postUserReq){
-        String createUserInfoQuery = "update User set (nickname, photo, is_male, birth, ottList, genreList, active) values(?,?,?,?,?,?) where oauth_id=?";
-        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(), postUserReq.getOttList(), postUserReq.getGenreList(), true,postUserReq.getOauth_id()};
+        String createUserInfoQuery = "update User set (nickname, photo, is_male, birth, active) values(?,?,?,?,?) where oauth_id=?";
+        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
 
         String getUserQuery = "select user_idx from User where  oauth_id = ? ";
+        int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, postUserReq.getOauth_id());
 
-        return this.jdbcTemplate.queryForObject(getUserQuery, int.class, postUserReq.getOauth_id());
+        for(int i=0; i<postUserReq.getOttList().size(); i++) {
+            String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
+            Object[] createUserParams = new Object[]{postUserReq.getOttList().get(i), userIdx };
+
+            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+        }
+
+        for(int i=0; i<postUserReq.getGenreList().size(); i++) {
+            String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
+            Object[] createUserParams = new Object[]{postUserReq.getGenreList().get(i), userIdx };
+
+            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+        }
+
+        return userIdx;
     }
 
     public String getPhoto(int userIdx){
@@ -118,15 +133,37 @@ public class UserDao {
     }
 
     public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq){
-        String modifyMyInfoQuery = "update User set (nickname, photo, ottList, genreList) values(?,?,?,?) where user_idx=?";
-        Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getUserNickname(), postUserInfoReq.getPhoto(), postUserInfoReq.getUserOtt(), postUserInfoReq.getGenreList(), userIdx};
+        String modifyMyInfoQuery = "update User set (nickname, photo) values(?,?) where user_idx=?";
+        Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getUserNickname(), postUserInfoReq.getPhoto(), userIdx};
         this.jdbcTemplate.queryForObject(modifyMyInfoQuery, int.class, modifyMyInfoQuery);
+
+        String deleteMyOttQuery = "delete from user_ott where user_idx=?";
+        this.jdbcTemplate.update(deleteMyOttQuery, userIdx);
+
+        String deleteMyGenreQuery = "delete from user_genre where user_idx=?";
+        this.jdbcTemplate.update(deleteMyGenreQuery, userIdx);
+
+        for(int i=0; i<postUserInfoReq.getUserOtt().size(); i++) {
+            String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
+            Object[] createUserParams = new Object[]{postUserInfoReq.getUserOtt().get(i), userIdx };
+
+            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+        }
+
+        for(int i=0; i<postUserInfoReq.getGenreList().size(); i++) {
+            String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
+            Object[] createUserParams = new Object[]{postUserInfoReq.getGenreList().get(i), userIdx };
+
+            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+        }
+
+
     }
 
     public int inactive(int userIdx){
         String inactiveQuery = "update User set (active) values(?) where user_id=?";
         Object[] inactiveParams = new Object[]{false, userIdx};
-        this.jdbcTemplate.queryForObject(inactiveQuery, int.class, inactiveParams);
+        this.jdbcTemplate.update(inactiveQuery, inactiveParams);
 
         return userIdx;
 
