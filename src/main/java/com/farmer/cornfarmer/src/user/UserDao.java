@@ -110,4 +110,22 @@ public class UserDao {
 
         return this.jdbcTemplate.queryForObject(getUserQuery, int.class, postUserReq.getOauth_id());
     }
+
+    public List<GetMyMovieLikedRes> getMyMoviesLiked(int userIdx) {
+        String query = "select o.movie_idx,group_concat(o.genre_name) as genre_name,o.movie_title,o.like_cnt,o.movie_photo from " +
+                "(select um.movie_idx,m.movie_title,m.like_cnt,ge.genre_name,um.created_at,(select p.photo from movie_photo p where p.movie_idx = um.movie_idx limit 1) as movie_photo " +
+                "from user_movie um left join movie m on um.movie_idx = m.movie_idx " +
+                "left join (select mg.movie_idx,g.genre_idx,g.genre_name from movie_genre mg left join genre g on mg.genre_idx = g.genre_idx) as ge " +
+                "on um.movie_idx = ge.movie_idx where um.user_idx = ? ) o group by movie_idx order by o.created_at desc";
+
+        List<GetMyMovieLikedRes> getMyMovieLikedRes = jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetMyMovieLikedRes(
+                        rs.getInt("o.movie_idx"),
+                        rs.getString("o.movie_title"),
+                        rs.getString("o.movie_photo"),
+                        rs.getString("genre_name"),
+                        rs.getInt("o.like_cnt")
+                ),userIdx);
+        return getMyMovieLikedRes;
+    }
 }

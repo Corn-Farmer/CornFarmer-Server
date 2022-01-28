@@ -208,4 +208,38 @@ public class AdminController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+  
+    /**  
+     * 작품 삭제(관리자용) API
+     * [DELETE] /admin/movies/{movieIdx}
+     * 개발자 : 제트(김예지)
+     */
+    @ResponseBody
+    @DeleteMapping("/movies/{movieIdx}")
+    public BaseResponse deleteMovie(@PathVariable int movieIdx){
+        try{
+            //admin 계정인지 검증
+            adminService.deleteMovie(movieIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 상황키워드 삭제(관리자용) API
+     * [DELETE] /admin/movies/keywords/{keywordIdx}
+     * 개발자 : 제트(김예지)
+     */
+    @ResponseBody
+    @DeleteMapping("/movies/keywords/{keywordIdx}")
+    public BaseResponse deleteKeyword(@PathVariable int keywordIdx){
+        try{
+            //admin 계정인지 검증
+            adminService.deleteKeyword(keywordIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        }catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }

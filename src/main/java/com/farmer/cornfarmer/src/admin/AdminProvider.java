@@ -71,6 +71,7 @@ public class AdminProvider {
         }
     }
 
+
     public List<GetUserRes> getUsers() throws BaseException {
         try {
             List<GetUserRes> getUserList = adminDao.getUser();
@@ -82,6 +83,20 @@ public class AdminProvider {
             return getUserList;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void validateMovieExist(int movieIdx) throws BaseException {
+        int reviewCount = adminDao.getMovieIdx(movieIdx);
+        if(reviewCount == 0){
+            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_MOVIE);
+        }
+    }
+
+    public void validateKeywordExist(int keywordIdx) throws BaseException {
+        int reviewCount = adminDao.getKeywordIdx(keywordIdx);
+        if(reviewCount == 0){
+            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_KEYWORD);
         }
     }
 }

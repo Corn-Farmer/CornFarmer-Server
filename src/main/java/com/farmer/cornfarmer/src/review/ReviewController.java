@@ -39,7 +39,7 @@ public class ReviewController {
      */
     @ResponseBody
     @PostMapping()    // POST 방식의 요청을 매핑하기 위한 어노테이션
-    public BaseResponse<PostReviewRes> createReview(@RequestBody @Valid PostReviewReq postReviewReq) {
+    public BaseResponse<PostReviewRes> postReview(@RequestBody @Valid PostReviewReq postReviewReq) {
         try{
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 2; //가정
@@ -57,7 +57,7 @@ public class ReviewController {
      */
     @ResponseBody
     @PutMapping("/{reviewIdx}")
-    public BaseResponse modifyReview(@PathVariable int reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq){
+    public BaseResponse putReview(@PathVariable int reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq){
         try{
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 1; //가정
@@ -93,7 +93,7 @@ public class ReviewController {
      */
     @ResponseBody
     @PostMapping("/{reviewIdx}/like")
-    public BaseResponse likeReview(@PathVariable int reviewIdx){
+    public BaseResponse postLikeReview(@PathVariable int reviewIdx){
         try{
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 1; //가정
@@ -111,7 +111,7 @@ public class ReviewController {
      */
     @ResponseBody
     @PostMapping("/{reviewIdx}/report")
-    public BaseResponse<PostReportRes> createReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq){
+    public BaseResponse<PostReportRes> postReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq){
         try{
             //int userIdx = jwtService.getUserIdx();
             int userIdx = 1; //가정
