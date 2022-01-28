@@ -5,8 +5,6 @@ import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.admin.model.GetReviewRes;
 import com.farmer.cornfarmer.src.admin.model.*;
-import com.farmer.cornfarmer.src.user.UserProvider;
-import com.farmer.cornfarmer.src.user.UserService;
 import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.utils.S3Uploader;
 import org.slf4j.Logger;
@@ -15,12 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.http.MediaType;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.farmer.cornfarmer.config.BaseResponseStatus.REQUEST_ERROR;
@@ -168,6 +165,7 @@ public class AdminController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
     /**
      * 영화 추가 API
      * [POST] /admin/movies
@@ -189,6 +187,23 @@ public class AdminController {
             // movie 데이터베이스에 저장
             PostMovieRes postMovieRes = adminService.createMovie(moviePhotoURLs, postMovieReq);
             return new BaseResponse<>(postMovieRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 모든 사용자 조회 API
+     * [GET] /admin/users
+     * 개발자 : 홍민주(앨리)
+     */
+    @ResponseBody
+    @GetMapping("/users")
+    public BaseResponse<List<GetUserRes>> getUsers(){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            List<GetUserRes> getUserResList = adminProvider.getUsers();
+            return new BaseResponse<>(getUserResList);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
