@@ -212,6 +212,10 @@ public class MovieController {
                         photo.add(moviePhoto.get(j).getGenre());
                     }
                     getMovieIdx.get(i).setMoviePhotoList(photo);
+
+                    //likedCnt 추가하는 코드
+                    GetLike getLikeCnt=movieProvider.getLikeCnt(getMovieIdx.get(i).getMovieIdx());
+                    getMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
                 }
 
 
@@ -248,6 +252,10 @@ public class MovieController {
                         photo.add(moviePhoto.get(j).getGenre());
                     }
                     getMovieIdx.get(i).setMoviePhotoList(photo);
+
+                    //likedCnt 추가하는 코드
+                    GetLike getLikeCnt=movieProvider.getLikeCnt(getMovieIdx.get(i).getMovieIdx());
+                    getMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
                 }
             }
 
@@ -269,7 +277,7 @@ public class MovieController {
 
     @ResponseBody
     @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=likeCnt
-    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort") String sort) throws BaseException {
+    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
         try {
             // TODO: 2022-01-21 나중에 jwt에서 userIdx가져와야함
             int userIdx = 1;
@@ -307,7 +315,7 @@ public class MovieController {
             //review list 가져오는 코드
             //sort=1이면 최신, sort=2이면 좋아요순
             List<Review> reviewList = new ArrayList<Review>();
-            if (sort == "recent") {
+            if (sort.equals("recent")) {
                 reviewList = movieProvider.getReview_recent(movieIdx);
             } else {
                 reviewList = movieProvider.getReview_like(movieIdx);
@@ -325,6 +333,67 @@ public class MovieController {
             return new BaseResponse<>(getMovieDetail);
         } catch (BaseException exception) {
 
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+    /**
+     * API 설명
+     * 작품 검색 API(2022-01-25)
+     * [HTTP METHOD] URL
+     * [GET] localhost:9000/movies/search?keyword=검색키워드&sort=likeCnt(좋아요순) recent(최신순) review(후기많은순)
+     * 개발자 : 쉐리(강혜연)
+     */
+
+    @ResponseBody
+    @GetMapping("/search") //ex)localhost:9000/movies/?keyword=movie&sort=likeCnt
+    public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name="keyword") String keyword,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
+        try {
+            int userIdx = 1;
+            System.out.println("검색시작");
+            //1. keyword로 검색해서 나온 결과
+            List <GetMovieInfo> getMovieIdx=movieProvider.getMovieIdx_Search(keyword,sort);
+
+
+
+            //영화 정보 추가
+            for(int i=0;i<getMovieIdx.size();i++){
+                GetMovieInfo tmp=movieProvider.getMovieToday(getMovieIdx.get(i).getMovieIdx());
+                getMovieIdx.set(i,tmp);
+            }
+
+            for(int i=0;i<getMovieIdx.size();i++){
+                List <GetGenre> movieGenre = movieProvider.getMovieGenre(getMovieIdx.get(i).getMovieIdx());
+                List <String> genre=new ArrayList<>();
+
+                for(int j=0;j<movieGenre.size();j++){
+                    genre.add(movieGenre.get(j).getGenre());
+                }
+                getMovieIdx.get(i).setMovieGenreList(genre);
+
+                //isLiked추가하는 코드
+                GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
+                if(like.getIsLike()==1){
+                    getMovieIdx.get(i).setLiked(true);
+                }
+                else{
+                    getMovieIdx.get(i).setLiked(false);
+                }
+
+                //moviePhoto 추가하는 코드
+                List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(getMovieIdx.get(i).getMovieIdx());
+                List <String> photo=new ArrayList<>();
+                for(int j=0;j<moviePhoto.size();j++){
+                    photo.add(moviePhoto.get(j).getGenre());
+                }
+                getMovieIdx.get(i).setMoviePhotoList(photo);
+
+                //likedCnt 추가하는 코드
+                GetLike getLikeCnt=movieProvider.getLikeCnt(getMovieIdx.get(i).getMovieIdx());
+                getMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
+            }
+            return new BaseResponse<>(getMovieIdx);
+
+        } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }

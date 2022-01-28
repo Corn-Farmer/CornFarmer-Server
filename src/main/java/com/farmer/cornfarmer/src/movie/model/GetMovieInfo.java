@@ -32,5 +32,6 @@ public class GetMovieInfo {
     private String movieName;
     private List<String> moviePhotoList;
     private List<String> movieGenreList;
+    private int likeCnt;
     private boolean isLiked;
 }
