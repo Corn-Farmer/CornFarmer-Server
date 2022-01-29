@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -42,11 +43,12 @@ public class UserController {
     @ResponseBody
     @GetMapping("/outh/kakao")
     public BaseResponse<PostLoginRes> kakaoLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
+        String cornfarmer = "";
         try {
             String id = userService.getKakaoOauthId(accessToken);
             if (userProvider.checkOauthId(id)) {
                 //db에 존재하는경우 ->login
-                if(userProvider.checkNickname(id)) { 
+                if(!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
                     //회원가입이 완료된 경우
                     PostLoginRes postLoginRes = userProvider.kakaoLogIn(id);
                     return new BaseResponse<>(postLoginRes);
@@ -76,11 +78,12 @@ public class UserController {
     @ResponseBody
     @GetMapping("/outh/naver")
     public BaseResponse<PostLoginRes> naverLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
+        String cornfarmer = "";
         try {
             String id = userService.getNaverOauthId(accessToken);
             if (userProvider.checkOauthId(id)) {
                 //db에 존재하는경우 ->login
-                if(userProvider.checkNickname(id)) {
+                if(!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
                     //회원가입이 완료된 경우
                     PostLoginRes postLoginRes = userProvider.naverLogIn(id);
                     return new BaseResponse<>(postLoginRes);
@@ -133,6 +136,7 @@ public class UserController {
     public BaseResponse<UserMyInfo> getMyInfo(@PathVariable int userIdx){
         try{
             int tokenIdx = jwtService.getUserIdx();
+           // int tokenIdx = userIdx;
             if(userIdx == tokenIdx) {
                 return new BaseResponse<>(userProvider.getMyInfo(userIdx));
             }

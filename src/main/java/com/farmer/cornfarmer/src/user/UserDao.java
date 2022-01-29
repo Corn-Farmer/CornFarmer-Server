@@ -58,11 +58,29 @@ public class UserDao {
         Boolean result = this.jdbcTemplate.queryForObject(checkOauthQuery, boolean.class, oauth_id);
         return result;
     }
+    public String checkUserNickName(String oauth_id){
+        String checkUserNickNameQuery = "select nickname from user where oauth_id = ?";
+        String result = this.jdbcTemplate.queryForObject(checkUserNickNameQuery, String.class, oauth_id);
+        System.out.println(result);
+        return result;
+    }
+
 
     public int getUserIdx(String oauth_id)
     {
         String getUserIdxQuery = "select user_idx from user where  oauth_id = ?";
         return this.jdbcTemplate.queryForObject(getUserIdxQuery, Integer.class, oauth_id);
+    }
+
+    public String getUserNickName(int userIdx){
+        String getUserNickNameQuery = "select nickname from user where user_idx = ?";
+        return this.jdbcTemplate.queryForObject(getUserNickNameQuery, String.class, userIdx);
+    }
+
+    public String getUserOauth_id(int userIdx){
+        String getUserOauthidQuery = "select oauth_id from user where user_idx = ?";
+        return this.jdbcTemplate.queryForObject(getUserOauthidQuery, String.class, userIdx);
+
     }
 
     public GetUserInfo getKakaoUser(String oauth_id)
@@ -80,7 +98,7 @@ public class UserDao {
 
     public GetUserInfo getUser(String oauth_id)
     {
-        String getUserQuery = "select user_idx, oauth_channel, ouath_id, nickname from user where  oauth_id = ? ";
+        String getUserQuery = "select user_idx, oauth_channel, oauth_id, nickname from user where  oauth_id = ? ";
 
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserInfo(
@@ -94,10 +112,10 @@ public class UserDao {
 
 
     public int createUser(String id, String oauth_channel){
-        String createUserQuery = "insert into user (oauth_id, oauth_channel, active) values (?,?,?)";
-        Object[] createUserParams = new Object[]{id, oauth_channel, false };
+        String createUserQuery = "insert into user (oauth_id, nickname, oauth_channel, active) values (?,?,?,?)";
 
-        this.jdbcTemplate.update(createUserQuery, createUserParams);
+        this.jdbcTemplate.update(createUserQuery, id, "", oauth_channel, false);
+
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
 
@@ -106,15 +124,15 @@ public class UserDao {
     public int createUserInfo(PostUserReq postUserReq){
         String createUserInfoQuery = "update user set nickname = ?, photo = ?, is_male = ?, birth = ?, active = ? where oauth_id = ?";
         Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
+
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
-
-        String getUserQuery = "select user_idx from user where  oauth_id = ? ";
-        int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, postUserReq.getOauth_id());
-
+//////////
+        String getUserQuery = "select user_idx from user where oauth_id = ?";
+        String getUserParam = postUserReq.getOauth_id();
+        int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, getUserParam );
         for(int i=0; i<postUserReq.getOttList().size(); i++) {
             String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
             Object[] createUserParams = new Object[]{postUserReq.getOttList().get(i), userIdx };
-
             this.jdbcTemplate.update(UserOttQuery, createUserParams);
         }
 
@@ -135,8 +153,8 @@ public class UserDao {
 
     public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq){
         String modifyMyInfoQuery = "update user set nickname = ?, photo = ? where user_idx=?";
-        Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getUserNickname(), postUserInfoReq.getPhoto(), userIdx};
-        this.jdbcTemplate.queryForObject(modifyMyInfoQuery, int.class, modifyMyInfoQuery);
+        Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getNickname(), postUserInfoReq.getPhoto(), userIdx};
+        this.jdbcTemplate.update(modifyMyInfoQuery, modifyMyInfoParams);
 
         String deleteMyOttQuery = "delete from user_ott where user_idx=?";
         this.jdbcTemplate.update(deleteMyOttQuery, userIdx);

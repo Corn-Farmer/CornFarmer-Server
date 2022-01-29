@@ -55,10 +55,10 @@ public class UserProvider {
     }
 
     @Transactional(readOnly = true)
-    public boolean checkNickname(String oauth_id) throws BaseException {
+    public String checkUserNickname(String oauth_id) throws BaseException {
         //db에 oauthid 존재하는지 확인
         try {
-            return userDao.checkNickname(oauth_id);
+            return userDao.checkUserNickName(oauth_id);
         }catch(Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_NICKNAME);
@@ -109,7 +109,7 @@ public class UserProvider {
     @Transactional(readOnly = true)
     public UserMyInfo getMyInfo(int userIdx) throws BaseException {
         try {
-            return new UserMyInfo(jwtService.getNickname(), userDao.getPhoto(userIdx),userDao.getOttInfo(userIdx),userDao.getGenreInfo(userIdx));
+            return new UserMyInfo(userDao.getUserNickName(userIdx), userDao.getPhoto(userIdx),userDao.getOttInfo(userIdx),userDao.getGenreInfo(userIdx));
         }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
