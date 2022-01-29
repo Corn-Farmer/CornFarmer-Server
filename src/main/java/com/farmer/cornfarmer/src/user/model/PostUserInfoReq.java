@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class PostUserInfoReq {
-    String userNickname;
+    String nickname;
     String photo;
     List<Integer> userOtt;
     List<Integer> genreList;

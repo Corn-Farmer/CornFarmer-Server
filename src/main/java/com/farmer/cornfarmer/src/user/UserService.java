@@ -84,7 +84,7 @@ public class UserService {
             if(responseCode==200) { // 정상 호출
                 br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             } else {  // 에러 발생
-                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
             }
             String inputLine;
             StringBuffer response = new StringBuffer();
@@ -97,9 +97,11 @@ public class UserService {
             JsonElement element = parser.parseString(response.toString());
 
             id = element.getAsJsonObject().get("id").getAsString();
-
-
         } catch (IOException e) {
+            e.printStackTrace();
+            throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
+        }catch(Exception e)
+        {
             e.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
         }
@@ -109,7 +111,7 @@ public class UserService {
     public int createUser(String id, String oauth_channel)throws BaseException{
         int result = 0;
         try {
-            if(false == userProvider.checkOauthId(id))
+            if(false != userProvider.checkOauthId(id))
             {
                 throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
             }
@@ -123,7 +125,6 @@ public class UserService {
 
     public PostUserRes createUserInfo(PostUserReq postUserReq) throws BaseException
     {
-
         try{
             int userIdx =  userDao.createUserInfo(postUserReq);
             return new PostUserRes(userIdx);
@@ -136,17 +137,12 @@ public class UserService {
 
     public UserMyInfo modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq) throws BaseException {
             try{
-                if(userIdx == jwtService.getUserIdx()){
-                    userDao.modifyMyInfo(userIdx, postUserInfoReq);
-                    GetUserInfo getUserInfo = userDao.getUser(jwtService.getOauthId());
+                userDao.modifyMyInfo(userIdx, postUserInfoReq);
+                GetUserInfo getUserInfo = userDao.getUser(userDao.getUserOauth_id(userIdx));
 
-                    jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(),getUserInfo.getOauth_id(), getUserInfo.getNickname());
-                    return userProvider.getMyInfo(userIdx);
-                }
-                else
-                {
-                    throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
-                }
+                jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(),getUserInfo.getOauth_id(), getUserInfo.getNickname());
+                return userProvider.getMyInfo(userIdx);
+
 
             } catch (BaseException exception) {
                 exception.printStackTrace();
