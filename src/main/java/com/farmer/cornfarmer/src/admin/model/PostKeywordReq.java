@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class Movie {
-    private int movieIdx;
-    private String movieTitle;
-    private String moviePhoto;
+public class PostKeywordReq {
+    private String keyword;
+    private List<Integer> movieList;
 }
-
-

@@ -225,6 +225,23 @@ public class AdminController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    /**
+     * 모든 키워드 조회 API
+     * [GET] /admin/movies/keywords
+     * 개발자 : 홍민주(앨리)
+     */
+    @ResponseBody
+    @GetMapping("/movies/keywords")
+    public BaseResponse<List<GetKeywordRes>> getKeywords(){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            List<GetKeywordRes> Keywords= adminProvider.getKeywords();
+            return new BaseResponse<>(Keywords);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
   
     /**  
      * 작품 삭제(관리자용) API

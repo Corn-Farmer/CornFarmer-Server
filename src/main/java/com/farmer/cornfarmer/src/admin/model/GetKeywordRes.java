@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class Movie {
-    private int movieIdx;
-    private String movieTitle;
-    private String moviePhoto;
+public class GetKeywordRes {
+    private int keywordIdx;
+    private String keywordName;
+    private List<Movie> movieList;
 }
-
-

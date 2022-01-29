@@ -7,10 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Movie {
-    private int movieIdx;
-    private String movieTitle;
-    private String moviePhoto;
+public class PostKeywordRes {
 }
-
-

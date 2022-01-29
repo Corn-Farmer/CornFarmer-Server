@@ -185,6 +185,32 @@ public class AdminDao {
         return this.jdbcTemplate.queryForObject(getMovieIdxQuery,int.class,movieIdx);
     }
 
+    public List<GetKeywordRes> getKeywords() {
+        // 수정
+        String getKeywordsQuery = "select * from keyword";
+        return this.jdbcTemplate.query(getKeywordsQuery,
+                (rs, rowNum) -> new GetKeywordRes(
+                        rs.getInt("keyword_idx"),
+                        rs.getString("keyword"),
+                         null)
+        );
+    }
+
+    public List<Movie> getKeywordMovies(int keywordIdx) {
+        //수정 필요
+        String getKeywordMoviesQuery = "select keyword.movie_idx as movie_idx,movie_title, photo\n" +
+                "from (select * from keyword_movie where keyword_idx = ?) keyword\n" +
+                "natural join keyword_movie natural join movie\n" +
+                "    left join movie_photo mp on keyword_movie.movie_idx = mp.movie_idx group by movie.movie_idx";
+        return this.jdbcTemplate.query(getKeywordMoviesQuery,
+                (rs, rowNum) -> new Movie(
+                        rs.getInt("movie_idx"),
+                        rs.getString("movie_title"),
+                        rs.getString("photo")),
+                keywordIdx
+        );
+    }
+
     public int deleteMovie(int movieIdx) {
         String deleteMovieQuery = "delete from movie_ott where movie_idx = ?";
         int result1 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
