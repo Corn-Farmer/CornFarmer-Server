@@ -169,4 +169,13 @@ public class MovieProvider {
         }
     }
 
+    public List<GetMovieInfo> getMovieIdxRand()throws BaseException{
+        try {
+            List<GetMovieInfo> movieidx = movieDao.getMovieIdxRand();
+            return movieidx;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

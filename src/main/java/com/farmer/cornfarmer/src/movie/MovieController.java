@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/movies")
@@ -177,90 +182,62 @@ public class MovieController {
 
 
         try {
-            //1. 어제 좋아요 받은 영화 정렬해서 가져오기
+            // 좋아요 받은 영화들 정렬해서 가져오기
             List <GetMovieInfo> getMovieIdx=movieProvider.getMovieIdx_Today();
+            //모든 영화 랜덤으로 가져오기
+            List <GetMovieInfo> getMovieIdxRand=movieProvider.getMovieIdxRand();
 
-            if(getMovieIdx.size()<=10){
-                //영화 정보 추가
-                for(int i=0;i<getMovieIdx.size();i++){
-                    GetMovieInfo tmp=movieProvider.getMovieToday(getMovieIdx.get(i).getMovieIdx());
-                    getMovieIdx.set(i,tmp);
-                }
+            getMovieIdx.addAll(getMovieIdxRand);
 
-                for(int i=0;i<getMovieIdx.size();i++){
-                    List <GetGenre> movieGenre = movieProvider.getMovieGenre(getMovieIdx.get(i).getMovieIdx());
-                    List <String> genre=new ArrayList<>();
-
-                    for(int j=0;j<movieGenre.size();j++){
-                        genre.add(movieGenre.get(j).getGenre());
-                    }
-                    getMovieIdx.get(i).setMovieGenreList(genre);
-
-                    //isLiked추가하는 코드
-                    GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
-                    if(like.getIsLike()==1){
-                        getMovieIdx.get(i).setLiked(true);
-                    }
-                    else{
-                        getMovieIdx.get(i).setLiked(false);
-                    }
-
-                    //moviePhoto 추가하는 코드
-                    List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(getMovieIdx.get(i).getMovieIdx());
-                    List <String> photo=new ArrayList<>();
-                    for(int j=0;j<moviePhoto.size();j++){
-                        photo.add(moviePhoto.get(j).getGenre());
-                    }
-                    getMovieIdx.get(i).setMoviePhotoList(photo);
-
-                    //likedCnt 추가하는 코드
-                    GetLike getLikeCnt=movieProvider.getLikeCnt(getMovieIdx.get(i).getMovieIdx());
-                    getMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
-                }
-
-
-            }
-            else{
-                //영화 정보 추가(10개 넘으면 10개 까지만)
-                for(int i=0;i<10;i++){
-                    GetMovieInfo tmp=movieProvider.getMovieToday(getMovieIdx.get(i).getMovieIdx());
-                    getMovieIdx.set(i,tmp);
-                }
-
-                for(int i=0;i<10;i++){
-                    List <GetGenre> movieGenre = movieProvider.getMovieGenre(getMovieIdx.get(i).getMovieIdx());
-                    List <String> genre=new ArrayList<>();
-
-                    for(int j=0;j<movieGenre.size();j++){
-                        genre.add(movieGenre.get(j).getGenre());
-                    }
-                    getMovieIdx.get(i).setMovieGenreList(genre);
-
-                    //isLiked추가하는 코드
-                    GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
-                    if(like.getIsLike()==1){
-                        getMovieIdx.get(i).setLiked(true);
-                    }
-                    else{
-                        getMovieIdx.get(i).setLiked(false);
-                    }
-
-                    //moviePhoto 추가하는 코드
-                    List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(getMovieIdx.get(i).getMovieIdx());
-                    List <String> photo=new ArrayList<>();
-                    for(int j=0;j<moviePhoto.size();j++){
-                        photo.add(moviePhoto.get(j).getGenre());
-                    }
-                    getMovieIdx.get(i).setMoviePhotoList(photo);
-
-                    //likedCnt 추가하는 코드
-                    GetLike getLikeCnt=movieProvider.getLikeCnt(getMovieIdx.get(i).getMovieIdx());
-                    getMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
-                }
+            List <GetMovieInfo> newgetMovieIdx=DeduplicationUtils.deduplication(getMovieIdx,GetMovieInfo::getMovieIdx);
+            for(int i=0;i<newgetMovieIdx.size();i++){
+                System.out.println(newgetMovieIdx.get(i).getMovieIdx());
             }
 
+            //리스트 길이 10 이상이면 true
+            boolean isLargerThan10=false;
+            for(int i=0;i<newgetMovieIdx.size();i++){
+                if(i==10){
+                    isLargerThan10=true;
+                    break;
+                }
 
-            return new BaseResponse<>(getMovieIdx);
+                GetMovieInfo tmp=movieProvider.getMovieToday(newgetMovieIdx.get(i).getMovieIdx());
+                newgetMovieIdx.set(i,tmp);
+                List <GetGenre> movieGenre = movieProvider.getMovieGenre(newgetMovieIdx.get(i).getMovieIdx());
+                List <String> genre=new ArrayList<>();
+
+                for(int j=0;j<movieGenre.size();j++){
+                    genre.add(movieGenre.get(j).getGenre());
+                }
+                newgetMovieIdx.get(i).setMovieGenreList(genre);
+
+                //isLiked추가하는 코드
+                GetLike like=movieProvider.getLike(userIdx,newgetMovieIdx.get(i).getMovieIdx());
+                if(like.getIsLike()==1){
+                    newgetMovieIdx.get(i).setLiked(true);
+                }
+                else{
+                    newgetMovieIdx.get(i).setLiked(false);
+                }
+
+                //moviePhoto 추가하는 코드
+                List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(newgetMovieIdx.get(i).getMovieIdx());
+                List <String> photo=new ArrayList<>();
+                for(int j=0;j<moviePhoto.size();j++){
+                    photo.add(moviePhoto.get(j).getGenre());
+                }
+                newgetMovieIdx.get(i).setMoviePhotoList(photo);
+
+                //likedCnt 추가하는 코드
+                GetLike getLikeCnt=movieProvider.getLikeCnt(newgetMovieIdx.get(i).getMovieIdx());
+                newgetMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
+            }
+            if(isLargerThan10){
+                System.out.println("자르기 작업 수행");
+                newgetMovieIdx=newgetMovieIdx.subList(0,10);
+            }
+            return new BaseResponse<>(newgetMovieIdx);
 
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

@@ -86,10 +86,18 @@ public class MovieDao {
     }
 
     public List<GetMovieInfo> getMovieIdx_Today(){
-        String query="select user_movie.movie_idx from cornFarmer.user_movie where day(created_at)=day(curdate()-interval 1 day) group by movie_idx order by count(*) desc;";
+        String query="select movie_idx from user_movie group by day(created_at),movie_idx order by day(created_at) desc,count(*) desc;";
         return this.jdbcTemplate.query(query,
                 (rs, rowNum) -> new GetMovieInfo(
                         rs.getInt("user_movie.movie_idx"))// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+        );
+    }
+
+    public List<GetMovieInfo> getMovieIdxRand(){
+        String query="select movie_idx from movie order by rand();";
+        return this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetMovieInfo(
+                        rs.getInt("movie_idx"))// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
         );
     }
 
