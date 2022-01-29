@@ -145,6 +145,19 @@ public class AdminDao {
         this.jdbcTemplate.update(createMovieKeywordQuery, createMovieKeywordParams);
     }
 
+    // keyword 테이블에 keyword 추가
+    public int createKeyword(String keywordName){
+        String createKeywordQuery = "insert into keyword (keyword)\n" +
+                "SELECT ? FROM DUAL\n" +
+                "WHERE NOT EXISTS\n" +
+                "(SELECT keyword FROM keyword WHERE keyword = ?)";
+        Object[] createKeywordParams = new Object[]{keywordName, keywordName};
+        this.jdbcTemplate.update(createKeywordQuery, createKeywordParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
     public List<GetUserRes> getUser(){
         String getUserQuery = "select user_idx, nickname, photo from user";
         return this.jdbcTemplate.query(getUserQuery,

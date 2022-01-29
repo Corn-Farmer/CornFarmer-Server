@@ -107,6 +107,22 @@ public class AdminService {
         }
     }
 
+    public PostKeywordRes createKeyword(PostKeywordReq postKeywordReq) throws BaseException {
+        // TODO : Transactional 고려하기
+        try {
+            // 영화-키워드 연관성 생성
+            int keywordIdx = adminDao.createKeyword(postKeywordReq.getKeyword());
+            for (int movieIdx : postKeywordReq.getMovieList())
+                adminDao.createMovieKeyword(keywordIdx, movieIdx);
+            return new PostKeywordRes(keywordIdx);
+        } catch (DuplicateKeyException duplicateKeyException){
+            throw new BaseException(DUPLICATE_KEY_ERROR);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
     @Transactional
     public void deleteMovie(int movieIdx) throws BaseException {
         adminProvider.validateMovieExist(movieIdx); //이미 삭제된 영화인지 확인

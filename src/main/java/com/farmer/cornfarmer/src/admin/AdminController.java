@@ -209,7 +209,7 @@ public class AdminController {
     }
 
     /**
-     * 키워드 추가 API
+     * 키워드에 영화 추가 API
      * [POST] /admin/movies/keywords/{keywordIdx}
      * 개발자 : 홍민주(앨리)
      * 설명 : 이미 존재하는 키워드에 영화 추가
@@ -221,6 +221,23 @@ public class AdminController {
         try {
             PostKeywordMovieRes postKeywordMovieRes= adminService.createKeywordMovies(keywordIdx, postKeywordMovieReq.getMovieList());
             return new BaseResponse<>(postKeywordMovieRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 키워드 추가 API
+     * [POST] /admin/movies/keywords
+     * 개발자 : 홍민주(앨리)
+     */
+    @ResponseBody
+    @PostMapping("/movies/keywords")
+    public BaseResponse<PostKeywordRes> postKeyword(@RequestBody PostKeywordReq postKeywordReq){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            PostKeywordRes postKeywordRes= adminService.createKeyword(postKeywordReq);
+            return new BaseResponse<>(postKeywordRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
