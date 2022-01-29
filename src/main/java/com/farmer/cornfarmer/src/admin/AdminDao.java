@@ -138,6 +138,26 @@ public class AdminDao {
         this.jdbcTemplate.update(createMoviePhotoQuery, createMoviePhotoParams);
     }
 
+    // keyword의 movie 추가(keyword_movie 테이블)
+    public void createMovieKeyword(int keyword_idx, int movie_idx){
+        String createMovieKeywordQuery = "insert into keyword_movie(keyword_idx, movie_idx) values (?, ?)";
+        Object[] createMovieKeywordParams = new Object[]{keyword_idx, movie_idx};
+        this.jdbcTemplate.update(createMovieKeywordQuery, createMovieKeywordParams);
+    }
+
+    // keyword 테이블에 keyword 추가
+    public int createKeyword(String keywordName){
+        String createKeywordQuery = "insert into keyword (keyword)\n" +
+                "SELECT ? FROM DUAL\n" +
+                "WHERE NOT EXISTS\n" +
+                "(SELECT keyword FROM keyword WHERE keyword = ?)";
+        Object[] createKeywordParams = new Object[]{keywordName, keywordName};
+        this.jdbcTemplate.update(createKeywordQuery, createKeywordParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
     public List<GetUserRes> getUser(){
         String getUserQuery = "select user_idx, nickname, photo from user";
         return this.jdbcTemplate.query(getUserQuery,
@@ -176,6 +196,32 @@ public class AdminDao {
     public int getMovieIdx(int movieIdx) {
         String getMovieIdxQuery = "select count(*) from movie where movie_idx = ?";
         return this.jdbcTemplate.queryForObject(getMovieIdxQuery,int.class,movieIdx);
+    }
+
+    public List<GetKeywordRes> getKeywords() {
+        // 수정
+        String getKeywordsQuery = "select * from keyword";
+        return this.jdbcTemplate.query(getKeywordsQuery,
+                (rs, rowNum) -> new GetKeywordRes(
+                        rs.getInt("keyword_idx"),
+                        rs.getString("keyword"),
+                         null)
+        );
+    }
+
+    public List<Movie> getKeywordMovies(int keywordIdx) {
+        //수정 필요
+        String getKeywordMoviesQuery = "select keyword.movie_idx as movie_idx,movie_title, photo\n" +
+                "from (select * from keyword_movie where keyword_idx = ?) keyword\n" +
+                "natural join keyword_movie natural join movie\n" +
+                "    left join movie_photo mp on keyword_movie.movie_idx = mp.movie_idx group by movie.movie_idx";
+        return this.jdbcTemplate.query(getKeywordMoviesQuery,
+                (rs, rowNum) -> new Movie(
+                        rs.getInt("movie_idx"),
+                        rs.getString("movie_title"),
+                        rs.getString("photo")),
+                keywordIdx
+        );
     }
 
     public int deleteMovie(int movieIdx) {

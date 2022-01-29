@@ -71,9 +71,9 @@ public class AdminProvider {
         }
     }
 
-
     public List<GetUserRes> getUsers() throws BaseException {
         try {
+            // TODO : 성능 향상 방법 고민
             List<GetUserRes> getUserList = adminDao.getUser();
             for (GetUserRes getUserRes: getUserList)
             {
@@ -81,6 +81,19 @@ public class AdminProvider {
                 getUserRes.setOttList(adminDao.getUserOtt(getUserRes.getUserIdx()));
             }
             return getUserList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetKeywordRes> getKeywords() throws BaseException {
+        try {
+            List<GetKeywordRes> getKeywordList = adminDao.getKeywords();
+            for (GetKeywordRes getKeywordRes: getKeywordList)
+            {
+                getKeywordRes.setMovieList(adminDao.getKeywordMovies(getKeywordRes.getKeywordIdx()));
+            }
+            return getKeywordList;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

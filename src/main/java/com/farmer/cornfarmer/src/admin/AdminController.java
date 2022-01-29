@@ -131,7 +131,6 @@ public class AdminController {
         }
     }
 
-
     /**
      * 모든 후기 보기 (관리자용)
      * [GET] /admin/reviews
@@ -204,6 +203,58 @@ public class AdminController {
         try {
             List<GetUserRes> getUserResList = adminProvider.getUsers();
             return new BaseResponse<>(getUserResList);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 키워드에 영화 추가 API
+     * [POST] /admin/movies/keywords/{keywordIdx}
+     * 개발자 : 홍민주(앨리)
+     * 설명 : 이미 존재하는 키워드에 영화 추가
+     */
+    @ResponseBody
+    @PostMapping("/movies/keywords/{keywordIdx}")
+    public BaseResponse<PostKeywordMovieRes> postKeywordMovies(@PathVariable int keywordIdx, @RequestBody PostKeywordMovieReq postKeywordMovieReq){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            PostKeywordMovieRes postKeywordMovieRes= adminService.createKeywordMovies(keywordIdx, postKeywordMovieReq.getMovieList());
+            return new BaseResponse<>(postKeywordMovieRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 키워드 추가 API
+     * [POST] /admin/movies/keywords
+     * 개발자 : 홍민주(앨리)
+     */
+    @ResponseBody
+    @PostMapping("/movies/keywords")
+    public BaseResponse<PostKeywordRes> postKeyword(@RequestBody PostKeywordReq postKeywordReq){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            PostKeywordRes postKeywordRes= adminService.createKeyword(postKeywordReq);
+            return new BaseResponse<>(postKeywordRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 모든 키워드 조회 API
+     * [GET] /admin/movies/keywords
+     * 개발자 : 홍민주(앨리)
+     */
+    @ResponseBody
+    @GetMapping("/movies/keywords")
+    public BaseResponse<List<GetKeywordRes>> getKeywords(){
+        // TODO : 관리자 체크 (jwt)
+        try {
+            List<GetKeywordRes> Keywords= adminProvider.getKeywords();
+            return new BaseResponse<>(Keywords);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

@@ -2,15 +2,15 @@ package com.farmer.cornfarmer.src.admin.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class Movie {
-    private int movieIdx;
-    private String movieTitle;
-    private String moviePhoto;
+@NoArgsConstructor
+public class PostKeywordMovieReq {
+    private List<Integer> movieList;
 }
-
-
