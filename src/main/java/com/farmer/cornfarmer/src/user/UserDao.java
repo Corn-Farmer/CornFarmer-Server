@@ -79,7 +79,7 @@ public class UserDao {
 
     public GetUserInfo getUser(String oauth_id)
     {
-        String getUserQuery = "select * from user where  oauth_id = ? ";
+        String getUserQuery = "select user_idx, oauth_channel, ouath_id, nickname from user where  oauth_id = ? ";
 
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserInfo(
@@ -103,7 +103,7 @@ public class UserDao {
     }
 
     public int createUserInfo(PostUserReq postUserReq){
-        String createUserInfoQuery = "update user set (nickname, photo, is_male, birth, active) values(?,?,?,?,?) where oauth_id=?";
+        String createUserInfoQuery = "update user set nickname = ?, photo = ?, is_male = ?, birth = ?, active = ? where oauth_id = ?";
         Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
 
@@ -128,12 +128,12 @@ public class UserDao {
     }
 
     public String getPhoto(int userIdx){
-        String getPhotoQuery = "select photo from users where user_idx = ?";
+        String getPhotoQuery = "select photo from user where user_idx = ?";
         return this.jdbcTemplate.queryForObject(getPhotoQuery, String.class, userIdx);
     }
 
     public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq){
-        String modifyMyInfoQuery = "update user set (nickname, photo) values(?,?) where user_idx=?";
+        String modifyMyInfoQuery = "update user set nickname = ?, photo = ? where user_idx=?";
         Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getUserNickname(), postUserInfoReq.getPhoto(), userIdx};
         this.jdbcTemplate.queryForObject(modifyMyInfoQuery, int.class, modifyMyInfoQuery);
 
@@ -161,7 +161,7 @@ public class UserDao {
     }
 
     public int inactive(int userIdx){
-        String inactiveQuery = "update user set (active) values(?) where user_id=?";
+        String inactiveQuery = "update user set active = ?  where user_idx=?";
         Object[] inactiveParams = new Object[]{false, userIdx};
         this.jdbcTemplate.update(inactiveQuery, inactiveParams);
 
@@ -170,7 +170,7 @@ public class UserDao {
     }
 
     public List<OttInfo> getOttInfo(int userIdx){
-        String getOttInfoQuery = "select ott.ott_idx, ott.name, ott.photo from ott left join User on ott.ott_idx = user_ott.ott_idx where user_idx=?";
+        String getOttInfoQuery = "select ott.ott_idx, ott.name, ott.photo from ott left join user_ott on ott.ott_idx = user_ott.ott_idx where user_idx=?";
         int param = userIdx;
 
         return this.jdbcTemplate.query(getOttInfoQuery,
@@ -181,7 +181,7 @@ public class UserDao {
                 ), param);
     }
     public List<GenreInfo> getGenreInfo(int userIdx){
-        String getOttInfoQuery = "select genre.genre_idx, genre.genre_name from genre left join User on genre.genre_idx = User_genre.genre_idx where user_idx=?";
+        String getOttInfoQuery = "select genre.genre_idx, genre.genre_name from genre left join user_genre on genre.genre_idx = user_genre.genre_idx where user_idx=?";
         int param = userIdx;
         return this.jdbcTemplate.query(getOttInfoQuery,
                 (rs, rowNum)-> new GenreInfo(
