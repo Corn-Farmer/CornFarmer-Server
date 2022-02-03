@@ -41,10 +41,11 @@ public class UserController {
      * 개발자 : 팡코(조대환)
      */
     @ResponseBody
-    @GetMapping("/outh/kakao")
-    public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException { //카카오 엑세스토큰 받아옴
+    @GetMapping("/oauth/kakao")
+    public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException {
         String cornfarmer = "";
-        String accessToken =postLoginReq.getAccessToken();
+        String accessToken = postLoginReq.getAccessToken();
+        System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
             if (userProvider.checkOauthId(id)) {
