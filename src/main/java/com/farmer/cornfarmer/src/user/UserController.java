@@ -37,13 +37,14 @@ public class UserController {
 
     /**
      * 카카오 로그인
-     * [GET] /users/outh/kakao
+     * [POST] /users/oauth/kakao
      * 개발자 : 팡코(조대환)
      */
     @ResponseBody
-    @GetMapping("/oauth/kakao")
-    public BaseResponse<PostLoginRes> kakaoLogin(@RequestParam String accessToken) throws BaseException {
+    @PostMapping("/oauth/kakao")
+    public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException {
         String cornfarmer = "";
+        String accessToken = postLoginReq.getAccessToken();
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
