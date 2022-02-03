@@ -42,9 +42,8 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/oauth/kakao")
-    public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException {
+    public BaseResponse<PostLoginRes> kakaoLogin(@RequestParam String accessToken) throws BaseException {
         String cornfarmer = "";
-        String accessToken = postLoginReq.getAccessToken();
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
