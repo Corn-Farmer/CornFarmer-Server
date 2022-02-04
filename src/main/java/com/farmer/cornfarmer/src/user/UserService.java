@@ -110,6 +110,11 @@ public class UserService {
         return id;
     }
 
+    public String emptyJwt(String Oauth_id){
+        String jwt = jwtService.createJwt(userDao.getUserIdx(Oauth_id), null, Oauth_id, null );
+        return jwt;
+    }
+
     public int createUser(String id, String oauth_channel)throws BaseException{
         int result = 0;
         try {
@@ -125,21 +130,21 @@ public class UserService {
         return result;
     }
 
-    public PostUserRes createUserInfo(PostUserReq postUserReq) throws BaseException
+    public PostUserRes createUserInfo(PostUserReq postUserReq, String PhotoUrl) throws BaseException
     {
         try{
-            int userIdx =  userDao.createUserInfo(postUserReq);
+            int userIdx =  userDao.createUserInfo(postUserReq, PhotoUrl);
             return new PostUserRes(userIdx);
         }
         catch (Exception Exception)
         {
-            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+            throw new BaseException(BaseResponseStatus.POST_USERS_EXIST_OAUTHID);
         }
     }
 
-    public UserMyInfo modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq) throws BaseException {
+    public UserMyInfo modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl) throws BaseException {
             try{
-                userDao.modifyMyInfo(userIdx, postUserInfoReq);
+                userDao.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl);
                 GetUserInfo getUserInfo = userDao.getUser(userDao.getUserOauth_id(userIdx));
 
                 jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(),getUserInfo.getOauth_id(), getUserInfo.getNickname());
@@ -148,6 +153,7 @@ public class UserService {
 
             } catch (BaseException exception) {
                 exception.printStackTrace();
+                System.out.println(exception);
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
             }
 

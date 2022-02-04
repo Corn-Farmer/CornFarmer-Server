@@ -5,9 +5,11 @@ import com.farmer.cornfarmer.src.user.model.PostUserInfoReq;
 import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.src.user.model.GetUserInfo;
 import com.farmer.cornfarmer.src.user.model.PostUserReq;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -40,12 +42,6 @@ public class UserDao {
                 ),1,userIdx);
        return getMyReviewResList;
     }
-  
-//    public boolean checkKakaoOauth(String oauth_id) {
-//        String checkOauthQuery = "select exists(select oauth_id from User where oauth_id = ? AND oauth_channel = 'kakao')";
-//        Boolean result = this.jdbcTemplate.queryForObject(checkOauthQuery, boolean.class, oauth_id);
-//        return result;
-//    }
 
     public boolean checkOauth(String oauth_id) {
         String checkOauthQuery = "select exists(select oauth_id from user where oauth_id = ?)";
@@ -53,15 +49,9 @@ public class UserDao {
         return result;
     }
 
-    public boolean checkNickname(String oauth_id) {
-        String checkOauthQuery = "select exists(select nickname from user where oauth_id = ?)";
-        Boolean result = this.jdbcTemplate.queryForObject(checkOauthQuery, boolean.class, oauth_id);
-        return result;
-    }
     public String checkUserNickName(String oauth_id){
         String checkUserNickNameQuery = "select nickname from user where oauth_id = ?";
         String result = this.jdbcTemplate.queryForObject(checkUserNickNameQuery, String.class, oauth_id);
-        System.out.println(result);
         return result;
     }
 
@@ -120,27 +110,43 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
 
     }
+    public boolean checkUserOtt(int ott_idx, int user_idx) {
+        String checkUserOttQuery = "select exists(select ott_idx from user_ott where ott_idx = ? and user_idx = ?)";
+        Object[] checkUserOttParam = new Object[]{ott_idx, user_idx};
+        Boolean result = this.jdbcTemplate.queryForObject(checkUserOttQuery, boolean.class, checkUserOttParam);
+        return result;
+    }
 
-    public int createUserInfo(PostUserReq postUserReq){
+    public boolean checkGenreUser(int genre_idx, int user_idx) {
+        String checkUserOttQuery = "select exists(select genre_idx from user_genre where genre_idx = ? and user_idx = ?)";
+        Object[] checkUserOttParam = new Object[]{genre_idx, user_idx};
+        Boolean result = this.jdbcTemplate.queryForObject(checkUserOttQuery, boolean.class, checkUserOttParam);
+        return result;
+    }
+
+    public int createUserInfo(PostUserReq postUserReq, String PhotoUrl){
         String createUserInfoQuery = "update user set nickname = ?, photo = ?, is_male = ?, birth = ?, active = ? where oauth_id = ?";
-        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
-
+        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), PhotoUrl, postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
-//////////
+
         String getUserQuery = "select user_idx from user where oauth_id = ?";
         String getUserParam = postUserReq.getOauth_id();
         int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, getUserParam );
-        for(int i=0; i<postUserReq.getOttList().size(); i++) {
-            String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
-            Object[] createUserParams = new Object[]{postUserReq.getOttList().get(i), userIdx };
-            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+
+        for(int ott_idx : postUserReq.getOttList()) {
+            if(!checkUserOtt(ott_idx, userIdx)) {
+                String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?) ";
+                Object[] createUserParams = new Object[]{ott_idx, userIdx};
+                this.jdbcTemplate.update(UserOttQuery, createUserParams);
+            }
         }
 
-        for(int i=0; i<postUserReq.getGenreList().size(); i++) {
-            String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
-            Object[] createUserParams = new Object[]{postUserReq.getGenreList().get(i), userIdx };
-
-            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+        for(int genre_idx : postUserReq.getGenreList()) {
+            if(!checkGenreUser(genre_idx, userIdx)){
+                String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
+                Object[] createUserParams = new Object[]{genre_idx, userIdx};
+                this.jdbcTemplate.update(UserOttQuery, createUserParams);
+            }
         }
 
         return userIdx;
@@ -151,7 +157,7 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(getPhotoQuery, String.class, userIdx);
     }
 
-    public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq){
+    public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl){
         String modifyMyInfoQuery = "update user set nickname = ?, photo = ? where user_idx=?";
         Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getNickname(), postUserInfoReq.getPhoto(), userIdx};
         this.jdbcTemplate.update(modifyMyInfoQuery, modifyMyInfoParams);
@@ -162,18 +168,20 @@ public class UserDao {
         String deleteMyGenreQuery = "delete from user_genre where user_idx=?";
         this.jdbcTemplate.update(deleteMyGenreQuery, userIdx);
 
-        for(int i=0; i<postUserInfoReq.getUserOtt().size(); i++) {
-            String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
-            Object[] createUserParams = new Object[]{postUserInfoReq.getUserOtt().get(i), userIdx };
-
-            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+        for(int ott_idx : postUserInfoReq.getUserOtt()) {
+            if(!checkUserOtt(ott_idx, userIdx)) {
+                String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
+                Object[] createUserParams = new Object[]{ott_idx, userIdx, ott_idx, userIdx};
+                this.jdbcTemplate.update(UserOttQuery, createUserParams);
+            }
         }
 
-        for(int i=0; i<postUserInfoReq.getGenreList().size(); i++) {
-            String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
-            Object[] createUserParams = new Object[]{postUserInfoReq.getGenreList().get(i), userIdx };
-
-            this.jdbcTemplate.update(UserOttQuery, createUserParams);
+        for(int genre_idx : postUserInfoReq.getGenreList()) {
+            if(!checkGenreUser(genre_idx, userIdx)) {
+                String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
+                Object[] createUserParams = new Object[]{genre_idx, userIdx, genre_idx, userIdx};
+                this.jdbcTemplate.update(UserOttQuery, createUserParams);
+            }
         }
 
 

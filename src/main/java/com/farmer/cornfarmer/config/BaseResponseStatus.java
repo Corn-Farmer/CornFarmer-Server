@@ -34,6 +34,7 @@ public enum BaseResponseStatus {
     POST_USERS_INVALID_NICKNAME(false, 2018, "닉네임이 디비에 존재하지 않습니다."),
     POST_USERS_INVALID_OATUH_ID(false, 2019, "oauth_id가 디비에 없습니다."),
     POST_USERS_CREATE_FAILED(false, 2020, "db 유저생성을 실패헸습니다."),
+    POST_USERS_EXIST_OAUTHID(false, 2020, "db에 유저가 이미 존재합니다.."),
 
 
 
