@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.farmer.cornfarmer.utils.S3Uploader;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,24 +27,30 @@ public class UserController {
     @Autowired
     private final JwtService jwtService;
 
+    @Autowired
+    private final S3Uploader S3Uploader;
 
-    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService) {
+
+    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService, S3Uploader S3Uploader) {
         this.userProvider = userProvider;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.S3Uploader = S3Uploader;
     }
 
 
 
     /**
      * 카카오 로그인
-     * [GET] /users/outh/kakao
+     * [GET] /users/oauth/kakao
      * 개발자 : 팡코(조대환)
      */
     @ResponseBody
-    @GetMapping("/outh/kakao")
-    public BaseResponse<PostLoginRes> kakaoLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
+    @PostMapping("/oauth/kakao")
+    public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException { //카카오 엑세스토큰 받아옴
         String cornfarmer = "";
+        String accessToken = postLoginReq.getAccessToken();
+        System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
             if (userProvider.checkOauthId(id)) {
@@ -56,13 +63,13 @@ public class UserController {
                 else
                 {
                     //oautid는 저장됐지만 회원가입은 안한경우
-                    PostLoginRes postLoginRes = new PostLoginRes(true, id, userProvider.getUserIdx(id));
+                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
             } else {
                 //db에 oauthid 존재하지 않는경우 디비에 삽입하고 리턴
                 int userIdx = userService.createUser(id,"kakao");
-                PostLoginRes postLoginRes = new PostLoginRes(true, id, userIdx);
+                PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userIdx);
                 return new BaseResponse<>(postLoginRes);
             }
         }
@@ -72,13 +79,15 @@ public class UserController {
     }
     /**
      * 네이버 로그인
-     * [GET] /users/outh/naver
+     * [GET] /users/oauth/naver
      * 개발자 : 팡코(조대환)
      */
     @ResponseBody
-    @GetMapping("/outh/naver")
-    public BaseResponse<PostLoginRes> naverLogin(@RequestParam String accessToken) throws BaseException { //카카오 엑세스토큰 받아옴
+    @PostMapping("/oauth/naver")
+    public BaseResponse<PostLoginRes> naverLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException { //카카오 엑세스토큰 받아옴
         String cornfarmer = "";
+        String accessToken = postLoginReq.getAccessToken();
+        System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getNaverOauthId(accessToken);
             if (userProvider.checkOauthId(id)) {
@@ -91,13 +100,13 @@ public class UserController {
                 else
                 {
                     //oautid는 저장됐지만 회원가입은 안한경우
-                    PostLoginRes postLoginRes = new PostLoginRes(true, id, userProvider.getUserIdx(id));
+                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
             } else {
                 //db에 oauthid 존재하지 않는경우 디비에 삽입하고 리턴
                 int userIdx = userService.createUser(id,"naver");
-                PostLoginRes postLoginRes = new PostLoginRes(true, id, userIdx);
+                PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userIdx);
                 return new BaseResponse<>(postLoginRes);
             }
         }
@@ -119,7 +128,8 @@ public class UserController {
             {
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
             }
-            PostUserRes postUserRes = userService.createUserInfo(postUserReq);
+            String PhotoUrl = S3Uploader.upload(postUserReq.getPhoto(),"user");
+            PostUserRes postUserRes = userService.createUserInfo(postUserReq, PhotoUrl);
             return new BaseResponse<>(postUserRes);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -159,7 +169,9 @@ public class UserController {
         try{
             int tokenIdx = jwtService.getUserIdx();
             if(userIdx == tokenIdx) {
-                return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq));
+                //이전에 저장되어있던 사진파일 삭제
+                String PhotoUrl = S3Uploader.upload(postUserInfoReq.getPhoto(), "user");
+                return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl));
             }
             else
             {

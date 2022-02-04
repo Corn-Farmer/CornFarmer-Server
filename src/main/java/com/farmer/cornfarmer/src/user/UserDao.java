@@ -9,6 +9,7 @@ import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -101,9 +102,9 @@ public class UserDao {
 
 
     public int createUser(String id, String oauth_channel){
-        String createUserQuery = "insert into user (oauth_id, nickname, oauth_channel, active) values (?,?,?,?) where not exists(select oauth_id from user where oauth_id = ?)";
+        String createUserQuery = "insert into user (oauth_id, nickname, oauth_channel, active) values (?,?,?,?)";
 
-        this.jdbcTemplate.update(createUserQuery, id, "", oauth_channel, false,id);
+        this.jdbcTemplate.update(createUserQuery, id, "", oauth_channel, false);
 
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
@@ -123,9 +124,9 @@ public class UserDao {
         return result;
     }
 
-    public int createUserInfo(PostUserReq postUserReq){
+    public int createUserInfo(PostUserReq postUserReq, String PhotoUrl){
         String createUserInfoQuery = "update user set nickname = ?, photo = ?, is_male = ?, birth = ?, active = ? where oauth_id = ?";
-        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), postUserReq.getPhoto(), postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
+        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), PhotoUrl, postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
 
         String getUserQuery = "select user_idx from user where oauth_id = ?";
@@ -156,7 +157,7 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(getPhotoQuery, String.class, userIdx);
     }
 
-    public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq){
+    public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl){
         String modifyMyInfoQuery = "update user set nickname = ?, photo = ? where user_idx=?";
         Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getNickname(), postUserInfoReq.getPhoto(), userIdx};
         this.jdbcTemplate.update(modifyMyInfoQuery, modifyMyInfoParams);

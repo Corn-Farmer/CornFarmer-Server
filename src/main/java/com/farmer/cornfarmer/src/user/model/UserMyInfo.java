@@ -3,6 +3,7 @@ package com.farmer.cornfarmer.src.user.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
