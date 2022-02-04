@@ -98,8 +98,7 @@ public class UserController {
                     return new BaseResponse<>(postLoginRes);
                 }
                 else
-                {
-                    //oautid는 저장됐지만 회원가입은 안한경우
+                { //oautid는 저장됐지만 회원가입은 안한경우
                     PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
@@ -169,7 +168,7 @@ public class UserController {
         try{
             int tokenIdx = jwtService.getUserIdx();
             if(userIdx == tokenIdx) {
-                //이전에 저장되어있던 사진파일 삭제
+                // TODO : 이전에 저장되어있던 사진파일 삭제
                 String PhotoUrl = S3Uploader.upload(postUserInfoReq.getPhoto(), "user");
                 return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl));
             }
