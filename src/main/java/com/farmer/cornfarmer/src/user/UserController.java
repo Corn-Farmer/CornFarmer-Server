@@ -136,7 +136,6 @@ public class UserController {
     public BaseResponse<UserMyInfo> getMyInfo(@PathVariable int userIdx){
         try{
             int tokenIdx = jwtService.getUserIdx();
-           // int tokenIdx = userIdx;
             if(userIdx == tokenIdx) {
                 return new BaseResponse<>(userProvider.getMyInfo(userIdx));
             }
@@ -180,9 +179,16 @@ public class UserController {
     @ResponseBody
     @PutMapping("/{userIdx}/delete")
     public BaseResponse<PostUserRes> deleteUser(@PathVariable int userIdx){
-        try{
-            PostUserRes userRes = userService.inactive(userIdx);
-            return new BaseResponse<>(userRes);
+        try {
+            int tokenIdx = jwtService.getUserIdx();
+            if (userIdx == tokenIdx) {
+                PostUserRes userRes = userService.inactive(userIdx);
+                return new BaseResponse<>(userRes);
+            }
+            else
+            {
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
         }
         catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

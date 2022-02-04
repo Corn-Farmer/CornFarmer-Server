@@ -131,7 +131,7 @@ public class UserService {
         }
         catch (Exception Exception)
         {
-            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+            throw new BaseException(BaseResponseStatus.POST_USERS_EXIST_OAUTHID);
         }
     }
 
@@ -146,6 +146,7 @@ public class UserService {
 
             } catch (BaseException exception) {
                 exception.printStackTrace();
+                System.out.println(exception);
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
             }
 

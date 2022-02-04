@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @Getter
@@ -14,4 +15,4 @@ public class PostUserInfoReq {
     String photo;
     List<Integer> userOtt;
     List<Integer> genreList;
-}
+ }
