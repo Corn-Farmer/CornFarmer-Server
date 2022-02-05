@@ -215,8 +215,7 @@ public class UserController {
     @GetMapping("/{userIdx}/reviews")
     public BaseResponse<List<GetMyReviewRes>> getMyReviews(@PathVariable int userIdx, @RequestParam(name="sort", defaultValue = "recent") String sort ){
         try{
-            //int userJwtIdx = jwtService.getUserIdx();
-            int userJwtIdx = 1; //가정
+            int userJwtIdx = jwtService.getUserIdx();
             List<GetMyReviewRes> result;
             switch(sort) {
                 case "recent":
@@ -247,8 +246,7 @@ public class UserController {
     @GetMapping("/{userIdx}/likes/movies")
     public BaseResponse<List<GetMyMovieLikedRes>> getMyMoviesLiked(@PathVariable int userIdx ){
         try{
-            //int userJwtIdx = jwtService.getUserIdx();
-            int userJwtIdx = 1; //가정
+            int userJwtIdx = jwtService.getUserIdx();
             List<GetMyMovieLikedRes> result = userProvider.getMyMoviesLiked(userIdx,userJwtIdx);
             return new BaseResponse<>(result);
         }catch(BaseException exception) {
