@@ -10,9 +10,8 @@ import lombok.Setter;
 @Setter
 public class PostLoginReq {
     private String accessToken;
-
     public PostLoginReq(@JsonProperty("accessToken") String accessToken)
     {
         this.accessToken = accessToken;
-    }
+  }
 }

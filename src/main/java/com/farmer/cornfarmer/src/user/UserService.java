@@ -33,6 +33,7 @@ public class UserService {
     }
 
     public String getKakaoOauthId(String accessToken) throws BaseException {
+        System.out.println("accessToken(getKakaoOauthId) : " + accessToken);
         //access token 으로 oauth_id 가져오기
         int id = 0;
         String reqURL = "https://kapi.kakao.com/v2/user/me";
@@ -42,6 +43,7 @@ public class UserService {
 
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
             conn.setRequestProperty("Authorization", "Bearer "+accessToken);
 
             /*int responseCode = conn.getResponseCode();

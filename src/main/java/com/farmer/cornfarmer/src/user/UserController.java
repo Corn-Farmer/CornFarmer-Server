@@ -42,12 +42,12 @@ public class UserController {
 
     /**
      * 카카오 로그인
-     * [GET] /users/oauth/kakao
+     * [POST] /users/oauth/kakao
      * 개발자 : 팡코(조대환)
      */
     @ResponseBody
     @PostMapping("/oauth/kakao")
-    public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException { //카카오 엑세스토큰 받아옴
+    public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException {
         String cornfarmer = "";
         String accessToken = postLoginReq.getAccessToken();
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
@@ -98,8 +98,7 @@ public class UserController {
                     return new BaseResponse<>(postLoginRes);
                 }
                 else
-                {
-                    //oautid는 저장됐지만 회원가입은 안한경우
+                { //oautid는 저장됐지만 회원가입은 안한경우
                     PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
@@ -225,8 +224,7 @@ public class UserController {
     @GetMapping("/{userIdx}/reviews")
     public BaseResponse<List<GetMyReviewRes>> getMyReviews(@PathVariable int userIdx, @RequestParam(name="sort", defaultValue = "recent") String sort ){
         try{
-            //int userJwtIdx = jwtService.getUserIdx();
-            int userJwtIdx = 1; //가정
+            int userJwtIdx = jwtService.getUserIdx();
             List<GetMyReviewRes> result;
             switch(sort) {
                 case "recent":
@@ -257,8 +255,7 @@ public class UserController {
     @GetMapping("/{userIdx}/likes/movies")
     public BaseResponse<List<GetMyMovieLikedRes>> getMyMoviesLiked(@PathVariable int userIdx ){
         try{
-            //int userJwtIdx = jwtService.getUserIdx();
-            int userJwtIdx = 1; //가정
+            int userJwtIdx = jwtService.getUserIdx();
             List<GetMyMovieLikedRes> result = userProvider.getMyMoviesLiked(userIdx,userJwtIdx);
             return new BaseResponse<>(result);
         }catch(BaseException exception) {
