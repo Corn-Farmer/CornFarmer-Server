@@ -128,10 +128,10 @@ public class UserService {
         return result;
     }
 
-    public PostUserRes createUserInfo(PostUserReq postUserReq, String PhotoUrl) throws BaseException
+    public PostUserRes createUserInfo(PostUserReq postUserReq, String PhotoUrl, String oauth_id) throws BaseException
     {
         try{
-            int userIdx =  userDao.createUserInfo(postUserReq, PhotoUrl);
+            int userIdx =  userDao.createUserInfo(postUserReq, PhotoUrl, oauth_id);
             return new PostUserRes(userIdx);
         }
         catch (Exception Exception)

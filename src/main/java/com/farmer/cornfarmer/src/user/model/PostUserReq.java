@@ -11,8 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostUserReq {
-    @NotNull
-    private String oauth_id;
 
     @NotNull
     private String nickname;

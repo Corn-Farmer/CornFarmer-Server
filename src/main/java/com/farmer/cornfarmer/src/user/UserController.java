@@ -124,7 +124,8 @@ public class UserController {
     public BaseResponse<PostUserRes> join(@ModelAttribute PostUserReq postUserReq) throws BaseException{
         try{
             //kakao naver.
-            if(userProvider.checkOauthId(postUserReq.getOauth_id()) == false)
+            String ouath_id = jwtService.getOauthId();
+            if(userProvider.checkOauthId(ouath_id) == false)
             {
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
             }
@@ -133,7 +134,7 @@ public class UserController {
                 throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
             }
             String PhotoUrl = S3Uploader.upload(postUserReq.getPhoto(),"user");
-            PostUserRes postUserRes = userService.createUserInfo(postUserReq, PhotoUrl);
+            PostUserRes postUserRes = userService.createUserInfo(postUserReq, PhotoUrl,ouath_id);
             return new BaseResponse<>(postUserRes);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());

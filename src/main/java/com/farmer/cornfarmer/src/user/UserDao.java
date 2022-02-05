@@ -149,14 +149,14 @@ public class UserDao {
         return result;
     }
 
-    public int createUserInfo(PostUserReq postUserReq, String PhotoUrl){
+    public int createUserInfo(PostUserReq postUserReq, String PhotoUrl, String oauth_id){
         String createUserInfoQuery = "update user set nickname = ?, photo = ?, is_male = ?, birth = ?, active = ? where oauth_id = ?";
-        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), PhotoUrl, Boolean.parseBoolean(postUserReq.getIs_male()), postUserReq.getBirth(), true ,postUserReq.getOauth_id()};
+        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), PhotoUrl, Boolean.parseBoolean(postUserReq.getIs_male()), postUserReq.getBirth(), true ,oauth_id};
 
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
 
         String getUserQuery = "select user_idx from user where oauth_id = ?";
-        String getUserParam = postUserReq.getOauth_id();
+        String getUserParam = oauth_id;
         int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, getUserParam );
 
         for(String ottidx : postUserReq.getOttList()) {
