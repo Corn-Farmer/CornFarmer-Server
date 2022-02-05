@@ -55,6 +55,31 @@ public class UserDao {
         return result;
     }
 
+    public Boolean duplicateNick(String nick)
+    {
+        String checkUserOttQuery = "select exists(select nickname from user where nickname = ?)";
+        Object[] checkUserOttParam = new Object[]{nick};
+        Boolean result = this.jdbcTemplate.queryForObject(checkUserOttQuery, boolean.class, checkUserOttParam);
+        return result;
+    }
+
+    public Boolean checkDuplicateNick(String nick, int useridx)
+    {
+        String checkidxQuery = "select user_idx from user where nickname = ?)";
+        Object[] checkidxParam = new Object[]{nick};
+        int idx = this.jdbcTemplate.queryForObject(checkidxQuery, Integer.class, checkidxParam);
+
+        if(idx == useridx) //같은 유저가 같은 닉네임을 사용할경우 넘기기
+        {
+            return false;
+        }
+        else {
+            String checkUserOttQuery = "select exists(select nickname from user where nickname = ?)";
+            Object[] checkUserOttParam = new Object[]{nick};
+            Boolean result = this.jdbcTemplate.queryForObject(checkUserOttQuery, boolean.class, checkUserOttParam);
+            return result;
+        }
+    }
 
     public int getUserIdx(String oauth_id)
     {
@@ -126,14 +151,16 @@ public class UserDao {
 
     public int createUserInfo(PostUserReq postUserReq, String PhotoUrl){
         String createUserInfoQuery = "update user set nickname = ?, photo = ?, is_male = ?, birth = ?, active = ? where oauth_id = ?";
-        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), PhotoUrl, postUserReq.is_male(), postUserReq.getBirth(),  true,postUserReq.getOauth_id()};
+        Object[] createUserInfoParams = new Object[]{postUserReq.getNickname(), PhotoUrl, Boolean.parseBoolean(postUserReq.getIs_male()), postUserReq.getBirth(), true ,postUserReq.getOauth_id()};
+
         this.jdbcTemplate.update(createUserInfoQuery, createUserInfoParams);
 
         String getUserQuery = "select user_idx from user where oauth_id = ?";
         String getUserParam = postUserReq.getOauth_id();
         int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, getUserParam );
 
-        for(int ott_idx : postUserReq.getOttList()) {
+        for(String ottidx : postUserReq.getOttList()) {
+            int ott_idx = Integer.parseInt(ottidx);
             if(!checkUserOtt(ott_idx, userIdx)) {
                 String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?) ";
                 Object[] createUserParams = new Object[]{ott_idx, userIdx};
@@ -141,7 +168,8 @@ public class UserDao {
             }
         }
 
-        for(int genre_idx : postUserReq.getGenreList()) {
+        for(String genreidx : postUserReq.getGenreList()) {
+            int genre_idx = Integer.parseInt(genreidx);
             if(!checkGenreUser(genre_idx, userIdx)){
                 String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
                 Object[] createUserParams = new Object[]{genre_idx, userIdx};
@@ -168,7 +196,8 @@ public class UserDao {
         String deleteMyGenreQuery = "delete from user_genre where user_idx=?";
         this.jdbcTemplate.update(deleteMyGenreQuery, userIdx);
 
-        for(int ott_idx : postUserInfoReq.getUserOtt()) {
+        for(String ottidx : postUserInfoReq.getUserOtt()) {
+            int ott_idx = Integer.parseInt(ottidx);
             if(!checkUserOtt(ott_idx, userIdx)) {
                 String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
                 Object[] createUserParams = new Object[]{ott_idx, userIdx, ott_idx, userIdx};
@@ -176,7 +205,9 @@ public class UserDao {
             }
         }
 
-        for(int genre_idx : postUserInfoReq.getGenreList()) {
+        for(String genreidx : postUserInfoReq.getGenreList()) {
+
+            int genre_idx = Integer.parseInt(genreidx);
             if(!checkGenreUser(genre_idx, userIdx)) {
                 String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
                 Object[] createUserParams = new Object[]{genre_idx, userIdx, genre_idx, userIdx};

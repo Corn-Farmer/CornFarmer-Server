@@ -41,6 +41,7 @@ public class S3Uploader {
             File uploadFile = convert(multipartFile).orElseThrow(() -> new BaseException(FILE_CONVERT_ERROR));
             return upload(uploadFile, dirName);
         }catch (IOException e){
+            System.out.println(e);
             throw new BaseException(FILE_CONVERT_ERROR);
         }
     }
@@ -75,6 +76,7 @@ public class S3Uploader {
         // Multipartfile에서 File로 전환
         // 전환되는 과정에서 로컬에 파일이 생성됨
         File convertFile = new File("image/" + file.getOriginalFilename());
+
         if(convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());

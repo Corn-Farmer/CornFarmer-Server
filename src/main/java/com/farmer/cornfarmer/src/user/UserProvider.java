@@ -124,4 +124,22 @@ public class UserProvider {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
+    public boolean duplicateNick(String nickname) {
+        if(userDao.duplicateNick(nickname))
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean checckDuplicateNick(String nickname,int userIdx) {
+        if(userDao.checkDuplicateNick(nickname, userIdx))
+        {
+            return true;
+        }
+        else
+            return false;
+    }
 }

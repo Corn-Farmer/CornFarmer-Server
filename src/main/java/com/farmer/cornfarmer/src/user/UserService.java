@@ -136,6 +136,7 @@ public class UserService {
         }
         catch (Exception Exception)
         {
+            System.out.println(Exception);
             throw new BaseException(BaseResponseStatus.POST_USERS_EXIST_OAUTHID);
         }
     }

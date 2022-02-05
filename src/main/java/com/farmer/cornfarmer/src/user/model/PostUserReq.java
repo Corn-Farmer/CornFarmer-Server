@@ -1,20 +1,25 @@
 package com.farmer.cornfarmer.src.user.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
+import java.sql.Date;
 import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostUserReq {
+    @NotNull
     private String oauth_id;
+
+    @NotNull
     private String nickname;
+
     private MultipartFile photo;
-    private boolean is_male;
-    private String birth;
-    private List<Integer> ottList;
-    private List<Integer> genreList;
+    private String is_male;
+    private Date birth;
+    private List<String> ottList;
+    private List<String> genreList;
 }
