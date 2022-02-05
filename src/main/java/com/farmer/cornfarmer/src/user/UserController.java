@@ -120,15 +120,20 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/")
-    public BaseResponse<PostUserRes> join(@RequestBody PostUserReq postUserReq) throws BaseException{
+    public BaseResponse<PostUserRes> join(@ModelAttribute PostUserReq postUserReq) throws BaseException{
         try{
             //kakao naver.
-            if(userProvider.checkOauthId(postUserReq.getOauth_id()) == false)
+            String ouath_id = jwtService.getOauthId();
+            if(userProvider.checkOauthId(ouath_id) == false)
             {
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
             }
+            if(userProvider.duplicateNick(postUserReq.getNickname()))
+            {
+                throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
+            }
             String PhotoUrl = S3Uploader.upload(postUserReq.getPhoto(),"user");
-            PostUserRes postUserRes = userService.createUserInfo(postUserReq, PhotoUrl);
+            PostUserRes postUserRes = userService.createUserInfo(postUserReq, PhotoUrl,ouath_id);
             return new BaseResponse<>(postUserRes);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -168,7 +173,11 @@ public class UserController {
         try{
             int tokenIdx = jwtService.getUserIdx();
             if(userIdx == tokenIdx) {
-                // TODO : 이전에 저장되어있던 사진파일 삭제
+                //이전에 저장되어있던 사진파일 삭제
+                if(userProvider.checckDuplicateNick(postUserInfoReq.getNickname(), userIdx))
+                {
+                    throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
+                }
                 String PhotoUrl = S3Uploader.upload(postUserInfoReq.getPhoto(), "user");
                 return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl));
             }
