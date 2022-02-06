@@ -169,7 +169,7 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/{userIdx}")
-    public BaseResponse<UserMyInfo> modifyMyInfo(@PathVariable int userIdx, @RequestBody PostUserInfoReq postUserInfoReq){
+    public BaseResponse<UserMyInfo> modifyMyInfo(@PathVariable int userIdx, @ModelAttribute PostUserInfoReq postUserInfoReq){
         try{
             int tokenIdx = jwtService.getUserIdx();
             if(userIdx == tokenIdx) {

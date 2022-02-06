@@ -65,20 +65,26 @@ public class UserDao {
 
     public Boolean checkDuplicateNick(String nick, int useridx)
     {
-        String checkidxQuery = "select user_idx from user where nickname = ?)";
-        Object[] checkidxParam = new Object[]{nick};
-        int idx = this.jdbcTemplate.queryForObject(checkidxQuery, Integer.class, checkidxParam);
 
-        if(idx == useridx) //같은 유저가 같은 닉네임을 사용할경우 넘기기
-        {
+        String checkUserOttQuery = "select exists(select nickname from user where nickname = ?)";
+        Object[] checkUserOttParam = new Object[]{nick};
+        Boolean is_exist = this.jdbcTemplate.queryForObject(checkUserOttQuery, boolean.class, checkUserOttParam);
+
+        if(is_exist) {
+            String checkidxQuery = "select user_idx from user where nickname = ?";
+            Object[] checkidxParam = new Object[]{nick};
+            int idx = this.jdbcTemplate.queryForObject(checkidxQuery, Integer.class, checkidxParam);
+
+            if (idx == useridx) //같은 유저가 같은 닉네임을 사용할경우 넘기기
+            {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else
             return false;
-        }
-        else {
-            String checkUserOttQuery = "select exists(select nickname from user where nickname = ?)";
-            Object[] checkUserOttParam = new Object[]{nick};
-            Boolean result = this.jdbcTemplate.queryForObject(checkUserOttQuery, boolean.class, checkUserOttParam);
-            return result;
-        }
     }
 
     public int getUserIdx(String oauth_id)
