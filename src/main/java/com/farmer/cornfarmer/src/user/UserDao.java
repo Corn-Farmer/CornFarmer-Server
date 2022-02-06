@@ -212,7 +212,6 @@ public class UserDao {
         }
 
         for(String genreidx : postUserInfoReq.getGenreList()) {
-
             int genre_idx = Integer.parseInt(genreidx);
             if(!checkGenreUser(genre_idx, userIdx)) {
                 String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
