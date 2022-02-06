@@ -193,7 +193,7 @@ public class UserDao {
 
     public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl){
         String modifyMyInfoQuery = "update user set nickname = ?, photo = ? where user_idx=?";
-        Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getNickname(), postUserInfoReq.getPhoto(), userIdx};
+        Object[] modifyMyInfoParams = new Object[]{postUserInfoReq.getNickname(), PhotoUrl, userIdx};
         this.jdbcTemplate.update(modifyMyInfoQuery, modifyMyInfoParams);
 
         String deleteMyOttQuery = "delete from user_ott where user_idx=?";
@@ -206,17 +206,16 @@ public class UserDao {
             int ott_idx = Integer.parseInt(ottidx);
             if(!checkUserOtt(ott_idx, userIdx)) {
                 String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
-                Object[] createUserParams = new Object[]{ott_idx, userIdx, ott_idx, userIdx};
+                Object[] createUserParams = new Object[]{ott_idx, userIdx};
                 this.jdbcTemplate.update(UserOttQuery, createUserParams);
             }
         }
 
         for(String genreidx : postUserInfoReq.getGenreList()) {
-
             int genre_idx = Integer.parseInt(genreidx);
             if(!checkGenreUser(genre_idx, userIdx)) {
                 String UserOttQuery = "insert into user_genre (genre_idx, user_idx) values (?,?)";
-                Object[] createUserParams = new Object[]{genre_idx, userIdx, genre_idx, userIdx};
+                Object[] createUserParams = new Object[]{genre_idx, userIdx};
                 this.jdbcTemplate.update(UserOttQuery, createUserParams);
             }
         }
