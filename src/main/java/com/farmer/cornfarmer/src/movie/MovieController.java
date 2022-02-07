@@ -150,10 +150,10 @@ public class MovieController {
     @ResponseBody
     @PutMapping("{movieIdx}/like") //ex localhost:9000/movies/5/like
     public BaseResponse<PutUserWishRes> userWish(@PathVariable("movieIdx") int movieIdx){
-        // TODO: 2022-01-18 userIdx를 1이라고 가정, 나중에 jwt로부터 userIdx 받아와야함
-        int userIdx=1;
+
 
         try{
+            int userIdx=jwtService.getUserIdx();
             GetLike like=movieProvider.getLike(userIdx,movieIdx);
             PutUserWishRes putUserWishRes=new PutUserWishRes();
             if(like.getIsLike()==1){
