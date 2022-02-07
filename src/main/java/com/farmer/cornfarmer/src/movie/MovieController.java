@@ -271,8 +271,6 @@ public class MovieController {
     @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=likeCnt
     public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
         try {
-            // TODO: 2022-01-21 나중에 jwt에서 userIdx가져와야함
-            int userIdx = 1;
             GetMovieDetail getMovieDetail = movieProvider.getMovieDetail(movieIdx);
 
             //영화 장르 추가 코드
@@ -284,6 +282,15 @@ public class MovieController {
             getMovieDetail.setMovieGenreList(genre);
 
             //isLiked추가하는 코드
+            int userIdx=-1;
+            try {
+                // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것
+                userIdx=jwtService.getUserIdx();
+            }
+            catch (Exception exception){
+                userIdx=-1;
+            }
+
             GetLike like = movieProvider.getLike(userIdx, movieIdx);
             if (like.getIsLike() == 1) {
                 getMovieDetail.setLiked(true);
@@ -340,8 +347,6 @@ public class MovieController {
     @GetMapping("/search") //ex)localhost:9000/movies/?keyword=movie&sort=likeCnt
     public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name="keyword") String keyword,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
         try {
-            int userIdx = 1;
-            System.out.println("검색시작");
             //1. keyword로 검색해서 나온 결과
             List <GetMovieInfo> getMovieIdx=movieProvider.getMovieIdx_Search(keyword,sort);
 
@@ -363,6 +368,14 @@ public class MovieController {
                 getMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
+                int userIdx=-1;
+                try {
+                    // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것
+                    userIdx=jwtService.getUserIdx();
+                }
+                catch (Exception exception){
+                    userIdx=-1;
+                }
                 GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
                 if(like.getIsLike()==1){
                     getMovieIdx.get(i).setLiked(true);
