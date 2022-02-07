@@ -2,7 +2,7 @@ package com.farmer.cornfarmer.src.movie;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.src.movie.model.*;
-import com.farmer.cornfarmer.src.user.UserDao;
+import com.farmer.cornfarmer.src.movie.MovieService;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +17,15 @@ import static com.farmer.cornfarmer.config.BaseResponseStatus.DATABASE_ERROR;
 public class MovieProvider {
 
     private final MovieDao movieDao;
+    private final MovieService movieService;
     private final JwtService jwtService;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public MovieProvider(MovieDao movieDao, JwtService jwtService) {
+    public MovieProvider(MovieDao movieDao, MovieService movieService,JwtService jwtService) {
         this.movieDao = movieDao;
+        this.movieService=movieService;
         this.jwtService = jwtService;
     }
 

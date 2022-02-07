@@ -86,11 +86,10 @@ public class MovieController {
      */
     @ResponseBody
     @GetMapping("keywords/{keywordIdx}")
-    public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
+    public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) throws BaseException {
 
-        // TODO: 2022-01-16  나중에 jwt를 통해 받아와야 함, 테스트를 위해 1이라고 가정.
-        int useridx=1;
         try {
+
             GetKeywordRecommandRes getKeywordRes = movieProvider.getKeyword(keywordIdx);
 
             //장르 추가하는 코드
@@ -105,7 +104,15 @@ public class MovieController {
                 movieinfoss.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-                GetLike like=movieProvider.getLike(useridx,movieinfoss.get(i).getMovieIdx());
+                int userIdx=-1;
+                try {
+                    userIdx = jwtService.getUserIdx();
+                }
+                catch (Exception exception){
+                    //System.out.println("userIdx -1로 설정");
+                    userIdx=-1;
+                }
+                GetLike like=movieProvider.getLike(userIdx,movieinfoss.get(i).getMovieIdx());
                 if(like.getIsLike()==1){
                     movieinfoss.get(i).setLiked(true);
                 }
