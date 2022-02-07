@@ -185,7 +185,7 @@ public class MovieController {
     @ResponseBody
     @GetMapping("/today") //ex) localhost:9000/movies/today
     public BaseResponse<List<GetMovieInfo>> getMoviesToday(){
-        int userIdx=1;
+
 
 
         try {
@@ -220,6 +220,14 @@ public class MovieController {
                 newgetMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
+                int userIdx=-1;
+                try {
+                    // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것 
+                    userIdx=jwtService.getUserIdx();
+                }
+                catch (Exception exception){
+                    userIdx=-1;
+                }
                 GetLike like=movieProvider.getLike(userIdx,newgetMovieIdx.get(i).getMovieIdx());
                 if(like.getIsLike()==1){
                     newgetMovieIdx.get(i).setLiked(true);
