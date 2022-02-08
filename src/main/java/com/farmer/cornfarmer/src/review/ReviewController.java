@@ -89,12 +89,12 @@ public class ReviewController {
      * 개발자: 제트(김예지)
      */
     @ResponseBody
-    @PostMapping("/{reviewIdx}/like")
-    public BaseResponse postLikeReview(@PathVariable int reviewIdx){
+    @PutMapping("/{reviewIdx}/like")
+    public BaseResponse<PutLikeReviewRes> putLikeReview(@PathVariable int reviewIdx){
         try{
             int userIdx = jwtService.getUserIdx();
-            reviewService.likeReview(reviewIdx,userIdx);
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+            PutLikeReviewRes putLikeReviewRes = reviewService.likeReview(reviewIdx,userIdx);
+            return new BaseResponse<>(putLikeReviewRes);
         } catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

@@ -30,10 +30,10 @@ public class ReviewService {
 
     @Transactional
     public PostReviewRes createReview(int userIdx, PostReviewReq postReviewReq) throws BaseException {
-        try{
-            PostReviewRes postReviewRes = reviewDao.createReview(userIdx,postReviewReq);
+        try {
+            PostReviewRes postReviewRes = reviewDao.createReview(userIdx, postReviewReq);
             return postReviewRes;
-        }catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
@@ -41,68 +41,70 @@ public class ReviewService {
     @Transactional
     public void modifyReview(int reviewIdx, int userIdx, PutReviewReq putReviewReq) throws BaseException {
         reviewProvider.validateReviewExist(reviewIdx);  //해당 review가 존재하는지 확인
-        reviewProvider.validateUserIdx(reviewIdx,userIdx);  //접근한 유저와 review 작성자가 일치하는지 확인
-        try{
-            int result = reviewDao.modifyReview(reviewIdx,putReviewReq);
+        reviewProvider.validateUserIdx(reviewIdx, userIdx);  //접근한 유저와 review 작성자가 일치하는지 확인
+        try {
+            int result = reviewDao.modifyReview(reviewIdx, putReviewReq);
             if (result == 0) {
                 throw new BaseException(BaseResponseStatus.MODIFY_FAIL_REVIEW);
             }
-        } catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 
     @Transactional
-    public void deleteReview(int reviewIdx,int userIdx) throws BaseException {
+    public void deleteReview(int reviewIdx, int userIdx) throws BaseException {
         reviewProvider.validateReviewExist(reviewIdx);  //해당 review가 존재하는지 확인
-        reviewProvider.validateUserIdx(reviewIdx,userIdx);  //접근한 유저와 review 작성자가 일치하는지 확인
-        try{
+        reviewProvider.validateUserIdx(reviewIdx, userIdx);  //접근한 유저와 review 작성자가 일치하는지 확인
+        try {
             int result = reviewDao.deleteReview(reviewIdx);
-            if(result == 0){
+            if (result == 0) {
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEW);
             }
-        } catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 
     @Transactional
-    public void likeReview(int reviewIdx, int userIdx) throws BaseException {
+    public PutLikeReviewRes likeReview(int reviewIdx, int userIdx) throws BaseException {
         reviewProvider.validateReviewExist(reviewIdx);  //해당 review가 존재하는지 확인
-        try{
-        //좋아요 누른 기록이 있는지 검사 후, 없다면 좋아요 DB 생성, 있다면 좋아요 DB 삭제
-        boolean isReviewLikeExist = reviewProvider.checkReviewLike(reviewIdx,userIdx);
-        if(isReviewLikeExist == false){
-            createReviewLike(reviewIdx,userIdx);    //좋아요 생성, review 테이블의 like_cnt를 +1
-        }else {
-            deleteReviewLike(reviewIdx, userIdx);   //좋아요 삭제, review 테이블의 like_cnt를 -1
-        }
-        }catch(Exception exception){
+        try {
+            //좋아요 누른 기록이 있는지 검사 후, 없다면 좋아요 DB 생성, 있다면 좋아요 DB 삭제
+            boolean isReviewLikeExist = reviewProvider.checkReviewLike(reviewIdx, userIdx);
+            if (isReviewLikeExist == false) {
+                createReviewLike(reviewIdx, userIdx);    //좋아요 생성, review 테이블의 like_cnt를 +1
+                return new PutLikeReviewRes("해당 리뷰에 공감합니다.");
+            } else {
+                deleteReviewLike(reviewIdx, userIdx);   //좋아요 삭제, review 테이블의 like_cnt를 -1
+                return new PutLikeReviewRes("해당 리뷰에 대한 공감을 취소합니다.");
+            }
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 
     public void createReviewLike(int reviewIdx, int userIdx) throws BaseException {
-            int result = reviewDao.createReviewLike(reviewIdx,userIdx);
-            if(result == 0){
-                throw new BaseException(BaseResponseStatus.CREATE_FAIL_REVIEWLIKE);
-            }
+        int result = reviewDao.createReviewLike(reviewIdx, userIdx);
+        if (result == 0) {
+            throw new BaseException(BaseResponseStatus.CREATE_FAIL_REVIEWLIKE);
+        }
     }
 
     public void deleteReviewLike(int reviewIdx, int userIdx) throws BaseException {
-            int result = reviewDao.deleteReviewLike(reviewIdx,userIdx);
-            if(result == 0){
-                throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEWLIKE);
-            }
+        int result = reviewDao.deleteReviewLike(reviewIdx, userIdx);
+        if (result == 0) {
+            throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEWLIKE);
+        }
     }
 
     @Transactional
     public PostReportRes createReviewReport(int reviewIdx, int userIdx, PostReportReq postReportReq) throws BaseException {
         reviewProvider.validateReviewExist(reviewIdx);  //해당 review가 존재하는지 확인
-        try{
-            PostReportRes postReportRes = reviewDao.createReviewReport(reviewIdx,userIdx,postReportReq);
+        try {
+            PostReportRes postReportRes = reviewDao.createReviewReport(reviewIdx, userIdx, postReportReq);
             return postReportRes;
-        } catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
