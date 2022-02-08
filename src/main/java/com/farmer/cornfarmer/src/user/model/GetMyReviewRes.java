@@ -18,7 +18,7 @@ public class GetMyReviewRes {
 
     public GetMyReviewRes(int reviewIdx, int movieIdx, String movieTitle, String moviePhoto, String content, float rate, String createdAt, int likeCnt) {
         this.reviewIdx = reviewIdx;
-        this.movie = new Movie(movieIdx,movieTitle,moviePhoto);
+        this.movie = new Movie(movieIdx, movieTitle, moviePhoto);
         this.content = content;
         this.rate = rate;
         this.createdAt = createdAt;

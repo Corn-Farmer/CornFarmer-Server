@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 import static com.farmer.cornfarmer.config.BaseResponseStatus.DATABASE_ERROR;
@@ -30,20 +31,21 @@ public class AdminProvider {
 
     @Transactional(readOnly = true)
     public List<GetReviewRes> getAllReviews() throws BaseException {
-        try{
+        try {
             List<GetReviewRes> result = adminDao.getAllReviews();
             return result;
-        } catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
     public void validateReviewExist(int reviewIdx) throws BaseException {
         int reviewCount = adminDao.getReviewIdx(reviewIdx);
-        if(reviewCount == 0){
+        if (reviewCount == 0) {
             throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
         }
     }
-  
+
     public List<GetOttRes> getOtts() throws BaseException {
         try {
             List<GetOttRes> getOttList = adminDao.getOtts();
@@ -75,8 +77,7 @@ public class AdminProvider {
         try {
             // TODO : 성능 향상 방법 고민
             List<GetUserRes> getUserList = adminDao.getUser();
-            for (GetUserRes getUserRes: getUserList)
-            {
+            for (GetUserRes getUserRes : getUserList) {
                 getUserRes.setGenreList(adminDao.getUserGenre(getUserRes.getUserIdx()));
                 getUserRes.setOttList(adminDao.getUserOtt(getUserRes.getUserIdx()));
             }
@@ -89,8 +90,7 @@ public class AdminProvider {
     public List<GetKeywordRes> getKeywords() throws BaseException {
         try {
             List<GetKeywordRes> getKeywordList = adminDao.getKeywords();
-            for (GetKeywordRes getKeywordRes: getKeywordList)
-            {
+            for (GetKeywordRes getKeywordRes : getKeywordList) {
                 getKeywordRes.setMovieList(adminDao.getKeywordMovies(getKeywordRes.getKeywordIdx()));
             }
             return getKeywordList;
@@ -101,14 +101,14 @@ public class AdminProvider {
 
     public void validateMovieExist(int movieIdx) throws BaseException {
         int reviewCount = adminDao.getMovieIdx(movieIdx);
-        if(reviewCount == 0){
+        if (reviewCount == 0) {
             throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_MOVIE);
         }
     }
 
     public void validateKeywordExist(int keywordIdx) throws BaseException {
         int reviewCount = adminDao.getKeywordIdx(keywordIdx);
-        if(reviewCount == 0){
+        if (reviewCount == 0) {
             throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_KEYWORD);
         }
     }
