@@ -19,12 +19,13 @@ import java.util.List;
  * User 클래스는 스프링에서 사용하는 Objec이다.
  */
 public class GetMovieInfo {
-    public GetMovieInfo(int movieIdx, String movieName){
-        this.movieIdx=movieIdx;
-        this.movieName=movieName;
+    public GetMovieInfo(int movieIdx, String movieName) {
+        this.movieIdx = movieIdx;
+        this.movieName = movieName;
     }
-    public GetMovieInfo(int movieIdx){
-        this.movieIdx=movieIdx;
+
+    public GetMovieInfo(int movieIdx) {
+        this.movieIdx = movieIdx;
     }
 
 

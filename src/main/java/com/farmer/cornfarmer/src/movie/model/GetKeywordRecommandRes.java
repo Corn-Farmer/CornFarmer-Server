@@ -12,9 +12,10 @@ import java.util.List;
 
 
 public class GetKeywordRecommandRes {
-    public GetKeywordRecommandRes(String keyword){
-        this.keyword=keyword;
+    public GetKeywordRecommandRes(String keyword) {
+        this.keyword = keyword;
     }
+
     private String keyword;
     private List<GetMovieInfo> movieList;
 }

@@ -10,14 +10,15 @@ import lombok.Setter;
 @AllArgsConstructor // 해당 클래스의 모든 멤버 변수(userIdx, nickname, email, password)를 받는 생성자를 생성
 
 public class Review {
-    public Review(int reviewIdx, int userIdx, String contents, float rate, int likeCnt, String createAt){
-        this.reviewIdx=reviewIdx;
-        this.userIdx=userIdx;
-        this.contents=contents;
-        this.rate=rate;
-        this.likeCnt=likeCnt;
-        this.createAt=createAt;
+    public Review(int reviewIdx, int userIdx, String contents, float rate, int likeCnt, String createAt) {
+        this.reviewIdx = reviewIdx;
+        this.userIdx = userIdx;
+        this.contents = contents;
+        this.rate = rate;
+        this.likeCnt = likeCnt;
+        this.createAt = createAt;
     }
+
     private int reviewIdx;
     private int userIdx;
     private Writer writer;

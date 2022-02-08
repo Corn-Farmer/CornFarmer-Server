@@ -50,29 +50,26 @@ public class MovieController {
     @ResponseBody
     @GetMapping("/keywords")    // Get 방식의 요청을 매핑하기 위한 어노테이션d
     public BaseResponse<List<GetKeywordRes>> viewKeyword() {
-        try{
+        try {
             List<GetKeywordRes> GetKeywordRes = movieProvider.getKeywords();
 
             //6개 뽑는 코드
-            int total_length=GetKeywordRes.size();
+            int total_length = GetKeywordRes.size();
             /*System.out.println("총 개수는"+total_length);*/
-            List <GetKeywordRes> Get6Keyword = null;
+            List<GetKeywordRes> Get6Keyword = null;
 
             //키워드가 6개 이하일 경우 모두 리턴
-            if(total_length<=6){
-                Get6Keyword=GetKeywordRes;
-            }
-            else{
+            if (total_length <= 6) {
+                Get6Keyword = GetKeywordRes;
+            } else {
                 /*System.out.println("길이 6이상인 경우가 실행되었습니다");*/
                 Collections.shuffle(GetKeywordRes);
-                Get6Keyword=GetKeywordRes.subList(0,6);
+                Get6Keyword = GetKeywordRes.subList(0, 6);
             }
-            
-           
-            return new BaseResponse<>(Get6Keyword);
-        }
 
-        catch (BaseException exception) {
+
+            return new BaseResponse<>(Get6Keyword);
+        } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
@@ -86,43 +83,41 @@ public class MovieController {
      */
     @ResponseBody
     @GetMapping("keywords/{keywordIdx}")
-    public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
+    public BaseResponse<GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
 
         // TODO: 2022-01-16  나중에 jwt를 통해 받아와야 함, 테스트를 위해 1이라고 가정.
-        int useridx=1;
+        int useridx = 1;
         try {
             GetKeywordRecommandRes getKeywordRes = movieProvider.getKeyword(keywordIdx);
 
             //장르 추가하는 코드
-            List <GetMovieInfo> movieinfoss=movieProvider.getmovies(keywordIdx);
+            List<GetMovieInfo> movieinfoss = movieProvider.getmovies(keywordIdx);
 
-            for(int i=0;i<movieinfoss.size();i++){
-                List <GetGenre> movieGenre = movieProvider.getMovieGenre(movieinfoss.get(i).getMovieIdx());
-                List <String> genre=new ArrayList<>();
-                for(int j=0;j<movieGenre.size();j++){
+            for (int i = 0; i < movieinfoss.size(); i++) {
+                List<GetGenre> movieGenre = movieProvider.getMovieGenre(movieinfoss.get(i).getMovieIdx());
+                List<String> genre = new ArrayList<>();
+                for (int j = 0; j < movieGenre.size(); j++) {
                     genre.add(movieGenre.get(j).getGenre());
                 }
                 movieinfoss.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-                GetLike like=movieProvider.getLike(useridx,movieinfoss.get(i).getMovieIdx());
-                if(like.getIsLike()==1){
+                GetLike like = movieProvider.getLike(useridx, movieinfoss.get(i).getMovieIdx());
+                if (like.getIsLike() == 1) {
                     movieinfoss.get(i).setLiked(true);
-                }
-                else{
+                } else {
                     movieinfoss.get(i).setLiked(false);
                 }
 
                 //moviePhoto 추가하는 코드
-                List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(movieinfoss.get(i).getMovieIdx());
-                List <String> photo=new ArrayList<>();
-                for(int j=0;j<moviePhoto.size();j++){
+                List<GetGenre> moviePhoto = movieProvider.getMoviePhoto(movieinfoss.get(i).getMovieIdx());
+                List<String> photo = new ArrayList<>();
+                for (int j = 0; j < moviePhoto.size(); j++) {
                     photo.add(moviePhoto.get(j).getGenre());
                 }
                 movieinfoss.get(i).setMoviePhotoList(photo);
             }
             getKeywordRes.setMovieList(movieinfoss);
-
 
 
             return new BaseResponse<>(getKeywordRes);
@@ -142,25 +137,22 @@ public class MovieController {
 
     @ResponseBody
     @PutMapping("{movieIdx}/like") //ex localhost:9000/movies/5/like
-    public BaseResponse<PutUserWishRes> userWish(@PathVariable("movieIdx") int movieIdx){
+    public BaseResponse<PutUserWishRes> userWish(@PathVariable("movieIdx") int movieIdx) {
         // TODO: 2022-01-18 userIdx를 1이라고 가정, 나중에 jwt로부터 userIdx 받아와야함
-        int userIdx=1;
+        int userIdx = 1;
 
-        try{
-            GetLike like=movieProvider.getLike(userIdx,movieIdx);
-            PutUserWishRes putUserWishRes=new PutUserWishRes();
-            if(like.getIsLike()==1){
+        try {
+            GetLike like = movieProvider.getLike(userIdx, movieIdx);
+            PutUserWishRes putUserWishRes = new PutUserWishRes();
+            if (like.getIsLike() == 1) {
                 putUserWishRes.setMsg("찜한 작품에서 삭제되었습니다.");
-                movieProvider.deleteFromWish(userIdx,movieIdx);
-            }
-            else{
+                movieProvider.deleteFromWish(userIdx, movieIdx);
+            } else {
                 putUserWishRes.setMsg("찜한 작품에 추가되었습니다.");
-                movieProvider.addFromWish(userIdx,movieIdx);
+                movieProvider.addFromWish(userIdx, movieIdx);
             }
             return new BaseResponse<>(putUserWishRes);
-        }
-
-        catch (BaseException exception) {
+        } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
 
@@ -177,65 +169,64 @@ public class MovieController {
 
     @ResponseBody
     @GetMapping("/today") //ex) localhost:9000/movies/today
-    public BaseResponse<List<GetMovieInfo>> getMoviesToday(){
-        int userIdx=1;
+    public BaseResponse<List<GetMovieInfo>> getMoviesToday() {
+        int userIdx = 1;
 
 
         try {
             // 좋아요 받은 영화들 정렬해서 가져오기
-            List <GetMovieInfo> getMovieIdx=movieProvider.getMovieIdx_Today();
+            List<GetMovieInfo> getMovieIdx = movieProvider.getMovieIdx_Today();
             //모든 영화 랜덤으로 가져오기
-            List <GetMovieInfo> getMovieIdxRand=movieProvider.getMovieIdxRand();
+            List<GetMovieInfo> getMovieIdxRand = movieProvider.getMovieIdxRand();
 
             getMovieIdx.addAll(getMovieIdxRand);
 
-            List <GetMovieInfo> newgetMovieIdx=DeduplicationUtils.deduplication(getMovieIdx,GetMovieInfo::getMovieIdx);
-            for(int i=0;i<newgetMovieIdx.size();i++){
+            List<GetMovieInfo> newgetMovieIdx = DeduplicationUtils.deduplication(getMovieIdx, GetMovieInfo::getMovieIdx);
+            for (int i = 0; i < newgetMovieIdx.size(); i++) {
                 System.out.println(newgetMovieIdx.get(i).getMovieIdx());
             }
 
             //리스트 길이 10 이상이면 true
-            boolean isLargerThan10=false;
-            for(int i=0;i<newgetMovieIdx.size();i++){
-                if(i==10){
-                    isLargerThan10=true;
+            boolean isLargerThan10 = false;
+            for (int i = 0; i < newgetMovieIdx.size(); i++) {
+                if (i == 10) {
+                    isLargerThan10 = true;
                     break;
                 }
 
-                GetMovieInfo tmp=movieProvider.getMovieToday(newgetMovieIdx.get(i).getMovieIdx());
-                newgetMovieIdx.set(i,tmp);
-                List <GetGenre> movieGenre = movieProvider.getMovieGenre(newgetMovieIdx.get(i).getMovieIdx());
-                List <String> genre=new ArrayList<>();
+                GetMovieInfo tmp = movieProvider.getMovieToday(newgetMovieIdx.get(i).getMovieIdx());
+                newgetMovieIdx.set(i, tmp);
+                List<GetGenre> movieGenre = movieProvider.getMovieGenre(newgetMovieIdx.get(i).getMovieIdx());
+                List<String> genre = new ArrayList<>();
 
-                for(int j=0;j<movieGenre.size();j++){
+                for (int j = 0; j < movieGenre.size(); j++) {
                     genre.add(movieGenre.get(j).getGenre());
                 }
                 newgetMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-                GetLike like=movieProvider.getLike(userIdx,newgetMovieIdx.get(i).getMovieIdx());
-                if(like.getIsLike()==1){
+                GetLike like = movieProvider.getLike(userIdx, newgetMovieIdx.get(i).getMovieIdx());
+                if (like.getIsLike() == 1) {
                     newgetMovieIdx.get(i).setLiked(true);
-                }
-                else{
+                } else {
                     newgetMovieIdx.get(i).setLiked(false);
                 }
 
                 //moviePhoto 추가하는 코드
-                List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(newgetMovieIdx.get(i).getMovieIdx());
-                List <String> photo=new ArrayList<>();
-                for(int j=0;j<moviePhoto.size();j++){
+                List<GetGenre> moviePhoto = movieProvider.getMoviePhoto(newgetMovieIdx.get(i).getMovieIdx());
+                List<String> photo = new ArrayList<>();
+                for (int j = 0; j < moviePhoto.size(); j++) {
                     photo.add(moviePhoto.get(j).getGenre());
                 }
                 newgetMovieIdx.get(i).setMoviePhotoList(photo);
 
                 //likedCnt 추가하는 코드
-                GetLike getLikeCnt=movieProvider.getLikeCnt(newgetMovieIdx.get(i).getMovieIdx());
+                GetLike getLikeCnt = movieProvider.getLikeCnt(newgetMovieIdx.get(i).getMovieIdx());
                 newgetMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
             }
-            if(isLargerThan10){
+            if (isLargerThan10) {
                 System.out.println("자르기 작업 수행");
-                newgetMovieIdx=newgetMovieIdx.subList(0,10);
+                newgetMovieIdx = newgetMovieIdx.subList(0, 10);
             }
             return new BaseResponse<>(newgetMovieIdx);
 
@@ -254,7 +245,7 @@ public class MovieController {
 
     @ResponseBody
     @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=likeCnt
-    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
+    public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) throws BaseException {
         try {
             // TODO: 2022-01-21 나중에 jwt에서 userIdx가져와야함
             int userIdx = 1;
@@ -313,6 +304,7 @@ public class MovieController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
     /**
      * API 설명
      * 작품 검색 API(2022-01-25)
@@ -323,49 +315,47 @@ public class MovieController {
 
     @ResponseBody
     @GetMapping("/search") //ex)localhost:9000/movies/?keyword=movie&sort=likeCnt
-    public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name="keyword") String keyword,@RequestParam(name="sort",defaultValue = "recent") String sort) throws BaseException {
+    public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name = "keyword") String keyword, @RequestParam(name = "sort", defaultValue = "recent") String sort) throws BaseException {
         try {
             int userIdx = 1;
             System.out.println("검색시작");
             //1. keyword로 검색해서 나온 결과
-            List <GetMovieInfo> getMovieIdx=movieProvider.getMovieIdx_Search(keyword,sort);
-
+            List<GetMovieInfo> getMovieIdx = movieProvider.getMovieIdx_Search(keyword, sort);
 
 
             //영화 정보 추가
-            for(int i=0;i<getMovieIdx.size();i++){
-                GetMovieInfo tmp=movieProvider.getMovieToday(getMovieIdx.get(i).getMovieIdx());
-                getMovieIdx.set(i,tmp);
+            for (int i = 0; i < getMovieIdx.size(); i++) {
+                GetMovieInfo tmp = movieProvider.getMovieToday(getMovieIdx.get(i).getMovieIdx());
+                getMovieIdx.set(i, tmp);
             }
 
-            for(int i=0;i<getMovieIdx.size();i++){
-                List <GetGenre> movieGenre = movieProvider.getMovieGenre(getMovieIdx.get(i).getMovieIdx());
-                List <String> genre=new ArrayList<>();
+            for (int i = 0; i < getMovieIdx.size(); i++) {
+                List<GetGenre> movieGenre = movieProvider.getMovieGenre(getMovieIdx.get(i).getMovieIdx());
+                List<String> genre = new ArrayList<>();
 
-                for(int j=0;j<movieGenre.size();j++){
+                for (int j = 0; j < movieGenre.size(); j++) {
                     genre.add(movieGenre.get(j).getGenre());
                 }
                 getMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-                GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
-                if(like.getIsLike()==1){
+                GetLike like = movieProvider.getLike(userIdx, getMovieIdx.get(i).getMovieIdx());
+                if (like.getIsLike() == 1) {
                     getMovieIdx.get(i).setLiked(true);
-                }
-                else{
+                } else {
                     getMovieIdx.get(i).setLiked(false);
                 }
 
                 //moviePhoto 추가하는 코드
-                List <GetGenre> moviePhoto=movieProvider.getMoviePhoto(getMovieIdx.get(i).getMovieIdx());
-                List <String> photo=new ArrayList<>();
-                for(int j=0;j<moviePhoto.size();j++){
+                List<GetGenre> moviePhoto = movieProvider.getMoviePhoto(getMovieIdx.get(i).getMovieIdx());
+                List<String> photo = new ArrayList<>();
+                for (int j = 0; j < moviePhoto.size(); j++) {
                     photo.add(moviePhoto.get(j).getGenre());
                 }
                 getMovieIdx.get(i).setMoviePhotoList(photo);
 
                 //likedCnt 추가하는 코드
-                GetLike getLikeCnt=movieProvider.getLikeCnt(getMovieIdx.get(i).getMovieIdx());
+                GetLike getLikeCnt = movieProvider.getLikeCnt(getMovieIdx.get(i).getMovieIdx());
                 getMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
             }
             return new BaseResponse<>(getMovieIdx);
