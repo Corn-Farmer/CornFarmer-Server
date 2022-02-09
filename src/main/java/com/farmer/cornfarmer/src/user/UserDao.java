@@ -217,8 +217,8 @@ public class UserDao {
     }
 
     public int inactive(int userIdx) {
-        String inactiveQuery = "update user set active = ?  where user_idx=?";
-        Object[] inactiveParams = new Object[]{false, userIdx};
+        String inactiveQuery = "update user set active = 0 , oauth_id = ?  where user_idx=?";
+        Object[] inactiveParams = new Object[]{false, "", userIdx};
         this.jdbcTemplate.update(inactiveQuery, inactiveParams);
 
         return userIdx;
