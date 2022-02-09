@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static com.farmer.cornfarmer.config.BaseResponseStatus.DATABASE_ERROR;
@@ -17,14 +19,13 @@ import static com.farmer.cornfarmer.config.BaseResponseStatus.DATABASE_ERROR;
 public class MovieProvider {
 
     private final MovieDao movieDao;
-    private final JwtService jwtService;
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public MovieProvider(MovieDao movieDao, JwtService jwtService) {
+    public MovieProvider(MovieDao movieDao) {
         this.movieDao = movieDao;
-        this.jwtService = jwtService;
     }
 
     // User들의 정보를 조회
@@ -176,7 +177,8 @@ public class MovieProvider {
 
     public List<GetMovieInfo> getMovieIdxRand() throws BaseException {
         try {
-            List<GetMovieInfo> movieidx = movieDao.getMovieIdxRand();
+            String today = dateFormatter.format(new Date());
+            List<GetMovieInfo> movieidx = movieDao.getMovieIdxRand(today);
             return movieidx;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);

@@ -168,10 +168,9 @@ public class MovieController {
     @ResponseBody
     @GetMapping("/today") //ex) localhost:9000/movies/today
     public BaseResponse<List<GetMovieInfo>> getMoviesToday() {
-        int userIdx = 1;
-
 
         try {
+            int userIdx = jwtService.getUserIdx();
             // 좋아요 받은 영화들 정렬해서 가져오기
             List<GetMovieInfo> getMovieIdx = movieProvider.getMovieIdx_Today();
             //모든 영화 랜덤으로 가져오기
@@ -180,9 +179,6 @@ public class MovieController {
             getMovieIdx.addAll(getMovieIdxRand);
 
             List<GetMovieInfo> newgetMovieIdx = DeduplicationUtils.deduplication(getMovieIdx, GetMovieInfo::getMovieIdx);
-            for (int i = 0; i < newgetMovieIdx.size(); i++) {
-                System.out.println(newgetMovieIdx.get(i).getMovieIdx());
-            }
 
             //리스트 길이 10 이상이면 true
             boolean isLargerThan10 = false;
@@ -223,7 +219,6 @@ public class MovieController {
                 newgetMovieIdx.get(i).setLikeCnt(getLikeCnt.getIsLike());
             }
             if (isLargerThan10) {
-                System.out.println("자르기 작업 수행");
                 newgetMovieIdx = newgetMovieIdx.subList(0, 10);
             }
             return new BaseResponse<>(newgetMovieIdx);
