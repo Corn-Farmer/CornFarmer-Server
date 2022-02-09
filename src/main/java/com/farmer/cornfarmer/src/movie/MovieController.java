@@ -85,9 +85,8 @@ public class MovieController {
     @GetMapping("keywords/{keywordIdx}")
     public BaseResponse<GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
 
-        // TODO: 2022-01-16  나중에 jwt를 통해 받아와야 함, 테스트를 위해 1이라고 가정.
-        int useridx = 1;
         try {
+            int useridx = jwtService.getUserIdx();
             GetKeywordRecommandRes getKeywordRes = movieProvider.getKeyword(keywordIdx);
 
             //장르 추가하는 코드
@@ -124,7 +123,6 @@ public class MovieController {
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
-
     }
 
     /**
