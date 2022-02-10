@@ -138,12 +138,12 @@ public class AdminController {
      */
     @ResponseBody
     @GetMapping("/reviews")
-    public BaseResponse<List<GetReviewRes>> getAllReviews(){
-        try{
+    public BaseResponse<List<GetReviewRes>> getAllReviews() {
+        try {
             //admin 계정인지 검증
             List<GetReviewRes> result = adminProvider.getAllReviews();
             return new BaseResponse<>(result);
-        }catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -155,12 +155,12 @@ public class AdminController {
      */
     @ResponseBody
     @DeleteMapping("/reviews/{reviewIdx}")
-    public BaseResponse deleteReview(@PathVariable int reviewIdx){
-        try{
+    public BaseResponse deleteReview(@PathVariable int reviewIdx) {
+        try {
             //admin 계정인지 검증
             adminService.deleteReview(reviewIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
-        } catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -172,7 +172,7 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/movies")
-    public BaseResponse<PostMovieRes> postMovies(@Valid @ModelAttribute PostMovieReq postMovieReq, BindingResult validResult){
+    public BaseResponse<PostMovieRes> postMovies(@Valid @ModelAttribute PostMovieReq postMovieReq, BindingResult validResult) {
         // TODO : 관리자 체크 (jwt)
         try {
             if (validResult.hasErrors()) {
@@ -180,8 +180,8 @@ public class AdminController {
             }
             // 받은 이미지파일들 S3에 업로드 후 URL리스트 저장
             List<String> moviePhotoURLs = new ArrayList<>();
-            for(MultipartFile moviePhoto : postMovieReq.getMoviePhoto())
-                moviePhotoURLs.add(S3Uploader.upload(moviePhoto,"movie"));
+            for (MultipartFile moviePhoto : postMovieReq.getMoviePhoto())
+                moviePhotoURLs.add(S3Uploader.upload(moviePhoto, "movie"));
 
             // movie 데이터베이스에 저장
             PostMovieRes postMovieRes = adminService.createMovie(moviePhotoURLs, postMovieReq);
@@ -198,7 +198,7 @@ public class AdminController {
      */
     @ResponseBody
     @GetMapping("/users")
-    public BaseResponse<List<GetUserRes>> getUsers(){
+    public BaseResponse<List<GetUserRes>> getUsers() {
         // TODO : 관리자 체크 (jwt)
         try {
             List<GetUserRes> getUserResList = adminProvider.getUsers();
@@ -216,10 +216,10 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/movies/keywords/{keywordIdx}")
-    public BaseResponse<PostKeywordMovieRes> postKeywordMovies(@PathVariable int keywordIdx, @RequestBody PostKeywordMovieReq postKeywordMovieReq){
+    public BaseResponse<PostKeywordMovieRes> postKeywordMovies(@PathVariable int keywordIdx, @RequestBody PostKeywordMovieReq postKeywordMovieReq) {
         // TODO : 관리자 체크 (jwt)
         try {
-            PostKeywordMovieRes postKeywordMovieRes= adminService.createKeywordMovies(keywordIdx, postKeywordMovieReq.getMovieList());
+            PostKeywordMovieRes postKeywordMovieRes = adminService.createKeywordMovies(keywordIdx, postKeywordMovieReq.getMovieList());
             return new BaseResponse<>(postKeywordMovieRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -233,10 +233,10 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/movies/keywords")
-    public BaseResponse<PostKeywordRes> postKeyword(@RequestBody PostKeywordReq postKeywordReq){
+    public BaseResponse<PostKeywordRes> postKeyword(@RequestBody PostKeywordReq postKeywordReq) {
         // TODO : 관리자 체크 (jwt)
         try {
-            PostKeywordRes postKeywordRes= adminService.createKeyword(postKeywordReq);
+            PostKeywordRes postKeywordRes = adminService.createKeyword(postKeywordReq);
             return new BaseResponse<>(postKeywordRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -250,29 +250,29 @@ public class AdminController {
      */
     @ResponseBody
     @GetMapping("/movies/keywords")
-    public BaseResponse<List<GetKeywordRes>> getKeywords(){
+    public BaseResponse<List<GetKeywordRes>> getKeywords() {
         // TODO : 관리자 체크 (jwt)
         try {
-            List<GetKeywordRes> Keywords= adminProvider.getKeywords();
+            List<GetKeywordRes> Keywords = adminProvider.getKeywords();
             return new BaseResponse<>(Keywords);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-  
-    /**  
+
+    /**
      * 작품 삭제(관리자용) API
      * [DELETE] /admin/movies/{movieIdx}
      * 개발자 : 제트(김예지)
      */
     @ResponseBody
     @DeleteMapping("/movies/{movieIdx}")
-    public BaseResponse deleteMovie(@PathVariable int movieIdx){
-        try{
+    public BaseResponse deleteMovie(@PathVariable int movieIdx) {
+        try {
             //admin 계정인지 검증
             adminService.deleteMovie(movieIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
-        } catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -284,12 +284,12 @@ public class AdminController {
      */
     @ResponseBody
     @DeleteMapping("/movies/keywords/{keywordIdx}")
-    public BaseResponse deleteKeyword(@PathVariable int keywordIdx){
-        try{
+    public BaseResponse deleteKeyword(@PathVariable int keywordIdx) {
+        try {
             //admin 계정인지 검증
             adminService.deleteKeyword(keywordIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
-        }catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }

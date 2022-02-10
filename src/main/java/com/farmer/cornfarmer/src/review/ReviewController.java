@@ -40,11 +40,11 @@ public class ReviewController {
     @ResponseBody
     @PostMapping()    // POST 방식의 요청을 매핑하기 위한 어노테이션
     public BaseResponse<PostReviewRes> postReview(@RequestBody @Valid PostReviewReq postReviewReq) {
-        try{
+        try {
             int userIdx = jwtService.getUserIdx();
-            PostReviewRes postReviewRes = reviewService.createReview(userIdx,postReviewReq);
+            PostReviewRes postReviewRes = reviewService.createReview(userIdx, postReviewReq);
             return new BaseResponse<>(postReviewRes);
-        } catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -56,12 +56,12 @@ public class ReviewController {
      */
     @ResponseBody
     @PutMapping("/{reviewIdx}")
-    public BaseResponse putReview(@PathVariable int reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq){
-        try{
+    public BaseResponse putReview(@PathVariable int reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq) {
+        try {
             int userIdx = jwtService.getUserIdx();
-            reviewService.modifyReview(reviewIdx,userIdx,putReviewReq);
+            reviewService.modifyReview(reviewIdx, userIdx, putReviewReq);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
-        }catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -73,12 +73,12 @@ public class ReviewController {
      */
     @ResponseBody
     @DeleteMapping("/{reviewIdx}")
-    public BaseResponse deleteReview(@PathVariable int reviewIdx){
-        try{
+    public BaseResponse deleteReview(@PathVariable int reviewIdx) {
+        try {
             int userIdx = jwtService.getUserIdx();
-            reviewService.deleteReview(reviewIdx,userIdx);
+            reviewService.deleteReview(reviewIdx, userIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
-        } catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -89,13 +89,13 @@ public class ReviewController {
      * 개발자: 제트(김예지)
      */
     @ResponseBody
-    @PostMapping("/{reviewIdx}/like")
-    public BaseResponse postLikeReview(@PathVariable int reviewIdx){
-        try{
+    @PutMapping("/{reviewIdx}/like")
+    public BaseResponse<PutLikeReviewRes> putLikeReview(@PathVariable int reviewIdx) {
+        try {
             int userIdx = jwtService.getUserIdx();
-            reviewService.likeReview(reviewIdx,userIdx);
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
-        } catch(BaseException exception){
+            PutLikeReviewRes putLikeReviewRes = reviewService.likeReview(reviewIdx, userIdx);
+            return new BaseResponse<>(putLikeReviewRes);
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
@@ -107,12 +107,12 @@ public class ReviewController {
      */
     @ResponseBody
     @PostMapping("/{reviewIdx}/report")
-    public BaseResponse<PostReportRes> postReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq){
-        try{
+    public BaseResponse<PostReportRes> postReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq) {
+        try {
             int userIdx = jwtService.getUserIdx();
-            PostReportRes postReportRes = reviewService.createReviewReport(reviewIdx,userIdx,postReportReq);
+            PostReportRes postReportRes = reviewService.createReviewReport(reviewIdx, userIdx, postReportReq);
             return new BaseResponse<>(postReportRes);
-        }catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }

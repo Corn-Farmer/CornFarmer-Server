@@ -18,9 +18,9 @@ public class GetReviewRes {
     private String createdAt;
 
 
-    public GetReviewRes(int review_idx, int movie_idx, int user_idx, String contents, float rate, int like_cnt, String created_at,String movie_title, String movie_photo, String user_nickName) {
+    public GetReviewRes(int review_idx, int movie_idx, int user_idx, String contents, float rate, int like_cnt, String created_at, String movie_title, String movie_photo, String user_nickName) {
         this.reviewIdx = review_idx;
-        this.movie = new Movie(movie_idx,movie_title,movie_photo);
+        this.movie = new Movie(movie_idx, movie_title, movie_photo);
         this.userIdx = user_idx;
         this.content = contents;
         this.rate = rate;

@@ -34,12 +34,12 @@ public class AdminService {
     @Transactional
     public void deleteReview(int reviewIdx) throws BaseException {
         adminProvider.validateReviewExist(reviewIdx); //이미 삭제된 리뷰인지 확인
-        try{
+        try {
             int result = adminDao.deleteReview(reviewIdx);
             if (result == 0) {
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEW);
             }
-        } catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
 
         }
@@ -72,20 +72,20 @@ public class AdminService {
             int movieIdx = adminDao.createMovie(postMovieReq.getMovieTitle(), releaseYear,
                     postMovieReq.getSynopsis(), postMovieReq.getDirector());
             // 영화-장르 연관성 생성
-            for(String str_genreIdx : postMovieReq.getGenreList()) {
+            for (String str_genreIdx : postMovieReq.getGenreList()) {
                 int genreIdx = Integer.parseInt(str_genreIdx);
                 adminDao.createMovieGenre(movieIdx, genreIdx);
             }
             // 영화-OTT 연관성 생성
-            for(String str_ottIdx : postMovieReq.getOttList()) {
+            for (String str_ottIdx : postMovieReq.getOttList()) {
                 int ottIdx = Integer.parseInt(str_ottIdx);
                 adminDao.createMovieOtt(movieIdx, ottIdx);
             }
             // 영화-사진 연관성 생성
-            for(String photoURL : moviePhotoURLs)
+            for (String photoURL : moviePhotoURLs)
                 adminDao.createMoviePhoto(movieIdx, photoURL);
             return new PostMovieRes(movieIdx);
-        }catch (NumberFormatException exception) {
+        } catch (NumberFormatException exception) {
             throw new BaseException(REQUEST_ERROR);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -96,11 +96,11 @@ public class AdminService {
         // TODO : Transactional 고려하기
         try {
             // 영화-키워드 연관성 생성
-            for(int movieIdx : MovieList) {
+            for (int movieIdx : MovieList) {
                 adminDao.createMovieKeyword(keywordIdx, movieIdx);
             }
             return new PostKeywordMovieRes(keywordIdx);
-        } catch (DuplicateKeyException duplicateKeyException){
+        } catch (DuplicateKeyException duplicateKeyException) {
             throw new BaseException(DUPLICATE_KEY_ERROR);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -115,7 +115,7 @@ public class AdminService {
             for (int movieIdx : postKeywordReq.getMovieList())
                 adminDao.createMovieKeyword(keywordIdx, movieIdx);
             return new PostKeywordRes(keywordIdx);
-        } catch (DuplicateKeyException duplicateKeyException){
+        } catch (DuplicateKeyException duplicateKeyException) {
             throw new BaseException(DUPLICATE_KEY_ERROR);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -126,12 +126,12 @@ public class AdminService {
     @Transactional
     public void deleteMovie(int movieIdx) throws BaseException {
         adminProvider.validateMovieExist(movieIdx); //이미 삭제된 영화인지 확인
-        try{
+        try {
             int result = adminDao.deleteMovie(movieIdx);
             if (result == 0) {
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_MOVIE);
             }
-        }catch (Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -139,12 +139,12 @@ public class AdminService {
     @Transactional
     public void deleteKeyword(int keywordIdx) throws BaseException {
         adminProvider.validateKeywordExist(keywordIdx); //이미 삭제된 키워드인지 확인
-        try{
+        try {
             int result = adminDao.deleteKeyword(keywordIdx);
             if (result == 0) {
                 throw new BaseException(BaseResponseStatus.DELETE_FAIL_KEYWORD);
             }
-        }catch (Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

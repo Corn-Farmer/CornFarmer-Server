@@ -57,32 +57,34 @@ public class MovieProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
     public List<GetGenre> getMovieGenre(int movieIdx) throws BaseException {
         try {
-            List <GetGenre> movieGenre = movieDao.getMovieGenre(movieIdx);
+            List<GetGenre> movieGenre = movieDao.getMovieGenre(movieIdx);
             return movieGenre;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public GetLike getLike(int userIdx,int movieIdx) throws BaseException {
+    public GetLike getLike(int userIdx, int movieIdx) throws BaseException {
         try {
-            GetLike like = movieDao.getLike(userIdx,movieIdx);
+            GetLike like = movieDao.getLike(userIdx, movieIdx);
             return like;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public void deleteFromWish(int userIdx,int movieIdx){
-        movieDao.deleteFromWish(userIdx,movieIdx);
-    }
-    public void addFromWish(int userIdx,int movieIdx){
-        movieDao.addFromWish(userIdx,movieIdx);
+    public void deleteFromWish(int userIdx, int movieIdx) {
+        movieDao.deleteFromWish(userIdx, movieIdx);
     }
 
-    public List<GetMovieInfo> getMovieIdx_Today()throws BaseException{
+    public void addFromWish(int userIdx, int movieIdx) {
+        movieDao.addFromWish(userIdx, movieIdx);
+    }
+
+    public List<GetMovieInfo> getMovieIdx_Today() throws BaseException {
         try {
             List<GetMovieInfo> movieidx = movieDao.getMovieIdx_Today();
             return movieidx;
@@ -92,7 +94,7 @@ public class MovieProvider {
     }
 
 
-    public GetMovieInfo getMovieToday(int movieIdx)throws BaseException{
+    public GetMovieInfo getMovieToday(int movieIdx) throws BaseException {
         try {
             GetMovieInfo movieinfo = movieDao.getMovieToday(movieIdx);
             return movieinfo;
@@ -103,14 +105,14 @@ public class MovieProvider {
 
     public List<GetGenre> getMoviePhoto(int movieIdx) throws BaseException {
         try {
-            List <GetGenre> moviePhoto = movieDao.getMoviePhoto(movieIdx);
+            List<GetGenre> moviePhoto = movieDao.getMoviePhoto(movieIdx);
             return moviePhoto;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public GetMovieDetail getMovieDetail(int movieIdx)throws BaseException{
+    public GetMovieDetail getMovieDetail(int movieIdx) throws BaseException {
         try {
             GetMovieDetail getMovieDetail = movieDao.getMovieDetail(movieIdx);
             return getMovieDetail;
@@ -118,7 +120,8 @@ public class MovieProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-    public List<Ott> getOtt(int movieIdx)throws BaseException{
+
+    public List<Ott> getOtt(int movieIdx) throws BaseException {
         try {
             List<Ott> ott = movieDao.getOtt(movieIdx);
             return ott;
@@ -127,7 +130,7 @@ public class MovieProvider {
         }
     }
 
-    public List<Review> getReview_recent(int movieIdx)throws BaseException{
+    public List<Review> getReview_recent(int movieIdx) throws BaseException {
         try {
             List<Review> reviewList = movieDao.getReview_recent(movieIdx);
             return reviewList;
@@ -135,7 +138,8 @@ public class MovieProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-    public List<Review> getReview_like(int movieIdx)throws BaseException{
+
+    public List<Review> getReview_like(int movieIdx) throws BaseException {
         try {
             List<Review> reviewList = movieDao.getReview_like(movieIdx);
             return reviewList;
@@ -145,7 +149,7 @@ public class MovieProvider {
     }
 
 
-    public Writer getWriter(int userIdx)throws BaseException{
+    public Writer getWriter(int userIdx) throws BaseException {
         try {
             Writer writer = movieDao.getWriter(userIdx);
             return writer;
@@ -154,15 +158,16 @@ public class MovieProvider {
         }
     }
 
-    public List<GetMovieInfo> getMovieIdx_Search(String keyword,String sort)throws BaseException{
+    public List<GetMovieInfo> getMovieIdx_Search(String keyword, String sort) throws BaseException {
         try {
-            List<GetMovieInfo> movieidx = movieDao.getMovieIdx_Search(keyword,sort);
+            List<GetMovieInfo> movieidx = movieDao.getMovieIdx_Search(keyword, sort);
             return movieidx;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-    public GetLike getLikeCnt(int movieIdx)throws BaseException{
+
+    public GetLike getLikeCnt(int movieIdx) throws BaseException {
         try {
             GetLike getLike = movieDao.getLikeCnt(movieIdx);
             return getLike;
@@ -171,7 +176,7 @@ public class MovieProvider {
         }
     }
 
-    public List<GetMovieInfo> getMovieIdxRand()throws BaseException{
+    public List<GetMovieInfo> getMovieIdxRand() throws BaseException {
         try {
             List<GetMovieInfo> movieidx = movieDao.getMovieIdxRand();
             return movieidx;

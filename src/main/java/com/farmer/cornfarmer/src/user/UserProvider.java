@@ -29,28 +29,28 @@ public class UserProvider {
     }
 
     @Transactional(readOnly = true)
-    public List<GetMyReviewRes> getMyReviews(int userIdx,int userJwtIdx,String sort) throws BaseException {
-        validateUser(userIdx,userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
-        try{
-            List<GetMyReviewRes> result = userDao.getMyReviews(userIdx,sort);
+    public List<GetMyReviewRes> getMyReviews(int userIdx, int userJwtIdx, String sort) throws BaseException {
+        validateUser(userIdx, userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
+        try {
+            List<GetMyReviewRes> result = userDao.getMyReviews(userIdx, sort);
             return result;
-        }catch (Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
-  
+
     public boolean checkOauthId(String oauth_id) throws BaseException {
-       //db에 oauthid 존재하는지 확인
+        //db에 oauthid 존재하는지 확인
         try {
             return userDao.checkOauth(oauth_id);
-        }catch(Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 
-    public void validateUser(int userIdx, int userJwtIdx) throws BaseException{
-        if(userIdx != userJwtIdx)   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
+    public void validateUser(int userIdx, int userJwtIdx) throws BaseException {
+        if (userIdx != userJwtIdx)   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
             throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
     }
 
@@ -59,7 +59,7 @@ public class UserProvider {
         //db에 oauthid 존재하는지 확인
         try {
             return userDao.checkUserNickName(oauth_id);
-        }catch(Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_NICKNAME);
         }
@@ -70,7 +70,7 @@ public class UserProvider {
         //db에 oauthid 존재하는지 확인
         try {
             return userDao.getUserIdx(oauth_id);
-        }catch(Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
@@ -84,8 +84,7 @@ public class UserProvider {
             String jwt = jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(), getUserInfo.getOauth_id(), getUserInfo.getNickname());
 
             return new PostLoginRes(false, jwt, getUserInfo.getUser_idx());
-        }
-        catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
@@ -99,8 +98,7 @@ public class UserProvider {
             String jwt = jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(), getUserInfo.getOauth_id(), getUserInfo.getNickname());
 
             return new PostLoginRes(false, jwt, getUserInfo.getUser_idx());
-        }
-        catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
@@ -109,37 +107,34 @@ public class UserProvider {
     @Transactional(readOnly = true)
     public UserMyInfo getMyInfo(int userIdx) throws BaseException {
         try {
-            return new UserMyInfo(userDao.getUserNickName(userIdx), userDao.getPhoto(userIdx),userDao.getOttInfo(userIdx),userDao.getGenreInfo(userIdx));
-        }catch (Exception exception){
+            return new UserMyInfo(userDao.getUserNickName(userIdx), userDao.getPhoto(userIdx), userDao.getOttInfo(userIdx), userDao.getGenreInfo(userIdx));
+        } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+
     public List<GetMyMovieLikedRes> getMyMoviesLiked(int userIdx, int userJwtIdx) throws BaseException {
-        validateUser(userIdx,userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
-        try{
+        validateUser(userIdx, userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
+        try {
             List<GetMyMovieLikedRes> result = userDao.getMyMoviesLiked(userIdx);
             return result;
-        }catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 
     public boolean duplicateNick(String nickname) {
-        if(userDao.duplicateNick(nickname))
-        {
+        if (userDao.duplicateNick(nickname)) {
             return true;
-        }
-        else
+        } else
             return false;
     }
 
-    public boolean checckDuplicateNick(String nickname,int userIdx) {
-        if(userDao.checkDuplicateNick(nickname, userIdx))
-        {
+    public boolean checckDuplicateNick(String nickname, int userIdx) {
+        if (userDao.checkDuplicateNick(nickname, userIdx)) {
             return true;
-        }
-        else
+        } else
             return false;
     }
 }
