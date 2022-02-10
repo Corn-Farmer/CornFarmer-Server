@@ -211,6 +211,9 @@ public class UserController {
     public BaseResponse<List<GetMyReviewRes>> getMyReviews(@PathVariable int userIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) {
         try {
             int userJwtIdx = jwtService.getUserIdx();
+            if(userIdx == 0){
+                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            }
             List<GetMyReviewRes> result;
             switch (sort) {
                 case "recent":
@@ -242,6 +245,9 @@ public class UserController {
     public BaseResponse<List<GetMyMovieLikedRes>> getMyMoviesLiked(@PathVariable int userIdx) {
         try {
             int userJwtIdx = jwtService.getUserIdx();
+            if(userIdx == 0){
+                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            }
             List<GetMyMovieLikedRes> result = userProvider.getMyMoviesLiked(userIdx, userJwtIdx);
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
