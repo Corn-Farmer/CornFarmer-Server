@@ -178,6 +178,15 @@ public class MovieDao {
                         rs.getString("created_at")),
                 param);
     }
+    public GetLike getreviewLike(int userIdx, int reviewIdx) {
+        String getUserQuery = "select exists(select review_idx from user_review where user_idx=? and review_idx=?) as ex;"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+        int getUserParams = userIdx;
+        int param = reviewIdx;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new GetLike(
+                        rs.getInt("ex")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                getUserParams, param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+    }
 
     public Writer getWriter(int userIdx) {
         String getUserQuery = "select user_idx,nickname,photo from user where user_idx=?;";

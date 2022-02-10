@@ -20,6 +20,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.farmer.cornfarmer.config.BaseResponseStatus.EMPTY_JWT;
+
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
@@ -151,10 +153,12 @@ public class MovieController {
 
         try{
             int userIdx=jwtService.getUserIdx();
+            if(userIdx==0){
+                throw new BaseException(EMPTY_JWT);
+            }
             GetLike like=movieProvider.getLike(userIdx,movieIdx);
             PutUserWishRes putUserWishRes=new PutUserWishRes();
             if(like.getIsLike()==1){
-
                 putUserWishRes.setMsg("찜한 작품에서 삭제되었습니다.");
                 movieProvider.deleteFromWish(userIdx, movieIdx);
             } else {
@@ -213,7 +217,6 @@ public class MovieController {
 
                 int userIdx=-1;
                 try {
-                    // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것 
                     userIdx=jwtService.getUserIdx();
                 }
                 catch (Exception exception){
@@ -241,6 +244,7 @@ public class MovieController {
             }
             if (isLargerThan10) {
                 newgetMovieIdx = newgetMovieIdx.subList(0, 10);
+
             }
             return new BaseResponse<>(newgetMovieIdx);
 
@@ -274,7 +278,6 @@ public class MovieController {
             //isLiked추가하는 코드
             int userIdx=-1;
             try {
-                // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것
                 userIdx=jwtService.getUserIdx();
             }
             catch (Exception exception){
@@ -308,6 +311,16 @@ public class MovieController {
                 reviewList = movieProvider.getReview_recent(movieIdx);
             } else {
                 reviewList = movieProvider.getReview_like(movieIdx);
+            }
+            //reviewList의 isLiked채우는 코드
+            for(int i=0;i<reviewList.size();i++){
+                GetLike reviewLike= movieProvider.getreviewLike(userIdx,reviewList.get(i).getReviewIdx());
+                if (reviewLike.getIsLike() == 1) {
+                    reviewList.get(i).setLiked(true);
+                } else {
+                    reviewList.get(i).setLiked(false);
+                }
+
             }
 
             //writer 정보 채우기
@@ -361,7 +374,6 @@ public class MovieController {
 
                 int userIdx=-1;
                 try {
-                    // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것
                     userIdx=jwtService.getUserIdx();
                 }
                 catch (Exception exception){

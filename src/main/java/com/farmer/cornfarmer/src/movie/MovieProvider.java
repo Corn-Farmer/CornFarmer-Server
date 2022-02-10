@@ -144,6 +144,14 @@ public class MovieProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+    public GetLike getreviewLike(int userIdx, int reviewIdx) throws BaseException {
+        try {
+            GetLike like = movieDao.getreviewLike(userIdx,reviewIdx);
+            return like;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 
     public Writer getWriter(int userIdx) throws BaseException {
