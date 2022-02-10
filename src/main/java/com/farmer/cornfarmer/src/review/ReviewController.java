@@ -42,6 +42,9 @@ public class ReviewController {
     public BaseResponse<PostReviewRes> postReview(@RequestBody @Valid PostReviewReq postReviewReq) {
         try {
             int userIdx = jwtService.getUserIdx();
+            if(userIdx == 0){
+                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            }
             PostReviewRes postReviewRes = reviewService.createReview(userIdx, postReviewReq);
             return new BaseResponse<>(postReviewRes);
         } catch (BaseException exception) {
@@ -59,6 +62,9 @@ public class ReviewController {
     public BaseResponse putReview(@PathVariable int reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq) {
         try {
             int userIdx = jwtService.getUserIdx();
+            if(userIdx == 0){
+                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            }
             reviewService.modifyReview(reviewIdx, userIdx, putReviewReq);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         } catch (BaseException exception) {
@@ -76,6 +82,9 @@ public class ReviewController {
     public BaseResponse deleteReview(@PathVariable int reviewIdx) {
         try {
             int userIdx = jwtService.getUserIdx();
+            if(userIdx == 0){
+                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            }
             reviewService.deleteReview(reviewIdx, userIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         } catch (BaseException exception) {
@@ -93,6 +102,9 @@ public class ReviewController {
     public BaseResponse<PutLikeReviewRes> putLikeReview(@PathVariable int reviewIdx) {
         try {
             int userIdx = jwtService.getUserIdx();
+            if(userIdx == 0){
+                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            }
             PutLikeReviewRes putLikeReviewRes = reviewService.likeReview(reviewIdx, userIdx);
             return new BaseResponse<>(putLikeReviewRes);
         } catch (BaseException exception) {
@@ -110,6 +122,9 @@ public class ReviewController {
     public BaseResponse<PostReportRes> postReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq) {
         try {
             int userIdx = jwtService.getUserIdx();
+            if(userIdx == 0){
+                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            }
             PostReportRes postReportRes = reviewService.createReviewReport(reviewIdx, userIdx, postReportReq);
             return new BaseResponse<>(postReportRes);
         } catch (BaseException exception) {
