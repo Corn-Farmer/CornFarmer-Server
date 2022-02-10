@@ -227,28 +227,29 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/{userIdx}/reviews")
-    public BaseResponse<List<GetMyReviewRes>> getMyReviews(@PathVariable int userIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) {
+    public BaseResponse<GetMyReviewRes> getMyReviews(@PathVariable int userIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) {
         try {
             int userJwtIdx = jwtService.getUserIdx();
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
-            List<GetMyReviewRes> result;
+            GetMyReviewRes reviewRes = new GetMyReviewRes(userProvider.getUserNickname(userJwtIdx));
+            List<ReviewInfo> reviewList;
             switch (sort) {
                 case "recent":
-                    result = userProvider.getMyReviews(userIdx, userJwtIdx, "created_at");
+                    reviewList = userProvider.getMyReviews(userIdx, userJwtIdx, "created_at");
                     break;
                 case "like":
-                    result = userProvider.getMyReviews(userIdx, userJwtIdx, "r.like_cnt");
+                    reviewList = userProvider.getMyReviews(userIdx, userJwtIdx, "r.like_cnt");
                     break;
                 case "rate":
-                    result = userProvider.getMyReviews(userIdx, userJwtIdx, "rate");
+                    reviewList = userProvider.getMyReviews(userIdx, userJwtIdx, "rate");
                     break;
                 default:
-                    result = null;
+                    reviewList = null;
             }
-
-            return new BaseResponse<>(result);
+            reviewRes.setReviewList(reviewList);
+            return new BaseResponse<>(reviewRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }

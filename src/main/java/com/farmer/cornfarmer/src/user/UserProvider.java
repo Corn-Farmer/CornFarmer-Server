@@ -29,10 +29,10 @@ public class UserProvider {
     }
 
     @Transactional(readOnly = true)
-    public List<GetMyReviewRes> getMyReviews(int userIdx, int userJwtIdx, String sort) throws BaseException {
+    public List<ReviewInfo> getMyReviews(int userIdx, int userJwtIdx, String sort) throws BaseException {
         validateUser(userIdx, userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
         try {
-            List<GetMyReviewRes> result = userDao.getMyReviews(userIdx, sort);
+            List<ReviewInfo> result = userDao.getMyReviews(userIdx, sort);
             return result;
         } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
@@ -59,6 +59,16 @@ public class UserProvider {
         //db에 oauthid 존재하는지 확인
         try {
             return userDao.checkUserNickName(oauth_id);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_NICKNAME);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public String getUserNickname(int userIdx) throws BaseException {
+        try {
+            return userDao.getUserNickName(userIdx);
         } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_NICKNAME);
