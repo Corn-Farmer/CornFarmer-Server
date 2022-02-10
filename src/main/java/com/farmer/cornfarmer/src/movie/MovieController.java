@@ -83,7 +83,7 @@ public class MovieController {
      */
     @ResponseBody
     @GetMapping("keywords/{keywordIdx}")
-    public BaseResponse<GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) {
+    public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) throws BaseException {
 
         try {
             int useridx = jwtService.getUserIdx();
@@ -101,8 +101,18 @@ public class MovieController {
                 movieinfoss.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-                GetLike like = movieProvider.getLike(useridx, movieinfoss.get(i).getMovieIdx());
-                if (like.getIsLike() == 1) {
+
+                int userIdx=-1;
+                try {
+                    userIdx = jwtService.getUserIdx();
+                }
+                catch (Exception exception){
+                    //System.out.println("userIdx -1로 설정");
+                    userIdx=-1;
+                }
+                GetLike like=movieProvider.getLike(userIdx,movieinfoss.get(i).getMovieIdx());
+                if(like.getIsLike()==1){
+
                     movieinfoss.get(i).setLiked(true);
                 } else {
                     movieinfoss.get(i).setLiked(false);
@@ -135,14 +145,16 @@ public class MovieController {
 
     @ResponseBody
     @PutMapping("{movieIdx}/like") //ex localhost:9000/movies/5/like
-    public BaseResponse<PutUserWishRes> userWish(@PathVariable("movieIdx") int movieIdx) {
-        // TODO: 2022-01-18 userIdx를 1이라고 가정, 나중에 jwt로부터 userIdx 받아와야함
-        int userIdx = 1;
 
-        try {
-            GetLike like = movieProvider.getLike(userIdx, movieIdx);
-            PutUserWishRes putUserWishRes = new PutUserWishRes();
-            if (like.getIsLike() == 1) {
+    public BaseResponse<PutUserWishRes> userWish(@PathVariable("movieIdx") int movieIdx){
+
+
+        try{
+            int userIdx=jwtService.getUserIdx();
+            GetLike like=movieProvider.getLike(userIdx,movieIdx);
+            PutUserWishRes putUserWishRes=new PutUserWishRes();
+            if(like.getIsLike()==1){
+
                 putUserWishRes.setMsg("찜한 작품에서 삭제되었습니다.");
                 movieProvider.deleteFromWish(userIdx, movieIdx);
             } else {
@@ -167,8 +179,7 @@ public class MovieController {
 
     @ResponseBody
     @GetMapping("/today") //ex) localhost:9000/movies/today
-    public BaseResponse<List<GetMovieInfo>> getMoviesToday() {
-
+    public BaseResponse<List<GetMovieInfo>> getMoviesToday(){
         try {
             int userIdx = jwtService.getUserIdx();
             // 좋아요 받은 영화들 정렬해서 가져오기
@@ -199,8 +210,18 @@ public class MovieController {
                 newgetMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-                GetLike like = movieProvider.getLike(userIdx, newgetMovieIdx.get(i).getMovieIdx());
-                if (like.getIsLike() == 1) {
+
+                int userIdx=-1;
+                try {
+                    // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것 
+                    userIdx=jwtService.getUserIdx();
+                }
+                catch (Exception exception){
+                    userIdx=-1;
+                }
+                GetLike like=movieProvider.getLike(userIdx,newgetMovieIdx.get(i).getMovieIdx());
+                if(like.getIsLike()==1){
+
                     newgetMovieIdx.get(i).setLiked(true);
                 } else {
                     newgetMovieIdx.get(i).setLiked(false);
@@ -240,8 +261,6 @@ public class MovieController {
     @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=likeCnt
     public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) throws BaseException {
         try {
-            // TODO: 2022-01-21 나중에 jwt에서 userIdx가져와야함
-            int userIdx = 1;
             GetMovieDetail getMovieDetail = movieProvider.getMovieDetail(movieIdx);
 
             //영화 장르 추가 코드
@@ -253,6 +272,15 @@ public class MovieController {
             getMovieDetail.setMovieGenreList(genre);
 
             //isLiked추가하는 코드
+            int userIdx=-1;
+            try {
+                // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것
+                userIdx=jwtService.getUserIdx();
+            }
+            catch (Exception exception){
+                userIdx=-1;
+            }
+
             GetLike like = movieProvider.getLike(userIdx, movieIdx);
             if (like.getIsLike() == 1) {
                 getMovieDetail.setLiked(true);
@@ -310,8 +338,6 @@ public class MovieController {
     @GetMapping("/search") //ex)localhost:9000/movies/?keyword=movie&sort=likeCnt
     public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name = "keyword") String keyword, @RequestParam(name = "sort", defaultValue = "recent") String sort) throws BaseException {
         try {
-            int userIdx = 1;
-            System.out.println("검색시작");
             //1. keyword로 검색해서 나온 결과
             List<GetMovieInfo> getMovieIdx = movieProvider.getMovieIdx_Search(keyword, sort);
 
@@ -332,8 +358,18 @@ public class MovieController {
                 getMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-                GetLike like = movieProvider.getLike(userIdx, getMovieIdx.get(i).getMovieIdx());
-                if (like.getIsLike() == 1) {
+
+                int userIdx=-1;
+                try {
+                    // TODO: 2022-02-07 로그인 할 경우 userIdx 잘 반영되는지 체크할것
+                    userIdx=jwtService.getUserIdx();
+                }
+                catch (Exception exception){
+                    userIdx=-1;
+                }
+                GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
+                if(like.getIsLike()==1){
+
                     getMovieIdx.get(i).setLiked(true);
                 } else {
                     getMovieIdx.get(i).setLiked(false);

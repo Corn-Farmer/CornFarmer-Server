@@ -2,8 +2,6 @@ package com.farmer.cornfarmer.src.movie;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.src.movie.model.*;
-import com.farmer.cornfarmer.src.user.UserDao;
-import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
