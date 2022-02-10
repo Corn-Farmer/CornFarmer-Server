@@ -154,6 +154,25 @@ public class UserController {
     }
 
     /**
+     * 나의 간단정보 조회 for 수정하기 페이지
+     * [GET] /users/{userIdx}/info
+     * 개발자 : 앨리(홍민주)
+     */
+    @ResponseBody
+    @GetMapping("/{userIdx}/info")
+    public BaseResponse<GetUserSimpleInfo> getMySimpleInfo(@PathVariable int userIdx) {
+        try {
+            int tokenIdx = jwtService.getUserIdx();
+            if (userIdx != tokenIdx)
+                throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
+            GetUserSimpleInfo userSimpleInfo = userProvider.getUserSimpleInfo(userIdx);
+            return new BaseResponse<>(userSimpleInfo);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
      * 나의 정보수정
      * [POST] /users/{userIdx}
      * 개발자 : 팡코(조대환)

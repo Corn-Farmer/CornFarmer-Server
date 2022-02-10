@@ -77,6 +77,16 @@ public class UserProvider {
     }
 
     @Transactional(readOnly = true)
+    public GetUserSimpleInfo getUserSimpleInfo(int userIdx) throws BaseException {
+        try {
+            return new GetUserSimpleInfo(userDao.getUserNickName(userIdx), userDao.getPhoto(userIdx), userDao.getOtt(userIdx), userDao.getGenre(userIdx));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    @Transactional(readOnly = true)
     public PostLoginRes kakaoLogIn(String oauth_id) throws BaseException {
         try {
             //db에 존재하는 유저정보 가져와서 토큰만들어주기
