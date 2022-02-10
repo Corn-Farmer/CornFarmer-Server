@@ -24,6 +24,7 @@ public class Review {
     private Writer writer;
     private String contents;
     private float rate;
+    private boolean isLiked;
     private int likeCnt;
     private String createAt;
 
