@@ -237,6 +237,19 @@ public class UserDao {
                 , userIdx);
     }
 
+    public GetUserSimpleInfo getUserSimpleInfo(int userIdx) {
+        String getUserSimpleInfoQuery = "select nickname, photo, is_male, birth from user where user_idx = ?";
+        return this.jdbcTemplate.queryForObject(getUserSimpleInfoQuery,
+                (rs, rowNum) -> new GetUserSimpleInfo(
+                        rs.getString("nickname"),
+                        rs.getString("photo"),
+                        null,
+                        null,
+                        rs.getInt("is_male"),
+                        rs.getString("birth"))
+                , userIdx);
+    }
+
     public List<OttInfo> getOttInfo(int userIdx) {
         String getOttInfoQuery = "select ott.ott_idx, ott.name, ott.photo from ott left join user_ott on ott.ott_idx = user_ott.ott_idx where user_idx=?";
         int param = userIdx;

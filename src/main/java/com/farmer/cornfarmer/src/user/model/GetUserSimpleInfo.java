@@ -14,4 +14,6 @@ public class GetUserSimpleInfo {
     private String photo;
     private List<Integer> ottList;
     private List<Integer> genreList;
+    private Integer is_male;
+    private String birth;
 }

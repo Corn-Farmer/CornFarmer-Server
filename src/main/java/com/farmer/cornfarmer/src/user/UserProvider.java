@@ -79,7 +79,10 @@ public class UserProvider {
     @Transactional(readOnly = true)
     public GetUserSimpleInfo getUserSimpleInfo(int userIdx) throws BaseException {
         try {
-            return new GetUserSimpleInfo(userDao.getUserNickName(userIdx), userDao.getPhoto(userIdx), userDao.getOtt(userIdx), userDao.getGenre(userIdx));
+            GetUserSimpleInfo userMySimpleInfo = userDao.getUserSimpleInfo(userIdx);
+            userMySimpleInfo.setGenreList(userDao.getGenre(userIdx));
+            userMySimpleInfo.setOttList(userDao.getOtt(userIdx));
+            return userMySimpleInfo;
         } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
