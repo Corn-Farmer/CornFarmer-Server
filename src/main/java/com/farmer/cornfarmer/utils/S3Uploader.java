@@ -1,6 +1,7 @@
 package com.farmer.cornfarmer.utils;
 
 import com.farmer.cornfarmer.config.BaseException;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.farmer.cornfarmer.config.BaseResponseStatus.FILE_CONVERT_ERROR;
+import static com.farmer.cornfarmer.config.BaseResponseStatus.FILE_DELETE_ERROR;
 
 @RequiredArgsConstructor
 @Component
@@ -64,6 +66,20 @@ public class S3Uploader {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
+    public void delete(String filePath) throws BaseException {
+        try {
+            filePath = filePath.substring(49);
+            System.out.println(filePath);
+            boolean isExistObject = amazonS3Client.doesObjectExist(bucket, filePath);
+            if (isExistObject == true) {
+                amazonS3Client.deleteObject(bucket, filePath);
+            }
+        }catch (Exception e)
+        {
+            System.out.println(e);
+            throw new BaseException(FILE_DELETE_ERROR);
+        }
+    }
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
             logger.info("파일이 삭제되었습니다.");
