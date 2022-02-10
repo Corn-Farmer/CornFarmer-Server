@@ -214,14 +214,6 @@ public class MovieController {
                 newgetMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-
-                int userIdx=-1;
-                try {
-                    userIdx=jwtService.getUserIdx();
-                }
-                catch (Exception exception){
-                    userIdx=-1;
-                }
                 GetLike like=movieProvider.getLike(userIdx,newgetMovieIdx.get(i).getMovieIdx());
                 if(like.getIsLike()==1){
 
