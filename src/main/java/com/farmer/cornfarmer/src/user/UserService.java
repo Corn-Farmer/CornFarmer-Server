@@ -94,11 +94,10 @@ public class UserService {
                 response.append(inputLine);
             }
             br.close();
-
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parseString(response.toString());
 
-            id = element.getAsJsonObject().get("id").getAsString();
+            id = element.getAsJsonObject().get("response").getAsJsonObject().get("id").getAsString();
         } catch (IOException e) {
             e.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
