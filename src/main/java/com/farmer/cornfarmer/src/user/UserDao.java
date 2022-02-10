@@ -247,6 +247,23 @@ public class UserDao {
                 param);
     }
 
+    public List<Integer> getOtt(int userIdx) {
+        String getOttQuery = "select ott_idx from user_ott where user_idx=?";
+        int param = userIdx;
+
+        return this.jdbcTemplate.query(getOttQuery,
+                (rs, rowNum) -> rs.getInt("ott_idx")
+                , param);
+    }
+
+    public List<Integer> getGenre(int userIdx) {
+        String getGenreQuery = "select genre_idx from user_genre where user_idx=?";
+        int param = userIdx;
+        return this.jdbcTemplate.query(getGenreQuery,
+                (rs, rowNum) ->  rs.getInt("genre_idx"),
+                param);
+    }
+
     public List<GetMyMovieLikedRes> getMyMoviesLiked(int userIdx) {
         String query = "select o.movie_idx,group_concat(o.genre_name) as genre_name,o.movie_title,o.like_cnt,o.movie_photo from " +
                 "(select um.movie_idx,m.movie_title,m.like_cnt,ge.genre_name,um.created_at,(select p.photo from movie_photo p where p.movie_idx = um.movie_idx limit 1) as movie_photo " +
