@@ -43,11 +43,18 @@ public class UserDao {
        return getMyReviewResList;
     }
 
-    public boolean checkOauth(String oauth_id) {
+    public boolean checkExistOauthid(String oauth_id) {
         String checkOauthQuery = "select exists(select oauth_id from user where oauth_id = ?)";
         Boolean result = this.jdbcTemplate.queryForObject(checkOauthQuery, boolean.class, oauth_id);
         return result;
     }
+
+    public String checkOauthid(String oauth_id) {
+        String checkOauthQuery = "select oauth_id from user where oauth_id = ?";
+        String result = this.jdbcTemplate.queryForObject(checkOauthQuery, String.class, oauth_id);
+        return result;
+    }
+
 
     public String checkUserNickName(String oauth_id){
         String checkUserNickNameQuery = "select nickname from user where oauth_id = ?";
@@ -165,6 +172,7 @@ public class UserDao {
         String getUserParam = oauth_id;
         int userIdx = this.jdbcTemplate.queryForObject(getUserQuery, int.class, getUserParam );
 
+
         for(String ottidx : postUserReq.getOttList()) {
             int ott_idx = Integer.parseInt(ottidx);
             if(!checkUserOtt(ott_idx, userIdx)) {
@@ -186,9 +194,16 @@ public class UserDao {
         return userIdx;
     }
 
-    public String getPhoto(int userIdx){
+    public String getPhoto(int userIdx) {
         String getPhotoQuery = "select photo from user where user_idx = ?";
         return this.jdbcTemplate.queryForObject(getPhotoQuery, String.class, userIdx);
+    }
+
+    public boolean checkMyPhoto(int userIdx){
+        String checkPhotoQuery = "select exists(select photo from user where user_idx = ?)";
+        Object[] checkPhotoParam = new Object[]{userIdx};
+        Boolean result = this.jdbcTemplate.queryForObject(checkPhotoQuery, boolean.class, checkPhotoParam);
+        return result;
     }
 
     public void modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl){
@@ -220,6 +235,16 @@ public class UserDao {
             }
         }
 
+
+    }
+
+    public void removeUserOtt(int userIdx){
+        String deleteMyOttQuery = "delete from user_ott where user_idx=?";
+        this.jdbcTemplate.update(deleteMyOttQuery, userIdx);
+    }
+    public void removeUserGenre(int userIdx){
+        String deleteMyGenreQuery = "delete from user_genre where user_idx=?";
+        this.jdbcTemplate.update(deleteMyGenreQuery, userIdx);
 
     }
 
@@ -269,5 +294,12 @@ public class UserDao {
                         rs.getInt("o.like_cnt")
                 ),userIdx);
         return getMyMovieLikedRes;
+    }
+
+    public boolean checkActive(String oauth_id) {
+        String checkactiveQuery = "select active from user where oauth_id = ?";
+        Object[] checkactiveParam = new Object[]{oauth_id};
+        boolean result = this.jdbcTemplate.queryForObject(checkactiveQuery, Boolean.class, checkactiveParam);
+        return result;
     }
 }

@@ -53,7 +53,7 @@ public class UserController {
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
-            if (userProvider.checkOauthId(id)) {
+            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),cornfarmer)) {
                 //db에 존재하는경우 ->login
                 if(!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
                     //회원가입이 완료된 경우
@@ -62,7 +62,7 @@ public class UserController {
                 }
                 else
                 {
-                    //oautid는 저장됐지만 회원가입은 안한경우
+                    //oautid는 저장됐지만 회원가입은 안한경우 or active가 0인경우
                     PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
@@ -90,15 +90,15 @@ public class UserController {
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getNaverOauthId(accessToken);
-            if (userProvider.checkOauthId(id)) {
+            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),cornfarmer)) {
                 //db에 존재하는경우 ->login
                 if(!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
-                    //회원가입이 완료된 경우
+                    //회원가입이 완료된 경우 && active가 1인경우
                     PostLoginRes postLoginRes = userProvider.naverLogIn(id);
                     return new BaseResponse<>(postLoginRes);
                 }
                 else
-                { //oautid는 저장됐지만 회원가입은 안한경우
+                { //oautid는 저장됐지만 회원가입은 안한경우 or active가 0인경우
                     PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
@@ -124,7 +124,7 @@ public class UserController {
         try{
             //kakao naver.
             String ouath_id = jwtService.getOauthId();
-            if(userProvider.checkOauthId(ouath_id) == false)
+            if(userProvider.checkExistOauthId(ouath_id) == false)
             {
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
             }
@@ -150,7 +150,7 @@ public class UserController {
     public BaseResponse<UserMyInfo> getMyInfo(@PathVariable int userIdx){
         try{
             int tokenIdx = jwtService.getUserIdx();
-            if(userIdx == tokenIdx) {
+            if(userIdx == tokenIdx && !(userIdx == 0)) {
                 return new BaseResponse<>(userProvider.getMyInfo(userIdx));
             }
             else
@@ -169,14 +169,18 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/{userIdx}")
-    public BaseResponse<UserMyInfo> modifyMyInfo(@PathVariable int userIdx, @ModelAttribute PostUserInfoReq postUserInfoReq){
+    public BaseResponse<PostLoginRes> modifyMyInfo(@PathVariable int userIdx, @ModelAttribute PostUserInfoReq postUserInfoReq){
         try{
             int tokenIdx = jwtService.getUserIdx();
-            if(userIdx == tokenIdx) {
-                //이전에 저장되어있던 사진파일 삭제
-                if(userProvider.checckDuplicateNick(postUserInfoReq.getNickname(), userIdx))
+            if(userIdx == tokenIdx && !(userIdx == 0)){
+                if(userProvider.checkDuplicateNick(postUserInfoReq.getNickname(), userIdx))
                 {
                     throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
+                }
+                //이전에 저장되어있던 사진파일 삭제
+                String currentPhoto = userProvider.getCurrentUserPhoto(userIdx);
+                if(!Objects.equals(currentPhoto, "")) {
+                    S3Uploader.delete(currentPhoto);
                 }
                 String PhotoUrl = S3Uploader.upload(postUserInfoReq.getPhoto(), "user");
                 return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl));
@@ -201,7 +205,8 @@ public class UserController {
     public BaseResponse<PostUserRes> deleteUser(@PathVariable int userIdx){
         try {
             int tokenIdx = jwtService.getUserIdx();
-            if (userIdx == tokenIdx) {
+            if (userIdx == tokenIdx && !(userIdx == 0)) {
+
                 PostUserRes userRes = userService.inactive(userIdx);
                 return new BaseResponse<>(userRes);
             }

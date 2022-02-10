@@ -118,7 +118,7 @@ public class UserService {
     public int createUser(String id, String oauth_channel)throws BaseException{
         int result = 0;
         try {
-            if(false != userProvider.checkOauthId(id))
+            if(false != userProvider.checkExistOauthId(id))
             {
                 throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
             }
@@ -143,14 +143,14 @@ public class UserService {
         }
     }
 
-    public UserMyInfo modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl) throws BaseException {
+    public PostLoginRes modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl) throws BaseException {
             try{
                 userDao.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl);
                 GetUserInfo getUserInfo = userDao.getUser(userDao.getUserOauth_id(userIdx));
 
-                jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(),getUserInfo.getOauth_id(), getUserInfo.getNickname());
-                return userProvider.getMyInfo(userIdx);
-
+                String jwt = jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(),getUserInfo.getOauth_id(), getUserInfo.getNickname());
+                userProvider.getMyInfo(userIdx);
+                return new PostLoginRes(false, jwt, getUserInfo.getUser_idx());
 
             } catch (BaseException exception) {
                 exception.printStackTrace();
