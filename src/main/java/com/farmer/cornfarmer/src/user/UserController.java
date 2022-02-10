@@ -227,14 +227,13 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/{userIdx}/reviews")
-    public BaseResponse<GetMyReviewRes> getMyReviews(@PathVariable int userIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) {
+    public BaseResponse<List<GetMyReviewRes>> getMyReviews(@PathVariable int userIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) {
         try {
             int userJwtIdx = jwtService.getUserIdx();
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
-            GetMyReviewRes reviewRes = new GetMyReviewRes(userProvider.getUserNickname(userJwtIdx));
-            List<ReviewInfo> reviewList;
+            List<GetMyReviewRes> reviewList;
             switch (sort) {
                 case "recent":
                     reviewList = userProvider.getMyReviews(userIdx, userJwtIdx, "created_at");
@@ -248,8 +247,7 @@ public class UserController {
                 default:
                     reviewList = null;
             }
-            reviewRes.setReviewList(reviewList);
-            return new BaseResponse<>(reviewRes);
+            return new BaseResponse<>(reviewList);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }

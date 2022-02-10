@@ -21,13 +21,14 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<ReviewInfo> getMyReviews(int userIdx, String sort) {
-        String query = "select * , (select p.photo from movie_photo p where p.movie_idx = r.movie_idx limit 1) as movie_photo from review as r " +
-                "left join movie as m on r.movie_idx = m.movie_idx where r.active = ? and r.user_idx = ? " +
+    public List<GetMyReviewRes> getMyReviews(int userIdx, String sort) {
+        String query = "select * , (select nickname from user where user_idx = ?) as nickname,(select p.photo from movie_photo p where p.movie_idx = r.movie_idx limit 1) as movie_photo from review as r\n" +
+                "left join movie as m on r.movie_idx = m.movie_idx where r.active = ? and r.user_idx = ?" +
                 "order by " + sort + " desc";
 
-        List<ReviewInfo> reviewInfoList = jdbcTemplate.query(query,
-                (rs, rowNum) -> new ReviewInfo(
+        List<GetMyReviewRes> getMyReviewResList = jdbcTemplate.query(query,
+                (rs, rowNum) -> new GetMyReviewRes(
+                        rs.getString("nickname"),
                         rs.getInt("r.review_idx"),
                         rs.getInt("r.movie_idx"),
                         rs.getString("m.movie_title"),
@@ -36,8 +37,8 @@ public class UserDao {
                         rs.getFloat("r.rate"),
                         rs.getString("r.created_at"),
                         rs.getInt("r.like_cnt")
-                ), 1, userIdx);
-        return reviewInfoList;
+                ), userIdx, 1, userIdx);
+        return getMyReviewResList;
     }
 
     public boolean checkOauth(String oauth_id) {
