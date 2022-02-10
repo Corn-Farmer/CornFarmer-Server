@@ -15,7 +15,8 @@ public class UserMyInfo {
     private String photo;
     private List<OttInfo> ottList;
     private List<GenreInfo> genreList;
-
+    private Integer is_male;
+    private String birth;
 }
 
 
