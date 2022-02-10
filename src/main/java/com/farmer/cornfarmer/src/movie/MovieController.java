@@ -48,23 +48,20 @@ public class MovieController {
      * 키워드 랜덤 추천 기능을 담당하는 API
      * 개발자 : 쉐리(강혜연)
      */
-    // Body
     @ResponseBody
-    @GetMapping("/keywords")    // Get 방식의 요청을 매핑하기 위한 어노테이션d
+    @GetMapping("/keywords")
     public BaseResponse<List<GetKeywordRes>> viewKeyword() {
         try {
             List<GetKeywordRes> GetKeywordRes = movieProvider.getKeywords();
 
             //6개 뽑는 코드
             int total_length = GetKeywordRes.size();
-            /*System.out.println("총 개수는"+total_length);*/
             List<GetKeywordRes> Get6Keyword = null;
 
             //키워드가 6개 이하일 경우 모두 리턴
             if (total_length <= 6) {
                 Get6Keyword = GetKeywordRes;
             } else {
-                /*System.out.println("길이 6이상인 경우가 실행되었습니다");*/
                 Collections.shuffle(GetKeywordRes);
                 Get6Keyword = GetKeywordRes.subList(0, 6);
             }
@@ -88,7 +85,7 @@ public class MovieController {
     public BaseResponse <GetKeywordRecommandRes> getKeywordName(@PathVariable("keywordIdx") int keywordIdx) throws BaseException {
 
         try {
-            int useridx = jwtService.getUserIdx();
+            int userIdx = jwtService.getUserIdx();
             GetKeywordRecommandRes getKeywordRes = movieProvider.getKeyword(keywordIdx);
 
             //장르 추가하는 코드
@@ -103,15 +100,6 @@ public class MovieController {
                 movieinfoss.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-
-                int userIdx=-1;
-                try {
-                    userIdx = jwtService.getUserIdx();
-                }
-                catch (Exception exception){
-                    //System.out.println("userIdx -1로 설정");
-                    userIdx=-1;
-                }
                 GetLike like=movieProvider.getLike(userIdx,movieinfoss.get(i).getMovieIdx());
                 if(like.getIsLike()==1){
 
@@ -144,12 +132,9 @@ public class MovieController {
      * [put] localhost:9000/movies/5/like
      * 개발자 : 쉐리(강혜연)
      */
-
     @ResponseBody
     @PutMapping("{movieIdx}/like") //ex localhost:9000/movies/5/like
-
     public BaseResponse<PutUserWishRes> userWish(@PathVariable("movieIdx") int movieIdx){
-
 
         try{
             int userIdx=jwtService.getUserIdx();
@@ -180,12 +165,12 @@ public class MovieController {
      * [GET] localhost:9000/movies/today
      * 개발자 : 쉐리(강혜연)
      */
-
     @ResponseBody
     @GetMapping("/today") //ex) localhost:9000/movies/today
     public BaseResponse<List<GetMovieInfo>> getMoviesToday(){
         try {
             int userIdx = jwtService.getUserIdx();
+
             // 좋아요 받은 영화들 정렬해서 가져오기
             List<GetMovieInfo> getMovieIdx = movieProvider.getMovieIdx_Today();
             //모든 영화 랜덤으로 가져오기
@@ -252,11 +237,11 @@ public class MovieController {
      * [GET] localhost:9000/movies/1?sort=likeCnt sort=recent이면 리뷰 최신순 정렬, sort=likeCnt이면 리뷰 좋아요순 정렬
      * 개발자 : 쉐리(강혜연)
      */
-
     @ResponseBody
     @GetMapping("/{movieIdx}") //ex)localhost:9000/movies/1?sort=likeCnt
     public BaseResponse<GetMovieDetail> getMovieDetail(@PathVariable("movieIdx") int movieIdx, @RequestParam(name = "sort", defaultValue = "recent") String sort) throws BaseException {
         try {
+            int userIdx = jwtService.getUserIdx();
             GetMovieDetail getMovieDetail = movieProvider.getMovieDetail(movieIdx);
 
             //영화 장르 추가 코드
@@ -268,14 +253,6 @@ public class MovieController {
             getMovieDetail.setMovieGenreList(genre);
 
             //isLiked추가하는 코드
-            int userIdx=-1;
-            try {
-                userIdx=jwtService.getUserIdx();
-            }
-            catch (Exception exception){
-                userIdx=-1;
-            }
-
             GetLike like = movieProvider.getLike(userIdx, movieIdx);
             if (like.getIsLike() == 1) {
                 getMovieDetail.setLiked(true);
@@ -290,7 +267,6 @@ public class MovieController {
                 photo.add(moviePhoto.get(j).getGenre());
             }
             getMovieDetail.setMoviePhotoList(photo);
-            System.out.println("moviephoto");
 
             //ottList 추가하는 코드
             List<Ott> ott = movieProvider.getOtt(movieIdx);
@@ -338,11 +314,12 @@ public class MovieController {
      * [GET] localhost:9000/movies/search?keyword=검색키워드&sort=likeCnt(좋아요순) recent(최신순) review(후기많은순)
      * 개발자 : 쉐리(강혜연)
      */
-
     @ResponseBody
     @GetMapping("/search") //ex)localhost:9000/movies/?keyword=movie&sort=likeCnt
     public BaseResponse<List<GetMovieInfo>> getMovieSearch(@RequestParam(name = "keyword") String keyword, @RequestParam(name = "sort", defaultValue = "recent") String sort) throws BaseException {
         try {
+            int userIdx = jwtService.getUserIdx();
+
             //1. keyword로 검색해서 나온 결과
             List<GetMovieInfo> getMovieIdx = movieProvider.getMovieIdx_Search(keyword, sort);
 
@@ -363,14 +340,6 @@ public class MovieController {
                 getMovieIdx.get(i).setMovieGenreList(genre);
 
                 //isLiked추가하는 코드
-
-                int userIdx=-1;
-                try {
-                    userIdx=jwtService.getUserIdx();
-                }
-                catch (Exception exception){
-                    userIdx=-1;
-                }
                 GetLike like=movieProvider.getLike(userIdx,getMovieIdx.get(i).getMovieIdx());
                 if(like.getIsLike()==1){
 
