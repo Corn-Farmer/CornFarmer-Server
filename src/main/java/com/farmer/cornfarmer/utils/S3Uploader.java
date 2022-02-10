@@ -42,7 +42,7 @@ public class S3Uploader {
         try {
             File uploadFile = convert(multipartFile).orElseThrow(() -> new BaseException(FILE_CONVERT_ERROR));
             return upload(uploadFile, dirName);
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e);
             throw new BaseException(FILE_CONVERT_ERROR);
         }
@@ -95,7 +95,7 @@ public class S3Uploader {
         //File convertFile = new File("C:/Users/wheog/OneDrive/바탕 화면/조대환/CornFarmer/image/" + file.getOriginalFilename()); //변환경로
 
         System.out.println(file.getOriginalFilename());
-        if(convertFile.createNewFile()) {
+        if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
             }

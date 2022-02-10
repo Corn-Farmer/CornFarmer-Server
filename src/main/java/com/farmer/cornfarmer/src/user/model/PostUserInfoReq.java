@@ -19,4 +19,4 @@ public class PostUserInfoReq {
     MultipartFile photo;
     List<String> userOtt;
     List<String> genreList;
- }
+}

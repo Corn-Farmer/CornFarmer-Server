@@ -37,14 +37,14 @@ public class UserService {
         //access token 으로 oauth_id 가져오기
         int id = 0;
         String reqURL = "https://kapi.kakao.com/v2/user/me";
-        try{
+        try {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-            conn.setRequestProperty("Authorization", "Bearer "+accessToken);
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
             /*int responseCode = conn.getResponseCode();
             //System.out.println("responseCode : "+responseCode);
@@ -54,16 +54,16 @@ public class UserService {
             String line = "";
             String result = "";
 
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 result += line;
             }
 
-            System.out.println("response body : "+result);
+            System.out.println("response body : " + result);
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parseString(result);
 
             id = element.getAsJsonObject().get("id").getAsInt();
-        }  catch (IOException e) { //
+        } catch (IOException e) { //
             e.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_KAKAO_ERROR);
         }
@@ -71,8 +71,8 @@ public class UserService {
         return Integer.toString(id);
     }
 
-    public String getNaverOauthId(String accessToken) throws BaseException{
-        String header = "Bearer "+accessToken;
+    public String getNaverOauthId(String accessToken) throws BaseException {
+        String header = "Bearer " + accessToken;
         String id = "";
         try {
             String apiurl = "https://openapi.naver.com/v1/nid/me";
@@ -83,7 +83,7 @@ public class UserService {
 
             int responseCode = con.getResponseCode();
             BufferedReader br;
-            if(responseCode==200) { // 정상 호출
+            if (responseCode == 200) { // 정상 호출
                 br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             } else {  // 에러 발생
                 throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
@@ -102,27 +102,27 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
-        }catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_NAVER_ERROR);
         }
         return id;
     }
 
-    public String emptyJwt(String Oauth_id){
-        String jwt = jwtService.createJwt(userDao.getUserIdx(Oauth_id), null, Oauth_id, null );
+    public String emptyJwt(String Oauth_id) {
+        String jwt = jwtService.createJwt(userDao.getUserIdx(Oauth_id), null, Oauth_id, null);
         return jwt;
     }
 
-    public int createUser(String id, String oauth_channel)throws BaseException{
+    public int createUser(String id, String oauth_channel) throws BaseException {
         int result = 0;
         try {
+
             if(false != userProvider.checkExistOauthId(id))
             {
                 throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
             }
-           result = userDao.createUser(id, oauth_channel);
+            result = userDao.createUser(id, oauth_channel);
         } catch (Exception exception) {
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.POST_USERS_CREATE_FAILED);
@@ -130,18 +130,16 @@ public class UserService {
         return result;
     }
 
-    public PostUserRes createUserInfo(PostUserReq postUserReq, String PhotoUrl, String oauth_id) throws BaseException
-    {
-        try{
-            int userIdx =  userDao.createUserInfo(postUserReq, PhotoUrl, oauth_id);
+    public PostUserRes createUserInfo(PostUserReq postUserReq, String PhotoUrl, String oauth_id) throws BaseException {
+        try {
+            int userIdx = userDao.createUserInfo(postUserReq, PhotoUrl, oauth_id);
             return new PostUserRes(userIdx);
-        }
-        catch (Exception Exception)
-        {
+        } catch (Exception Exception) {
             System.out.println(Exception);
             throw new BaseException(BaseResponseStatus.POST_USERS_EXIST_OAUTHID);
         }
     }
+
 
     public PostLoginRes modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl) throws BaseException {
             try{
@@ -152,26 +150,25 @@ public class UserService {
                 userProvider.getMyInfo(userIdx);
                 return new PostLoginRes(false, jwt, getUserInfo.getUser_idx());
 
-            } catch (BaseException exception) {
-                exception.printStackTrace();
-                System.out.println(exception);
-                throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-            }
+
+        } catch (BaseException exception) {
+            exception.printStackTrace();
+            System.out.println(exception);
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
 
     }
 
     public PostUserRes inactive(int userIdx) throws BaseException {
-        try{
-            if(userIdx == jwtService.getUserIdx()) {
+        try {
+            if (userIdx == jwtService.getUserIdx()) {
                 int result = userDao.inactive(userIdx);
                 return new PostUserRes(result);
-            }
-            else
-            {
+            } else {
                 throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
             }
-        }catch (BaseException exception){
-                throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        } catch (BaseException exception) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 }

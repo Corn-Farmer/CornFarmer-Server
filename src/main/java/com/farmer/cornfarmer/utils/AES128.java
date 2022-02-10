@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+
 // 암호화 관련 AES128(고급 암호화 표준)
 //참고 https://sunghs.tistory.com/119
 public class AES128 {
@@ -27,6 +28,7 @@ public class AES128 {
         this.ips = key.substring(0, 16);
         this.keySpec = keySpec;
     }
+
     //암호화 관련 함수
     public String encrypt(String value) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, InvalidKeyException {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -34,6 +36,7 @@ public class AES128 {
         byte[] encrypted = cipher.doFinal(value.getBytes(UTF_8));
         return new String(Base64.getEncoder().encode(encrypted));
     }
+
     //복호화 관련함수
     public String decrypt(String value) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, InvalidKeyException {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");

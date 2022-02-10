@@ -5,6 +5,7 @@ import com.farmer.cornfarmer.src.admin.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
 import javax.sql.DataSource;
 import java.util.List;
 
@@ -35,23 +36,23 @@ public class AdminDao {
                         rs.getString("m.movie_title"),
                         rs.getString("movie_photo"),
                         rs.getString("u.nickname")
-                ),1);
+                ), 1);
 
-       return getReviewResList;
+        return getReviewResList;
     }
 
     public int deleteReview(int reviewIdx) {
         String deleteReviewQuery = "update review set active = ? where review_idx = ?";
-        Object[] deleteReviewParams = new Object[]{ 0, reviewIdx};
-        int result = this.jdbcTemplate.update(deleteReviewQuery,deleteReviewParams);
+        Object[] deleteReviewParams = new Object[]{0, reviewIdx};
+        int result = this.jdbcTemplate.update(deleteReviewQuery, deleteReviewParams);
         return result;
     }
 
     public int getReviewIdx(int reviewIdx) {
         String getReviewIdxQuery = "select count(*) from review where review_idx = ? and active = ?";
-        return this.jdbcTemplate.queryForObject(getReviewIdxQuery,int.class,reviewIdx,1);
+        return this.jdbcTemplate.queryForObject(getReviewIdxQuery, int.class, reviewIdx, 1);
     }
-  
+
     // ott 테이블에 존재하는 전체 ott 정보 조회
     public List<GetOttRes> getOtts() {
         String getOttsQuery = "select * from ott";
@@ -76,8 +77,8 @@ public class AdminDao {
     // 특정 장르에 해당하는 영화 전체 조회
     public List<GetMovieRes> getGenreMovies(int genreIdx) {
         String getGenreMoviesQuery = "select movie.movie_idx, movie_title, photo, like_cnt " +
-                                    "from (select * from movie_genre where genre_idx = ?)genre " +
-                                    "natural join movie join movie_photo mp on movie.movie_idx = mp.movie_idx group by movie.movie_idx";
+                "from (select * from movie_genre where genre_idx = ?)genre " +
+                "natural join movie join movie_photo mp on movie.movie_idx = mp.movie_idx group by movie.movie_idx";
         int getGenreMoviesParams = genreIdx;
         return this.jdbcTemplate.query(getGenreMoviesQuery,
                 (rs, rowNum) -> new GetMovieRes(
@@ -89,7 +90,7 @@ public class AdminDao {
     }
 
     // genre 테이블에 genre 추가
-    public int createGenre(PostGenreReq postGenreReq){
+    public int createGenre(PostGenreReq postGenreReq) {
         String createGenreQuery = "insert into genre (genre_name) values (?)";
         Object[] createGenreParams = new Object[]{postGenreReq.getGenreName()};
         this.jdbcTemplate.update(createGenreQuery, createGenreParams);
@@ -99,7 +100,7 @@ public class AdminDao {
     }
 
     // ott 테이블에 ott 추가
-    public int createOtt(String ottName, String ottFileURL){
+    public int createOtt(String ottName, String ottFileURL) {
         String createOttQuery = "insert into ott (name, photo) values (?, ?)";
         Object[] createOttParams = new Object[]{ottName, ottFileURL};
         this.jdbcTemplate.update(createOttQuery, createOttParams);
@@ -109,7 +110,7 @@ public class AdminDao {
     }
 
     // movie 테이블에 movie 추가
-    public int createMovie(String title,int release_year, String synopsis, String director){
+    public int createMovie(String title, int release_year, String synopsis, String director) {
         String createMovieQuery = "insert into movie (movie_title, release_year, synopsis, director) values (?, ?, ?, ?)";
         Object[] createMovieParams = new Object[]{title, release_year, synopsis, director};
         this.jdbcTemplate.update(createMovieQuery, createMovieParams);
@@ -118,35 +119,35 @@ public class AdminDao {
     }
 
     // movie의 genre 추가(movie_genre 테이블)
-    public void createMovieGenre(int movie_idx, int genre_idx){
+    public void createMovieGenre(int movie_idx, int genre_idx) {
         String createMovieGenreQuery = "insert into movie_genre (movie_idx, genre_idx) values (?, ?)";
         Object[] createMovieGenreParams = new Object[]{movie_idx, genre_idx};
         this.jdbcTemplate.update(createMovieGenreQuery, createMovieGenreParams);
     }
 
     // movie의 ott 추가(movie_ott 테이블)
-    public void createMovieOtt(int movie_idx, int ott_idx){
+    public void createMovieOtt(int movie_idx, int ott_idx) {
         String createMovieOttQuery = "insert into movie_ott(movie_idx, ott_idx) values (?, ?)";
         Object[] createMovieOttParams = new Object[]{movie_idx, ott_idx};
         this.jdbcTemplate.update(createMovieOttQuery, createMovieOttParams);
     }
 
     // movie의 photo 추가(movie_photo 테이블)
-    public void createMoviePhoto(int movie_idx, String photo){
+    public void createMoviePhoto(int movie_idx, String photo) {
         String createMoviePhotoQuery = "insert into movie_photo(movie_idx, photo) values (?, ?)";
         Object[] createMoviePhotoParams = new Object[]{movie_idx, photo};
         this.jdbcTemplate.update(createMoviePhotoQuery, createMoviePhotoParams);
     }
 
     // keyword의 movie 추가(keyword_movie 테이블)
-    public void createMovieKeyword(int keyword_idx, int movie_idx){
+    public void createMovieKeyword(int keyword_idx, int movie_idx) {
         String createMovieKeywordQuery = "insert into keyword_movie(keyword_idx, movie_idx) values (?, ?)";
         Object[] createMovieKeywordParams = new Object[]{keyword_idx, movie_idx};
         this.jdbcTemplate.update(createMovieKeywordQuery, createMovieKeywordParams);
     }
 
     // keyword 테이블에 keyword 추가
-    public int createKeyword(String keywordName){
+    public int createKeyword(String keywordName) {
         String createKeywordQuery = "insert into keyword (keyword)\n" +
                 "SELECT ? FROM DUAL\n" +
                 "WHERE NOT EXISTS\n" +
@@ -158,17 +159,17 @@ public class AdminDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
-    public List<GetUserRes> getUser(){
+    public List<GetUserRes> getUser() {
         String getUserQuery = "select user_idx, nickname, photo from user";
         return this.jdbcTemplate.query(getUserQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("user_idx"),
                         rs.getString("nickname"),
-                        rs.getString("photo"), null,null)
-                );
+                        rs.getString("photo"), null, null)
+        );
     }
 
-    public List<GetGenreRes> getUserGenre(int user_idx){
+    public List<GetGenreRes> getUserGenre(int user_idx) {
         String getUserGenreQuery = "select user_genre.genre_idx, genre_name\n" +
                 "from (select  * from user_genre where user_idx = ?)user_genre\n" +
                 "natural join genre";
@@ -180,7 +181,7 @@ public class AdminDao {
         );
     }
 
-    public List<GetOttRes> getUserOtt(int user_idx){
+    public List<GetOttRes> getUserOtt(int user_idx) {
         String getUserOttQuery = "select user_ott.ott_idx, name, photo\n" +
                 "from (select  * from user_ott where user_idx = ?)user_ott\n" +
                 "natural join ott";
@@ -195,7 +196,7 @@ public class AdminDao {
 
     public int getMovieIdx(int movieIdx) {
         String getMovieIdxQuery = "select count(*) from movie where movie_idx = ?";
-        return this.jdbcTemplate.queryForObject(getMovieIdxQuery,int.class,movieIdx);
+        return this.jdbcTemplate.queryForObject(getMovieIdxQuery, int.class, movieIdx);
     }
 
     public List<GetKeywordRes> getKeywords() {
@@ -205,7 +206,7 @@ public class AdminDao {
                 (rs, rowNum) -> new GetKeywordRes(
                         rs.getInt("keyword_idx"),
                         rs.getString("keyword"),
-                         null)
+                        null)
         );
     }
 
@@ -226,31 +227,31 @@ public class AdminDao {
 
     public int deleteMovie(int movieIdx) {
         String deleteMovieQuery = "delete from movie_ott where movie_idx = ?";
-        int result1 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        int result1 = this.jdbcTemplate.update(deleteMovieQuery, movieIdx);
         deleteMovieQuery = "delete from movie_genre where movie_idx = ?";
-        int result2 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        int result2 = this.jdbcTemplate.update(deleteMovieQuery, movieIdx);
         deleteMovieQuery = "delete from movie_photo where movie_idx = ?";
-        int result3 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        int result3 = this.jdbcTemplate.update(deleteMovieQuery, movieIdx);
         deleteMovieQuery = "delete from user_movie where movie_idx = ?";
-        int result4 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        int result4 = this.jdbcTemplate.update(deleteMovieQuery, movieIdx);
         deleteMovieQuery = "delete from keyword_movie where movie_idx = ?";
-        int result5 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        int result5 = this.jdbcTemplate.update(deleteMovieQuery, movieIdx);
         deleteMovieQuery = "delete from movie where movie_idx = ?";
-        int result6 = this.jdbcTemplate.update(deleteMovieQuery,movieIdx);
+        int result6 = this.jdbcTemplate.update(deleteMovieQuery, movieIdx);
 
-        return ( result1 | result2 | result3 | result4 | result5 ) & result6;
+        return (result1 | result2 | result3 | result4 | result5) & result6;
     }
 
     public int getKeywordIdx(int keywordIdx) {
         String getKeywordIdxQuery = "select count(*) from keyword where keyword_idx = ?";
-        return this.jdbcTemplate.queryForObject(getKeywordIdxQuery,int.class,keywordIdx);
+        return this.jdbcTemplate.queryForObject(getKeywordIdxQuery, int.class, keywordIdx);
     }
 
     public int deleteKeyword(int keywordIdx) {
         String deleteKeywordQuery = "delete from keyword_movie where keyword_idx = ?";
-        int result1 = this.jdbcTemplate.update(deleteKeywordQuery,keywordIdx);
+        int result1 = this.jdbcTemplate.update(deleteKeywordQuery, keywordIdx);
         deleteKeywordQuery = "delete from keyword where keyword_idx = ?";
-        int result2 = this.jdbcTemplate.update(deleteKeywordQuery,keywordIdx);
+        int result2 = this.jdbcTemplate.update(deleteKeywordQuery, keywordIdx);
         return result1 | result2;
     }
 }
