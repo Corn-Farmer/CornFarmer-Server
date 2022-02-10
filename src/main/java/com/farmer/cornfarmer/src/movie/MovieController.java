@@ -115,6 +115,10 @@ public class MovieController {
                     photo.add(moviePhoto.get(j).getGenre());
                 }
                 movieinfoss.get(i).setMoviePhotoList(photo);
+
+                //likedCnt 추가하는 코드
+                GetLike getLikeCnt = movieProvider.getLikeCnt(movieinfoss.get(i).getMovieIdx());
+                movieinfoss.get(i).setLikeCnt(getLikeCnt.getIsLike());
             }
             getKeywordRes.setMovieList(movieinfoss);
 
