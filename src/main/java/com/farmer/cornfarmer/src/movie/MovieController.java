@@ -20,6 +20,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.farmer.cornfarmer.config.BaseResponseStatus.EMPTY_JWT;
+
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
@@ -154,7 +156,9 @@ public class MovieController {
 
         try{
             int userIdx=jwtService.getUserIdx();
-            System.out.println("useridx : " + userIdx);
+            if(userIdx==0){
+                throw new BaseException(EMPTY_JWT);
+            }
             GetLike like=movieProvider.getLike(userIdx,movieIdx);
             PutUserWishRes putUserWishRes=new PutUserWishRes();
             if(like.getIsLike()==1){
