@@ -95,12 +95,13 @@ public class MovieDao {
         );
     }
 
-    public List<GetMovieInfo> getMovieIdxRand() {
-        String query = "select movie_idx from movie order by rand();";
+    public List<GetMovieInfo> getMovieIdxRand(String randDate) {
+        String query = "select movie_idx from movie order by rand(?) limit 30;";
+        String params = randDate;
         return this.jdbcTemplate.query(query,
                 (rs, rowNum) -> new GetMovieInfo(
-                        rs.getInt("movie_idx"))// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
-        );
+                        rs.getInt("movie_idx")),
+                params);
     }
 
     public GetMovieInfo getMovieToday(int movieIdx) {

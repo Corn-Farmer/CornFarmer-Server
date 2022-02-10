@@ -74,7 +74,9 @@ public class JwtService {
         //1. JWT 추출
         String accessToken = getJwt();
         if (accessToken == null || accessToken.length() == 0) {
-            throw new BaseException(EMPTY_JWT);
+            //throw new BaseException(EMPTY_JWT);
+            // TODO : 로그인 안한 유저는 0으로 처리함 (이유 : idx가 0인 user는 없으니까) => 더 좋은 해결방안 생각하기
+            return 0;
         }
 
         // 2. JWT parsing

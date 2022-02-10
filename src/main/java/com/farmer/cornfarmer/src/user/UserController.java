@@ -181,7 +181,7 @@ public class UserController {
 
     /**
      * 회원탈퇴
-     * [POST] /users/{userIdx}/delete
+     * [PUT] /users/{userIdx}/delete
      * 개발자 : 팡코(조대환)
      */
 
