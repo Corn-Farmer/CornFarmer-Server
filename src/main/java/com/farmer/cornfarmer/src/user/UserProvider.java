@@ -39,11 +39,21 @@ public class UserProvider {
         }
     }
 
-    public boolean checkOauthId(String oauth_id) throws BaseException {
+    public boolean checkExistOauthId(String oauth_id) throws BaseException {
+       //db에 oauthid 존재하는지 확인
+        try {
+            return userDao.checkExistOauthid(oauth_id);
+        }catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public String checkOauthId(String oauth_id) throws BaseException {
         //db에 oauthid 존재하는지 확인
         try {
-            return userDao.checkOauth(oauth_id);
-        } catch (Exception exception) {
+            return userDao.checkOauthid(oauth_id);
+        }catch(Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
@@ -134,7 +144,7 @@ public class UserProvider {
             userMyInfo.setGenreList(userDao.getGenreInfo(userIdx));
             userMyInfo.setOttList(userDao.getOttInfo(userIdx));
             return userMyInfo;
-        } catch (Exception exception) {
+        }catch (Exception exception){
             exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
@@ -149,6 +159,14 @@ public class UserProvider {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
+    public boolean checkActive(String oauth_id) {
+        if(userDao.checkActive(oauth_id))
+        {
+            return true;
+        }
+        else
+            return false;
+    }
 
     public boolean duplicateNick(String nickname) {
         if (userDao.duplicateNick(nickname)) {
@@ -157,10 +175,17 @@ public class UserProvider {
             return false;
     }
 
-    public boolean checckDuplicateNick(String nickname, int userIdx) {
-        if (userDao.checkDuplicateNick(nickname, userIdx)) {
+    public boolean checkDuplicateNick(String nickname, int userIdx) {
+        if(userDao.checkDuplicateNick(nickname, userIdx))
+        {
             return true;
         } else
             return false;
+    }
+    public String getCurrentUserPhoto(int userIdx){
+        if(userDao.checkMyPhoto(userIdx))
+            return userDao.getPhoto(userIdx);
+        else
+            return "";
     }
 }

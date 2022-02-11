@@ -116,7 +116,8 @@ public class UserService {
     public int createUser(String id, String oauth_channel) throws BaseException {
         int result = 0;
         try {
-            if (false != userProvider.checkOauthId(id)) {
+            if(false != userProvider.checkExistOauthId(id))
+            {
                 throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
             }
             result = userDao.createUser(id, oauth_channel);
@@ -137,14 +138,15 @@ public class UserService {
         }
     }
 
-    public UserMyInfo modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl) throws BaseException {
-        try {
-            userDao.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl);
-            GetUserInfo getUserInfo = userDao.getUser(userDao.getUserOauth_id(userIdx));
 
-            jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(), getUserInfo.getOauth_id(), getUserInfo.getNickname());
-            return userProvider.getMyInfo(userIdx);
+    public PostLoginRes modifyMyInfo(int userIdx, PostUserInfoReq postUserInfoReq, String PhotoUrl) throws BaseException {
+            try{
+                userDao.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl);
+                GetUserInfo getUserInfo = userDao.getUser(userDao.getUserOauth_id(userIdx));
 
+                String jwt = jwtService.createJwt(getUserInfo.getUser_idx(), getUserInfo.getOauth_channel(),getUserInfo.getOauth_id(), getUserInfo.getNickname());
+                userProvider.getMyInfo(userIdx);
+                return new PostLoginRes(false, jwt, getUserInfo.getUser_idx());
 
         } catch (BaseException exception) {
             exception.printStackTrace();
@@ -154,10 +156,11 @@ public class UserService {
 
     }
 
-    public PostUserRes inactive(int userIdx) throws BaseException {
-        try {
-            if (userIdx == jwtService.getUserIdx()) {
-                int result = userDao.inactive(userIdx);
+
+    public PostUserRes deleteUser(int userIdx) throws BaseException {
+        try{
+            if(userIdx == jwtService.getUserIdx()) {
+                int result = userDao.deleteUser(userIdx);
                 return new PostUserRes(result);
             } else {
                 throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);

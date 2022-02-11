@@ -1,6 +1,7 @@
 package com.farmer.cornfarmer.utils;
 
 import com.farmer.cornfarmer.config.BaseException;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.farmer.cornfarmer.config.BaseResponseStatus.FILE_CONVERT_ERROR;
+import static com.farmer.cornfarmer.config.BaseResponseStatus.FILE_DELETE_ERROR;
 
 @RequiredArgsConstructor
 @Component
@@ -64,6 +66,22 @@ public class S3Uploader {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
+    public Boolean isPhotoExist(String filePath) throws  BaseException{
+        System.out.println(filePath);
+        boolean isExistObject = amazonS3Client.doesObjectExist(bucket, filePath);
+        return isExistObject;
+    }
+
+    public void delete(String filePath) throws BaseException {
+        try {
+            System.out.println(filePath);
+            amazonS3Client.deleteObject(bucket, filePath);
+        }catch (Exception e)
+        {
+            System.out.println(e);
+            throw new BaseException(FILE_DELETE_ERROR);
+        }
+    }
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
             logger.info("파일이 삭제되었습니다.");
@@ -75,8 +93,8 @@ public class S3Uploader {
     private Optional<File> convert(MultipartFile file) throws IOException {
         // Multipartfile에서 File로 전환
         // 전환되는 과정에서 로컬에 파일이 생성됨
-        File convertFile = new File("image/" + file.getOriginalFilename());
-        //File convertFile = new File("C:/Users/wheog/OneDrive/바탕 화면/조대환/CornFarmer/image/" + file.getOriginalFilename()); //변환경로
+        //File convertFile = new File("image/" + file.getOriginalFilename());
+        File convertFile = new File("C:/Users/wheog/OneDrive/바탕 화면/조대환/CornFarmer/image/" + file.getOriginalFilename()); //변환경로
 
         System.out.println(file.getOriginalFilename());
         if (convertFile.createNewFile()) {
