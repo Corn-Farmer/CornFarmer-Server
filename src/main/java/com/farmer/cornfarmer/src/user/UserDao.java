@@ -231,7 +231,6 @@ public class UserDao {
 
     }
 
-<
     public void removeUserOtt(int userIdx){
         String deleteMyOttQuery = "delete from user_ott where user_idx=?";
         this.jdbcTemplate.update(deleteMyOttQuery, userIdx);

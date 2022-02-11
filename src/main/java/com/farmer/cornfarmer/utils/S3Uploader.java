@@ -93,8 +93,8 @@ public class S3Uploader {
     private Optional<File> convert(MultipartFile file) throws IOException {
         // Multipartfile에서 File로 전환
         // 전환되는 과정에서 로컬에 파일이 생성됨
-        //File convertFile = new File("image/" + file.getOriginalFilename());
-        File convertFile = new File("C:/Users/wheog/OneDrive/바탕 화면/조대환/CornFarmer/image/" + file.getOriginalFilename()); //변환경로
+        File convertFile = new File("image/" + file.getOriginalFilename());
+        //File convertFile = new File("C:/Users/wheog/OneDrive/바탕 화면/조대환/CornFarmer/image/" + file.getOriginalFilename()); //변환경로
 
         System.out.println(file.getOriginalFilename());
         if (convertFile.createNewFile()) {
