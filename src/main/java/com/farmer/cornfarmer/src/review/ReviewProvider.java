@@ -26,23 +26,23 @@ public class ReviewProvider {
 
     @Transactional(readOnly = true)
     public boolean checkReviewLike(int reviewIdx, int userIdx) throws BaseException {
-        try{
-            boolean result = reviewDao.checkReviewLike(reviewIdx,userIdx);
+        try {
+            boolean result = reviewDao.checkReviewLike(reviewIdx, userIdx);
             return result;
-        } catch(Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
 
     public void validateUserIdx(int reviewIdx, int userIdx) throws BaseException {
         int reviewUserIdx = reviewDao.getUserIdx(reviewIdx);
-        if(userIdx != reviewUserIdx)
+        if (userIdx != reviewUserIdx)
             throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
     }
 
     public void validateReviewExist(int reviewIdx) throws BaseException {
         int reviewCount = reviewDao.getReviewIdx(reviewIdx);
-        if(reviewCount == 0){
+        if (reviewCount == 0) {
             throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
         }
     }

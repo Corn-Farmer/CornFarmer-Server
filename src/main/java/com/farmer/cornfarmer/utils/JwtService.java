@@ -21,16 +21,16 @@ public class JwtService {
     @param userIdx
     @return String
      */
-    public String createJwt(int user_idx, String oauth_channel, String oauth_id, String nickname){
+    public String createJwt(int user_idx, String oauth_channel, String oauth_id, String nickname) {
         Date now = new Date();
         return Jwts.builder()
-                .setHeaderParam("type","jwt")
-                .claim("user_idx",user_idx)
-                .claim("oauth_channel",oauth_channel)
+                .setHeaderParam("type", "jwt")
+                .claim("user_idx", user_idx)
+                .claim("oauth_channel", oauth_channel)
                 .claim("oauth_id", oauth_id)
                 .claim("nickname", nickname)
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
+                .setExpiration(new Date(System.currentTimeMillis() + 1 * (1000 * 60 * 60 * 24 * 365)))
                 .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
                 .compact();
     }
@@ -55,12 +55,13 @@ public class JwtService {
             return false;
         }
     }
+
     /*
     Header에서 X-ACCESS-TOKEN 으로 JWT 추출
     @return String
      */
-    public String getJwt(){
-        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+    public String getJwt() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader("X-ACCESS-TOKEN");
     }
 
@@ -72,13 +73,15 @@ public class JwtService {
     public int getUserIdx() throws BaseException {
         //1. JWT 추출
         String accessToken = getJwt();
-        if(accessToken == null || accessToken.length() == 0){
-            throw new BaseException(EMPTY_JWT);
+        if (accessToken == null || accessToken.length() == 0) {
+            //throw new BaseException(EMPTY_JWT);
+            // TODO : 로그인 안한 유저는 0으로 처리함 (이유 : idx가 0인 user는 없으니까) => 더 좋은 해결방안 생각하기
+            return 0;
         }
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        try{
+        try {
             claims = Jwts.parser()
                     .setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken);
@@ -87,19 +90,19 @@ public class JwtService {
         }
 
         // 3. userIdx 추출
-        return claims.getBody().get("user_idx",Integer.class);  // jwt 에서 userIdx를 추출합니다.
+        return claims.getBody().get("user_idx", Integer.class);  // jwt 에서 userIdx를 추출합니다.
     }
 
     public String getOauthChannel() throws BaseException {
         //1. JWT 추출
         String accessToken = getJwt();
-        if(accessToken == null || accessToken.length() == 0){
+        if (accessToken == null || accessToken.length() == 0) {
             throw new BaseException(EMPTY_JWT);
         }
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        try{
+        try {
             claims = Jwts.parser()
                     .setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken);
@@ -108,19 +111,19 @@ public class JwtService {
         }
 
         // 3. oauth_channel 추출
-        return claims.getBody().get("oauth_channel",String.class);  // jwt 에서 userIdx를 추출합니다.
+        return claims.getBody().get("oauth_channel", String.class);  // jwt 에서 userIdx를 추출합니다.
     }
 
     public String getOauthId() throws BaseException {
         //1. JWT 추출
         String accessToken = getJwt();
-        if(accessToken == null || accessToken.length() == 0){
+        if (accessToken == null || accessToken.length() == 0) {
             throw new BaseException(EMPTY_JWT);
         }
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        try{
+        try {
             claims = Jwts.parser()
                     .setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken);
@@ -129,18 +132,19 @@ public class JwtService {
         }
 
         // 3. oauth_id 추출
-        return claims.getBody().get("oauth_id",String.class);  // jwt 에서 userIdx를 추출합니다.
+        return claims.getBody().get("oauth_id", String.class);  // jwt 에서 userIdx를 추출합니다.
     }
+
     public String getNickname() throws BaseException {
         //1. JWT 추출
         String accessToken = getJwt();
-        if(accessToken == null || accessToken.length() == 0){
+        if (accessToken == null || accessToken.length() == 0) {
             throw new BaseException(EMPTY_JWT);
         }
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        try{
+        try {
             claims = Jwts.parser()
                     .setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken);
@@ -149,6 +153,6 @@ public class JwtService {
         }
 
         // 3. nickname 추출
-        return claims.getBody().get("nickname",String.class);  // jwt 에서 userIdx를 추출합니다.
+        return claims.getBody().get("nickname", String.class);  // jwt 에서 userIdx를 추출합니다.
     }
 }
