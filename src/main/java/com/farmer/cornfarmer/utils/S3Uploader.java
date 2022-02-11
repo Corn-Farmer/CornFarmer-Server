@@ -1,7 +1,6 @@
 package com.farmer.cornfarmer.utils;
 
 import com.farmer.cornfarmer.config.BaseException;
-import com.farmer.cornfarmer.config.BaseResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
