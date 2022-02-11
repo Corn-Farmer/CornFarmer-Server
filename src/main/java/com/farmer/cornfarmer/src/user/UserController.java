@@ -192,7 +192,7 @@ public class UserController {
                 }
                 //이전에 저장되어있던 사진파일 삭제
                 String currentPhoto = userProvider.getCurrentUserPhoto(userIdx);
-                currentPhoto = currentPhoto.replace("https://cornfarmer.s3.ap-northeast-2.amazonaws.com", "");
+                currentPhoto = currentPhoto.replace("https://cornfarmer.s3.ap-northeast-2.amazonaws.com/", "");
                 if(S3Uploader.isPhotoExist(currentPhoto)) {
                     S3Uploader.delete(currentPhoto);
                 }
