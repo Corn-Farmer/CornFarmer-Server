@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.util.List;
 
 @Getter
@@ -13,6 +14,8 @@ import java.util.List;
 public class UserMyInfo {
     private String nickname;
     private String photo;
+    private Boolean is_male;
+    private Date Date;
     private List<OttInfo> ottList;
     private List<GenreInfo> genreList;
 

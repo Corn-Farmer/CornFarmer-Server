@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -109,6 +110,15 @@ public class UserDao {
         String getUserOauthidQuery = "select oauth_id from user where user_idx = ?";
         return this.jdbcTemplate.queryForObject(getUserOauthidQuery, String.class, userIdx);
 
+    }
+    public Boolean getIs_Male(int userIdx){
+        String getUserIsMale = "select is_male from user where user_idx=?";
+        return this.jdbcTemplate.queryForObject(getUserIsMale, Boolean.class, userIdx);
+    }
+
+    public Date getDate(int userIdx){
+        String getDate = "select Date from user where user_idx = ?";
+        return this.jdbcTemplate.queryForObject(getDate, Date.class, userIdx);
     }
 
     public GetUserInfo getKakaoUser(String oauth_id)
@@ -248,9 +258,9 @@ public class UserDao {
 
     }
 
-    public int inactive(int userIdx){
-        String inactiveQuery = "update user set active = ?  where user_idx=?";
-        Object[] inactiveParams = new Object[]{false, userIdx};
+    public int deleteUser(int userIdx){
+        String inactiveQuery = "update user set active = 0 , oauth_id = ?, nickname  where user_idx=?";
+        Object[] inactiveParams = new Object[]{false, "","Not_Current_User",userIdx};
         this.jdbcTemplate.update(inactiveQuery, inactiveParams);
 
         return userIdx;

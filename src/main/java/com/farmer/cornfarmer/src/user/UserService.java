@@ -160,10 +160,11 @@ public class UserService {
 
     }
 
-    public PostUserRes inactive(int userIdx) throws BaseException {
+    public PostUserRes deleteUser(int userIdx) throws BaseException {
         try{
             if(userIdx == jwtService.getUserIdx()) {
-                int result = userDao.inactive(userIdx);
+
+                int result = userDao.deleteUser(userIdx);
                 return new PostUserRes(result);
             }
             else

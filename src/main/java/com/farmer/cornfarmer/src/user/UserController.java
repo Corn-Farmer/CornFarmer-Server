@@ -48,12 +48,12 @@ public class UserController {
     @ResponseBody
     @PostMapping("/oauth/kakao")
     public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException {
-        String cornfarmer = "";
+        String cornfarmer = "Not_Current_User";
         String accessToken = postLoginReq.getAccessToken();
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
-            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),cornfarmer)) {
+            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),"")) {
                 //db에 존재하는경우 ->login
                 if(!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
                     //회원가입이 완료된 경우
@@ -85,15 +85,15 @@ public class UserController {
     @ResponseBody
     @PostMapping("/oauth/naver")
     public BaseResponse<PostLoginRes> naverLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException { //카카오 엑세스토큰 받아옴
-        String cornfarmer = "";
+        String cornfarmer = "Not_Current_User";
         String accessToken = postLoginReq.getAccessToken();
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getNaverOauthId(accessToken);
-            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),cornfarmer)) {
+            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),"")) {
                 //db에 존재하는경우 ->login
                 if(!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
-                    //회원가입이 완료된 경우 && active가 1인경우
+                    //회원가입이 완료된 경우
                     PostLoginRes postLoginRes = userProvider.naverLogIn(id);
                     return new BaseResponse<>(postLoginRes);
                 }
@@ -179,7 +179,8 @@ public class UserController {
                 }
                 //이전에 저장되어있던 사진파일 삭제
                 String currentPhoto = userProvider.getCurrentUserPhoto(userIdx);
-                if(!Objects.equals(currentPhoto, "")) {
+                currentPhoto = currentPhoto.replace("https://cornfarmer.s3.ap-northeast-2.amazonaws.com", "");
+                if(S3Uploader.isPhotoExist(currentPhoto)) {
                     S3Uploader.delete(currentPhoto);
                 }
                 String PhotoUrl = S3Uploader.upload(postUserInfoReq.getPhoto(), "user");
@@ -206,8 +207,7 @@ public class UserController {
         try {
             int tokenIdx = jwtService.getUserIdx();
             if (userIdx == tokenIdx && !(userIdx == 0)) {
-
-                PostUserRes userRes = userService.inactive(userIdx);
+                PostUserRes userRes = userService.deleteUser(userIdx);
                 return new BaseResponse<>(userRes);
             }
             else
