@@ -14,10 +14,10 @@ import java.util.List;
 public class UserMyInfo {
     private String nickname;
     private String photo;
-    private Boolean is_male;
-    private Date Date;
     private List<OttInfo> ottList;
     private List<GenreInfo> genreList;
+    private Integer is_male;
+    private String birth;
 
 }
 

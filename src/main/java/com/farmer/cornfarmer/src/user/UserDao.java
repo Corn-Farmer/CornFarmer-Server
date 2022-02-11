@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
-import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -111,15 +110,7 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(getUserOauthidQuery, String.class, userIdx);
 
     }
-    public Boolean getIs_Male(int userIdx){
-        String getUserIsMale = "select is_male from user where user_idx=?";
-        return this.jdbcTemplate.queryForObject(getUserIsMale, Boolean.class, userIdx);
-    }
 
-    public Date getDate(int userIdx){
-        String getDate = "select Date from user where user_idx = ?";
-        return this.jdbcTemplate.queryForObject(getDate, Date.class, userIdx);
-    }
 
     public GetUserInfo getKakaoUser(String oauth_id)
     {
@@ -266,7 +257,18 @@ public class UserDao {
         return userIdx;
 
     }
-
+    public UserMyInfo getUserInfo(int userIdx) {
+        String getPhotoQuery = "select nickname, photo, is_male, birth from user where user_idx = ?";
+        return this.jdbcTemplate.queryForObject(getPhotoQuery,
+                (rs, rowNum) -> new UserMyInfo(
+                        rs.getString("nickname"),
+                        rs.getString("photo"),
+                        null,
+                        null,
+                        rs.getInt("is_male"),
+                        rs.getString("birth"))
+                , userIdx);
+    }
     public List<OttInfo> getOttInfo(int userIdx){
         String getOttInfoQuery = "select ott.ott_idx, ott.name, ott.photo from ott left join user_ott on ott.ott_idx = user_ott.ott_idx where user_idx=?";
         int param = userIdx;
