@@ -17,6 +17,6 @@ public class PostUserInfoReq {
     String nickname;
 
     MultipartFile photo;
-    List<String> userOtt;
+    List<String> ottList;
     List<String> genreList;
 }

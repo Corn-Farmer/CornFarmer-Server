@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.farmer.cornfarmer.utils.S3Uploader;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -119,8 +120,15 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/")
-    public BaseResponse<PostUserRes> join(@ModelAttribute PostUserReq postUserReq) throws BaseException {
+    public BaseResponse<PostUserRes> join(
+            @RequestParam String nickname,
+            @RequestPart(required = false) MultipartFile photo,
+            @RequestParam String is_male,
+            @RequestParam Date birth,
+            @RequestParam List<String> ottList,
+            @RequestParam List<String> genreList) throws BaseException {
         try {
+            PostUserReq postUserReq = new PostUserReq(nickname, photo, is_male, birth, ottList, genreList);
             //kakao naver.
             String ouath_id = jwtService.getOauthId();
             String PhotoUrl = "";
@@ -195,12 +203,16 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/{userIdx}")
-    public BaseResponse<PostLoginRes> modifyMyInfo(@PathVariable int userIdx, @ModelAttribute PostUserInfoReq postUserInfoReq){
+    public BaseResponse<PostLoginRes> modifyMyInfo(@PathVariable int userIdx, @RequestParam String nickname,
+                                                   @RequestPart(required = false) MultipartFile photo,
+                                                   @RequestParam List<String> ottList,
+                                                   @RequestParam List<String> genreList){
         try{
             int tokenIdx = jwtService.getUserIdx();
 
             String PhotoUrl = "";
             if(userIdx == tokenIdx && !(userIdx == 0)){
+                PostUserInfoReq postUserInfoReq = new PostUserInfoReq(nickname, photo, ottList, genreList);
                 if(userProvider.checkDuplicateNick(postUserInfoReq.getNickname(), userIdx))
                 { //닉네임 중복확인
                     throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);

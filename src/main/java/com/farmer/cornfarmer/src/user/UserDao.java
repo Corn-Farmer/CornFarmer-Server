@@ -210,7 +210,7 @@ public class UserDao {
         String deleteMyGenreQuery = "delete from user_genre where user_idx=?";
         this.jdbcTemplate.update(deleteMyGenreQuery, userIdx);
 
-        for (String ottidx : postUserInfoReq.getUserOtt()) {
+        for (String ottidx : postUserInfoReq.getOttList()) {
             int ott_idx = Integer.parseInt(ottidx);
             if (!checkUserOtt(ott_idx, userIdx)) {
                 String UserOttQuery = "insert into user_ott (ott_idx, user_idx) values (?,?)";
