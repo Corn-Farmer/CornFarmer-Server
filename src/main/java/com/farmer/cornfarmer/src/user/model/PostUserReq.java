@@ -21,4 +21,14 @@ public class PostUserReq {
     private Date birth;
     private List<String> ottList;
     private List<String> genreList;
+
+    public void setPhoto(MultipartFile photo) {
+        if(photo.isEmpty())
+        {
+            this.photo = null;
+        }
+        else {
+            this.photo = photo;
+        }
+    }
 }
