@@ -141,8 +141,7 @@ public class UserController {
                 //닉네임 중복확인
                 throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
             }
-
-            if(Objects.equals(postUserReq.getPhoto().getName().toString(),"noimage") )
+            if(Objects.equals(postUserReq.getPhoto().getOriginalFilename().toString(),"noimage") )
             { //회원가입시 프로필 사진설정 없다면 기본 이미지로 지정
                 PhotoUrl = default_Img.toString();
             }
@@ -229,7 +228,7 @@ public class UserController {
                     }
                 }
 
-                if(Objects.equals(postUserInfoReq.getPhoto().getName().toString(),"noimage"))
+                if(Objects.equals(postUserInfoReq.getPhoto().getOriginalFilename().toString(),"noimage"))
                 { //기본이미지로 변경할 경우
                     PhotoUrl = default_Img.toString();
                 }
