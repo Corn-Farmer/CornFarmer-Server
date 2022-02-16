@@ -142,7 +142,7 @@ public class UserController {
                 throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
             }
 
-            if(postUserReq.getPhoto().isEmpty())
+            if(Objects.equals(postUserReq.getPhoto().getName().toString(),"noimage") )
             { //회원가입시 프로필 사진설정 없다면 기본 이미지로 지정
                 PhotoUrl = default_Img.toString();
             }
@@ -229,7 +229,7 @@ public class UserController {
                     }
                 }
 
-                if(postUserInfoReq.getPhoto().isEmpty())
+                if(Objects.equals(postUserInfoReq.getPhoto().getName().toString(),"noimage"))
                 { //기본이미지로 변경할 경우
                     PhotoUrl = default_Img.toString();
                 }
