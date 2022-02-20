@@ -35,7 +35,7 @@ public enum BaseResponseStatus {
     POST_USERS_INVALID_OATUH_ID(false, 2019, "oauth_id가 디비에 없습니다."),
     POST_USERS_CREATE_FAILED(false, 2020, "db 유저생성을 실패헸습니다."),
     POST_USERS_EXIST_OAUTHID(false, 2021, "db에 유저가 이미 존재합니다.."),
-
+    POST_USERS_NICKNAME_LENGTH(false, 2022, "닉네임 길이는 3~6입니다."),
 
     /**
      * 3000 : Response 오류

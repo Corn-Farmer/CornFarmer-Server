@@ -243,7 +243,7 @@ public class UserDao {
 
     public int deleteUser(int userIdx){
         String inactiveQuery = "update user set active = 0 , oauth_id = ?, nickname = ?  where user_idx=?";
-        Object[] inactiveParams = new Object[]{"","Not_Current_User",userIdx};
+        Object[] inactiveParams = new Object[]{"","inactiveUser",userIdx};
         this.jdbcTemplate.update(inactiveQuery, inactiveParams);
 
         return userIdx;

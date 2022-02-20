@@ -50,7 +50,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/oauth/kakao")
     public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException {
-        String cornfarmer = "Not_Current_User";
+        String cornfarmer = "inactiveUser";
         String accessToken = postLoginReq.getAccessToken();
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
@@ -87,7 +87,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/oauth/naver")
     public BaseResponse<PostLoginRes> naverLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException { //카카오 엑세스토큰 받아옴
-        String cornfarmer = "Not_Current_User";
+        String cornfarmer = "inactiveUser";
         String accessToken = postLoginReq.getAccessToken();
         System.out.println("accessToken(naverLogin) : " + accessToken);
         try {
@@ -141,6 +141,13 @@ public class UserController {
                 //닉네임 중복확인
                 throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
             }
+
+            if(postUserReq.getNickname().length() < 3 || postUserReq.getNickname().length() > 6)
+            {
+                //닉네임 길이체크
+                throw new BaseException(BaseResponseStatus.POST_USERS_NICKNAME_LENGTH);
+            }
+
             if(Objects.equals(postUserReq.getPhoto().getOriginalFilename().toString(),"noimage") )
             { //회원가입시 프로필 사진설정 없다면 기본 이미지로 지정
                 PhotoUrl = default_Img.toString();
@@ -212,6 +219,10 @@ public class UserController {
             String PhotoUrl = "";
             if(userIdx == tokenIdx && !(userIdx == 0)){
                 PostUserInfoReq postUserInfoReq = new PostUserInfoReq(nickname, photo, ottList, genreList);
+                if(postUserInfoReq.getNickname().length() < 3 || postUserInfoReq.getNickname().length() > 6)
+                {
+                    throw new BaseException(BaseResponseStatus.POST_USERS_NICKNAME_LENGTH);
+                }
                 if(userProvider.checkDuplicateNick(postUserInfoReq.getNickname(), userIdx))
                 { //닉네임 중복확인
                     throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
