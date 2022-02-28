@@ -1,20 +1,30 @@
 package com.farmer.cornfarmer.src.review.domain;
 
+import com.farmer.cornfarmer.src.common.domain.BaseTimeEntity;
+import com.farmer.cornfarmer.src.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Report {
+public class Report extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reportIdx;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name="review_idx")
+    private Review review;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name="user_idx")
+    private User writer;
+
+    @Column(nullable = false)
+    private String contents;
 }
