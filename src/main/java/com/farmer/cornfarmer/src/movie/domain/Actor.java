@@ -14,7 +14,7 @@ public class Actor {
     //TODO : 데이터베이스 상에서 actor_idx가 movie_idx로 되어있음 => 추후에 유지보수 배포전에 바꿔야함
 
     @Id
-    @Column(name = "movie_idx")
+    @Column(name = "movie_idx", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long actorIdx;
 
