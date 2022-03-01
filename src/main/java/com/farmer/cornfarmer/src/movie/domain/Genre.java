@@ -1,10 +1,13 @@
 package com.farmer.cornfarmer.src.movie.domain;
 
+import com.farmer.cornfarmer.src.user.domain.UserLikeGenre;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,4 +20,7 @@ public class Genre {
 
     @Column(name = "genre_name", nullable = false)
     private Long name;
+
+    @OneToMany(mappedBy = "genre")
+    private List<UserLikeGenre> genreLikedByUserList = new ArrayList<>();
 }
