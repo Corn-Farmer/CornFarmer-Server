@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,4 +19,7 @@ public class Keyword {
 
     @Column(nullable = false)
     private String keyword;
+
+    @OneToMany(mappedBy = "keyword")
+    private List<KeywordMovie> movieList = new ArrayList<>();
 }

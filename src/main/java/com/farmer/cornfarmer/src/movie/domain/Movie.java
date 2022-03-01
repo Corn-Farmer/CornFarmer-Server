@@ -36,8 +36,11 @@ public class Movie {
     private List<UserLikeMovie> movieLikedByUserList = new ArrayList<>();
 
     @OneToMany(mappedBy = "movie")
-    private List<MovieGenre> GenreList = new ArrayList<>();
+    private List<MovieGenre> genreList = new ArrayList<>();
 
     @OneToMany(mappedBy = "movie")
-    private List<MovieOtt> OttList = new ArrayList<>();
+    private List<MovieOtt> ottList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    private List<KeywordMovie> keywordList = new ArrayList<>();
 }
