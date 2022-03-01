@@ -26,4 +26,7 @@ public class Ott {
 
     @OneToMany(mappedBy = "ott")
     private List<UserLikeOtt> ottLikedByUserList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "ott")
+    private List<MovieOtt> movieOttList = new ArrayList<>();
 }
