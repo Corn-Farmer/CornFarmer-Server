@@ -34,4 +34,7 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<UserLikeMovie> movieLikedByUserList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    private List<MovieGenre> movieGenreList = new ArrayList<>();
 }
