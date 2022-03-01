@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user_game")
+@Table(name = "user_genre")
 public class UserGenre {
     @Id
     @GeneratedValue
