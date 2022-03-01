@@ -5,13 +5,15 @@ import com.farmer.cornfarmer.src.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Report extends BaseTimeEntity {
+public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +29,7 @@ public class Report extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String contents;
+
+    @CreationTimestamp
+    private Timestamp created_at;
 }

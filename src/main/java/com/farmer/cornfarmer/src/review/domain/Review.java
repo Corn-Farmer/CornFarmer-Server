@@ -17,9 +17,6 @@ import java.util.List;
 @Entity
 public class Review extends BaseTimeEntity {
 
-    //TODO : likecnt 지우고 싶어요.........!!!!!!!!(그래서 안했어요!)
-    //TODO : active 지우고 싶어요.........!!!!!!!!(그래서 안했어요!)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewIdx;
@@ -37,6 +34,9 @@ public class Review extends BaseTimeEntity {
 
     private float rate;
 
+    private Boolean active;
+
     @OneToMany(mappedBy = "review")
     private List<UserLikeReview> reviewLikedByUserList = new ArrayList<>();
+
 }

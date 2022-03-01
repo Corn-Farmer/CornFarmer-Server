@@ -14,8 +14,6 @@ import java.util.List;
 @Entity
 public class Movie {
 
-    //TODO : DB에서 like_cnt 지우고 싶어요..!!(그래서 안했어요)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long movieIdx;

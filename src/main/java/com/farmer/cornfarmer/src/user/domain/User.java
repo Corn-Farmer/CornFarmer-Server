@@ -27,21 +27,14 @@ public class User extends BaseTimeEntity {
     @Column(length = 6)
     private String nickname;
 
+    @Column(length = 1000)
     private String photo;
 
-    /**
-     *     int를 Gender로 바꾸고싶어요.......!!!!!!
-     *     @Enumerated(EnumType.STRING)
-     *     private Gender gender;
-     */
-    private int is_male;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-    /**
-     *     int를 AccessType로 바꾸고싶어요.......!!!!!!
-     *     @Enumerated(EnumType.STRING)
-     *     private AccessType active;
-     */
-    private int active;
+    @Enumerated(EnumType.STRING)
+    private AccessType active;
 
     @Temporal(TemporalType.DATE)
     private Date birth;
@@ -57,4 +50,5 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     private List<UserLikeGenre> userLikeGenreList = new ArrayList<>();
+
 }
