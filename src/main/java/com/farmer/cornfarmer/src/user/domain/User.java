@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,5 +46,6 @@ public class User extends BaseTimeEntity {
     @Temporal(TemporalType.DATE)
     private Date birth;
 
-
+    @OneToMany(mappedBy = "user")
+    private List<UserLikeReview> userLikeReviewList = new ArrayList<>();
 }
