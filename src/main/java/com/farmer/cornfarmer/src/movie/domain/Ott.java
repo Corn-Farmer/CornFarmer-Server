@@ -24,9 +24,9 @@ public class Ott {
     @Column(nullable = false)
     private String photo;
 
-    @OneToMany(mappedBy = "ott")
+    @OneToMany(mappedBy = "ott", cascade = CascadeType.ALL)
     private List<UserLikeOtt> ottLikedByUserList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ott")
+    @OneToMany(mappedBy = "ott", cascade = CascadeType.ALL)
     private List<MovieOtt> movieOttList = new ArrayList<>();
 }

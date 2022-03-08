@@ -10,16 +10,16 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @IdClass(KeywordMoviePK.class)
-@Table(name="keyword_movie")
+@Table(name = "keyword_movie")
 public class KeywordMovie {
 
     @Id
     @ManyToOne
-    @JoinColumn(name="movie_idx")
+    @JoinColumn(name = "movie_idx")
     private Movie movie;
 
     @Id
     @ManyToOne
-    @JoinColumn(name="keyword_idx")
+    @JoinColumn(name = "keyword_idx")
     private Keyword keyword;
 }
