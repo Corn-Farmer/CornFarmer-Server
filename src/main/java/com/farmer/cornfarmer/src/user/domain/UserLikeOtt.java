@@ -16,12 +16,12 @@ import javax.persistence.*;
 public class UserLikeOtt {
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_idx")
     private User user;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ott_idx")
     private Ott ott;
 }
