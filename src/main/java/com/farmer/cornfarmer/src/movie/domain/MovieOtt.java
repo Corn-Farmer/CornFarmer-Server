@@ -9,7 +9,12 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="movie_ott")
+@Table(
+        name="movie_ott",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uni_movie_ott_1", columnNames = {"movie_idx", "ott_idx"})
+        }
+)
 public class MovieOtt {
 
     @Id
@@ -17,11 +22,11 @@ public class MovieOtt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long MovieOttIdx;
 
-    @ManyToOne
-    @JoinColumn(name="movie_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="movie_idx", nullable = false)
     private Movie movie;
 
-    @ManyToOne
-    @JoinColumn(name="ott_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ott_idx", nullable = false)
     private Ott ott;
 }

@@ -11,7 +11,12 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="user_ott")
+@Table(
+        name="user_ott",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uni_user_ott_1", columnNames = {"user_idx", "ott_idx"})
+        }
+)
 public class UserLikeOtt {
 
     @Id
@@ -19,11 +24,11 @@ public class UserLikeOtt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userLikeOttIdx;
 
-    @ManyToOne
-    @JoinColumn(name="user_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_idx", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name="ott_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ott_idx", nullable = false)
     private Ott ott;
 }

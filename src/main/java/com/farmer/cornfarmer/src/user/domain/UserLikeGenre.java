@@ -10,7 +10,12 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="user_genre")
+@Table(
+        name="user_genre",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uni_user_genre_1", columnNames = {"user_idx", "genre_idx"})
+        }
+)
 public class UserLikeGenre {
 
     @Id
@@ -18,11 +23,11 @@ public class UserLikeGenre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userLikeGenreIdx;
 
-    @ManyToOne
-    @JoinColumn(name="user_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_idx", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name="genre_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="genre_idx", nullable = false)
     private Genre genre;
 }

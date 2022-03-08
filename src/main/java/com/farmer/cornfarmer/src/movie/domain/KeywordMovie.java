@@ -9,7 +9,12 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="keyword_movie")
+@Table(
+        name="keyword_movie",
+        uniqueConstraints = {
+        @UniqueConstraint(name = "uni_keyword_movie_1", columnNames = {"movie_idx", "keyword_idx"})
+}
+)
 public class KeywordMovie {
 
     @Id
@@ -17,11 +22,11 @@ public class KeywordMovie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long keywordMovieIdx;
 
-    @ManyToOne
-    @JoinColumn(name="movie_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="movie_idx", nullable = false)
     private Movie movie;
 
-    @ManyToOne
-    @JoinColumn(name="keyword_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="keyword_idx", nullable = false)
     private Keyword keyword;
 }

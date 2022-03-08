@@ -11,7 +11,12 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="movie_genre")
+@Table(
+        name="movie_genre",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uni_movie_genre_1", columnNames = {"movie_idx", "genre_idx"})
+        }
+)
 public class MovieGenre {
 
     @Id
@@ -19,11 +24,11 @@ public class MovieGenre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long MovieGenreIdx;
 
-    @ManyToOne
-    @JoinColumn(name="movie_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="movie_idx", nullable = false)
     private Movie movie;
 
-    @ManyToOne
-    @JoinColumn(name="genre_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="genre_idx", nullable = false)
     private Genre genre;
 }

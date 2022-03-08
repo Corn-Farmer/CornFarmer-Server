@@ -15,6 +15,11 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uni_user_1", columnNames = {"oauthId", "oauthChannel"})
+        }
+)
 public class User extends BaseTimeEntity {
 
     @Id
