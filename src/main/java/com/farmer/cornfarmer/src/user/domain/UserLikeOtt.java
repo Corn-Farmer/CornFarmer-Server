@@ -11,18 +11,16 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(UserLikeOttPK.class)
 @Table(name="user_ott")
 public class UserLikeOtt {
 
     @Id
-    @Column(name ="user_ott_idx")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userLikeOttIdx;
-
     @ManyToOne
     @JoinColumn(name="user_idx")
     private User user;
 
+    @Id
     @ManyToOne
     @JoinColumn(name="ott_idx")
     private Ott ott;

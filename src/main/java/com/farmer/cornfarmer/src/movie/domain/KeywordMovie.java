@@ -9,18 +9,16 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(KeywordMoviePK.class)
 @Table(name="keyword_movie")
 public class KeywordMovie {
 
     @Id
-    @Column(name ="keyword_movie_idx")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long keywordMovieIdx;
-
     @ManyToOne
     @JoinColumn(name="movie_idx")
     private Movie movie;
 
+    @Id
     @ManyToOne
     @JoinColumn(name="keyword_idx")
     private Keyword keyword;
