@@ -10,18 +10,16 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(UserLikeMoviePK.class)
 @Table(name="user_movie")
 public class UserLikeMovie {
 
     @Id
-    @Column(name ="user_movie_idx")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userLikeMovieIdx;
-
     @ManyToOne
     @JoinColumn(name="user_idx")
     private User user;
 
+    @Id
     @ManyToOne
     @JoinColumn(name="movie_idx")
     private Movie movie;

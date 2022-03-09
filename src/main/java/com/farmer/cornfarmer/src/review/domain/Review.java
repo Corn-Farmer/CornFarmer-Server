@@ -25,18 +25,18 @@ public class Review extends BaseTimeEntity {
     private String contents;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name="movie_idx")
+    @JoinColumn(name = "movie_idx")
     private Movie movie;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name="user_idx")
+    @JoinColumn(name = "user_idx")
     private User writer;
 
     private float rate;
 
     private Boolean active;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<UserLikeReview> reviewLikedByUserList = new ArrayList<>();
 
 }

@@ -11,19 +11,17 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(UserLikeOttPK.class)
 @Table(name="user_ott")
 public class UserLikeOtt {
 
     @Id
-    @Column(name ="user_ott_idx")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userLikeOttIdx;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_idx")
     private User user;
 
-    @ManyToOne
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ott_idx")
     private Ott ott;
 }

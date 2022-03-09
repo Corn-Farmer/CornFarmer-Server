@@ -6,23 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(UserLikeGenrePK.class)
 @Table(name="user_genre")
 public class UserLikeGenre {
 
-    @Id
-    @Column(name ="user_genre_idx")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userLikeGenreIdx;
 
-    @ManyToOne
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_idx")
     private User user;
 
-    @ManyToOne
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="genre_idx")
     private Genre genre;
 }

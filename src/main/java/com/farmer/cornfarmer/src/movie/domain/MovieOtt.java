@@ -9,18 +9,16 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(MovieOttPK.class)
 @Table(name="movie_ott")
 public class MovieOtt {
 
     @Id
-    @Column(name ="movie_ott_idx")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long MovieOttIdx;
-
     @ManyToOne
     @JoinColumn(name="movie_idx")
     private Movie movie;
 
+    @Id
     @ManyToOne
     @JoinColumn(name="ott_idx")
     private Ott ott;

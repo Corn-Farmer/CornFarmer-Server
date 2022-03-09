@@ -30,15 +30,15 @@ public class Movie {
     @Column(nullable = false)
     private String director;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<UserLikeMovie> movieLikedByUserList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<MovieGenre> genreList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<MovieOtt> ottList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<KeywordMovie> keywordList = new ArrayList<>();
 }

@@ -10,18 +10,16 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(UserLikeReviewPK.class)
 @Table(name="user_review")
 public class UserLikeReview {
 
     @Id
-    @Column(name ="user_review_idx")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userLikeReviewIdx;
-
     @ManyToOne
     @JoinColumn(name="user_idx")
     private User user;
 
+    @Id
     @ManyToOne
     @JoinColumn(name="review_idx")
     private Review review;

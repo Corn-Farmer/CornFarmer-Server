@@ -1,4 +1,4 @@
-package com.farmer.cornfarmer.src.movie.domain;
+package com.farmer.cornfarmer.src.user.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,16 +9,8 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "movie_photo")
-public class Photo {
-
+public class UserReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long photoIdx;
-
-    @ManyToOne
-    @JoinColumn(name = "movie_idx")
-    private Movie movie;
-
-    private Long photo;
+    Long userIdx;
 }

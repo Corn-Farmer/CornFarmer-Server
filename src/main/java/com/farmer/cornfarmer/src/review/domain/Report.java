@@ -20,11 +20,11 @@ public class Report {
     private Long reportIdx;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name="review_idx")
+    @JoinColumn(name = "review_idx")
     private Review review;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name="user_idx")
+    @JoinColumn(name = "user_idx")
     private User writer;
 
     @Column(nullable = false)

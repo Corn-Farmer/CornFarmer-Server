@@ -39,16 +39,16 @@ public class User extends BaseTimeEntity {
     @Temporal(TemporalType.DATE)
     private Date birth;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserLikeReview> userLikeReviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserLikeOtt> userLikeOttList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserLikeMovie> userLikeMovieList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserLikeGenre> userLikeGenreList = new ArrayList<>();
 
 }
