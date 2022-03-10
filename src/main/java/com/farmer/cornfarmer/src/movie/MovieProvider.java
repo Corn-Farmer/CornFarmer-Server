@@ -127,6 +127,15 @@ public class MovieProvider {
         }
     }
 
+    public List<String> getActorList(int movieIdx) throws BaseException {
+        try {
+            List<String> actorList = movieDao.getActorList(movieIdx);
+            return actorList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public List<Review> getReview_recent(int movieIdx) throws BaseException {
         try {
             List<Review> reviewList = movieDao.getReview_recent(movieIdx);

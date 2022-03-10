@@ -1,6 +1,7 @@
 package com.farmer.cornfarmer.src.movie;
 
 
+import com.farmer.cornfarmer.src.admin.model.Movie;
 import com.farmer.cornfarmer.src.movie.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -127,14 +128,15 @@ public class MovieDao {
     }
 
     public GetMovieDetail getMovieDetail(int movieIdx) {
-        String getUserQuery = "select movie_title,release_year,like_cnt,synopsis from movie left join movie_ott on movie.movie_idx=movie_ott.movie_idx where movie.movie_idx=? group by movie_title;";
+        String getUserQuery = "select movie_title,release_year,like_cnt,synopsis, director from movie left join movie_ott on movie.movie_idx=movie_ott.movie_idx where movie.movie_idx=? group by movie_title;";
         int param = movieIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetMovieDetail(
                         rs.getString("movie_title"),
                         rs.getInt("release_year"),
                         rs.getInt("like_cnt"),
-                        rs.getString("synopsis")),
+                        rs.getString("synopsis"),
+                        rs.getString("director")),
                 // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
 
@@ -227,5 +229,14 @@ public class MovieDao {
                 // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 param); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
 
+    }
+
+    public List<String> getActorList(int movieIdx) {
+        String getActorListQuery = "select actor_name from actor where movie_idx=?;";
+        int param = movieIdx;
+        return this.jdbcTemplate.query(getActorListQuery,
+                (rs, rowNum) -> new String(
+                rs.getString("actor_name")),
+                param);
     }
 }

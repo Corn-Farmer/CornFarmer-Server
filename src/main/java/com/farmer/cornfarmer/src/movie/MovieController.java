@@ -276,6 +276,10 @@ public class MovieController {
             List<Ott> ott = movieProvider.getOtt(movieIdx);
             getMovieDetail.setOttList(ott);
 
+            //actorList 추가하는 코드
+            List<String> actorList = movieProvider.getActorList(movieIdx);
+            getMovieDetail.setActorList(actorList);
+
             //review list 가져오는 코드
             //sort=1이면 최신, sort=2이면 좋아요순
             List<Review> reviewList = new ArrayList<Review>();
@@ -292,7 +296,6 @@ public class MovieController {
                 } else {
                     reviewList.get(i).setLiked(false);
                 }
-
             }
 
             //writer 정보 채우기

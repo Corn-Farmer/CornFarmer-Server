@@ -12,11 +12,12 @@ import java.util.List;
 
 
 public class GetMovieDetail {
-    public GetMovieDetail(String movieName, int releaseYear, int likeCnt, String synopsis) {
+    public GetMovieDetail(String movieName, int releaseYear, int likeCnt, String synopsis, String director) {
         this.movieName = movieName;
         this.releaseYear = releaseYear;
         this.likeCnt = likeCnt;
         this.synopsis = synopsis;
+        this.director = director;
     }
 
     private String movieName;
@@ -28,4 +29,6 @@ public class GetMovieDetail {
     private List<Ott> ottList;
     private String synopsis;
     private List<Review> reviewList;
+    private String director;
+    private List<String> actorList;
 }
