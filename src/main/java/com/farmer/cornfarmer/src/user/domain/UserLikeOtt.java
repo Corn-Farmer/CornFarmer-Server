@@ -5,11 +5,13 @@ import com.farmer.cornfarmer.src.review.domain.Review;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor//(access = AccessLevel.PROTECTED)
 @Entity
 @IdClass(UserLikeOttPK.class)
 @Table(name="user_ott")

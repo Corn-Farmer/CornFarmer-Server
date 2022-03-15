@@ -1,11 +1,13 @@
 package com.farmer.cornfarmer.src.user.domain;
 
 import com.farmer.cornfarmer.src.common.domain.BaseTimeEntity;
+import com.farmer.cornfarmer.src.user.enums.ActiveType;
 import com.farmer.cornfarmer.src.user.enums.Gender;
 import com.farmer.cornfarmer.src.user.enums.UserSocialType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class User extends BaseTimeEntity {
@@ -34,7 +37,7 @@ public class User extends BaseTimeEntity {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
-    private AccessType active;
+    private ActiveType active;
 
     @Temporal(TemporalType.DATE)
     private Date birth;

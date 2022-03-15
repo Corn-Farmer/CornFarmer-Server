@@ -29,4 +29,6 @@ public class Ott {
 
     @OneToMany(mappedBy = "ott", cascade = CascadeType.ALL)
     private List<MovieOtt> movieOttList = new ArrayList<>();
+
+
 }

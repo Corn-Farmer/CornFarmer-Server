@@ -19,7 +19,7 @@ public class Genre {
     private Long genreIdx;
 
     @Column(name = "genre_name", nullable = false)
-    private Long name;
+    private String name;
 
     @OneToMany(mappedBy = "genre")
     private List<UserLikeGenre> genreLikedByUserList = new ArrayList<>();
