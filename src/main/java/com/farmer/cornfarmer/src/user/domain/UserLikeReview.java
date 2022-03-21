@@ -23,4 +23,9 @@ public class UserLikeReview {
     @ManyToOne
     @JoinColumn(name="review_idx")
     private Review review;
+
+    public UserLikeReview(UserLikeReviewPK id){
+        this.user = id.getUser();
+        this.review = id.getReview();
+    }
 }

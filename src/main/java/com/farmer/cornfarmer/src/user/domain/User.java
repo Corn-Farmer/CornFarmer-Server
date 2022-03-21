@@ -1,6 +1,7 @@
 package com.farmer.cornfarmer.src.user.domain;
 
 import com.farmer.cornfarmer.src.common.domain.BaseTimeEntity;
+import com.farmer.cornfarmer.src.user.enums.ActiveType;
 import com.farmer.cornfarmer.src.user.enums.Gender;
 import com.farmer.cornfarmer.src.user.enums.UserSocialType;
 import lombok.AccessLevel;
@@ -34,7 +35,7 @@ public class User extends BaseTimeEntity {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
-    private AccessType active;
+    private ActiveType active;
 
     @Temporal(TemporalType.DATE)
     private Date birth;
