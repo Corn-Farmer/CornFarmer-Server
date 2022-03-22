@@ -5,6 +5,7 @@ import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,30 +17,17 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.farmer.cornfarmer.config.Constant.DEFAULT_IMG;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
-
 public class UserController {
-    final String default_Img = "https://cornfarmer.s3.ap-northeast-2.amazonaws.com/user/cornfarmerProfile.PNG";
+
     final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-
-    @Autowired
     private final UserService userService;
-    @Autowired
     private final JwtService jwtService;
-
-    @Autowired
     private final S3Uploader S3Uploader;
-
-
-    public UserController( UserService userService, JwtService jwtService, S3Uploader S3Uploader) {
-
-        this.userService = userService;
-        this.jwtService = jwtService;
-        this.S3Uploader = S3Uploader;
-    }
-
 
     /**
      * 카카오 로그인
@@ -149,7 +137,7 @@ public class UserController {
 
             if(Objects.equals(postUserReq.getPhoto().getOriginalFilename(),"noimage") )
             { //회원가입시 프로필 사진설정 없다면 기본 이미지로 지정
-                PhotoUrl = default_Img;
+                PhotoUrl = DEFAULT_IMG;
             }
             else {
                 //사진이미지 존재한다면 해당 사진업로드
@@ -229,7 +217,7 @@ public class UserController {
                 //이전에 저장되어있던 사진파일 삭제
                 String currentPhoto = userService.getCurrentUserPhoto(userIdx);
 
-                if(!Objects.equals(currentPhoto,default_Img))
+                if(!Objects.equals(currentPhoto,DEFAULT_IMG))
                 { //이전에 사진이 기본이미지가 아니라면
                     //이전에 존재하는 사진 삭제
                     currentPhoto = currentPhoto.replace("https://cornfarmer.s3.ap-northeast-2.amazonaws.com/", "");
@@ -240,7 +228,7 @@ public class UserController {
 
                 if(Objects.equals(postUserInfoReq.getPhoto().getOriginalFilename(),"noimage"))
                 { //기본이미지로 변경할 경우
-                    PhotoUrl = default_Img;
+                    PhotoUrl = DEFAULT_IMG;
                 }
                 else {
                     //다른이미지로 변경한 경우
