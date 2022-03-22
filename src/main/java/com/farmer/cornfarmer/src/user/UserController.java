@@ -23,8 +23,7 @@ public class UserController {
     final String default_Img = "https://cornfarmer.s3.ap-northeast-2.amazonaws.com/user/cornfarmerProfile.PNG";
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private final UserProvider userProvider;
+
     @Autowired
     private final UserService userService;
     @Autowired
@@ -34,8 +33,8 @@ public class UserController {
     private final S3Uploader S3Uploader;
 
 
-    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService, S3Uploader S3Uploader) {
-        this.userProvider = userProvider;
+    public UserController( UserService userService, JwtService jwtService, S3Uploader S3Uploader) {
+
         this.userService = userService;
         this.jwtService = jwtService;
         this.S3Uploader = S3Uploader;
@@ -55,17 +54,17 @@ public class UserController {
         System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
-            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),"")) {
+            if (userService.checkExistOauthId(id) && !Objects.equals(userService.checkOauthId(id),"")) {
                 //db에 존재하는경우 ->login
-                if (!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
+                if (!Objects.equals(userService.checkUserNickname(id), cornfarmer)) {
                     //회원가입이 완료된 경우
-                    PostLoginRes postLoginRes = userProvider.kakaoLogIn(id);
+                    PostLoginRes postLoginRes = userService.kakaoLogIn(id);
                     return new BaseResponse<>(postLoginRes);
                 }
                 else
                 {
                     //oautid는 저장됐지만 회원가입은 안한경우
-                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
+                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userService.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
             } else {
@@ -92,14 +91,14 @@ public class UserController {
         System.out.println("accessToken(naverLogin) : " + accessToken);
         try {
             String id = userService.getNaverOauthId(accessToken);
-            if (userProvider.checkExistOauthId(id) && !Objects.equals(userProvider.checkOauthId(id),"")) {
+            if (userService.checkExistOauthId(id) && !Objects.equals(userService.checkOauthId(id),"")) {
                 //db에 존재하는경우 ->login
-                if (!Objects.equals(userProvider.checkUserNickname(id), cornfarmer)) {
+                if (!Objects.equals(userService.checkUserNickname(id), cornfarmer)) {
                     //회원가입이 완료된 경우
-                    PostLoginRes postLoginRes = userProvider.naverLogIn(id);
+                    PostLoginRes postLoginRes = userService.naverLogIn(id);
                     return new BaseResponse<>(postLoginRes);
                 } else { //oautid는 저장됐지만 회원가입은 안한경우
-                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userProvider.getUserIdx(id));
+                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userService.getUserIdx(id));
                     return new BaseResponse<>(postLoginRes);
                 }
             } else {
@@ -132,12 +131,12 @@ public class UserController {
             //kakao naver.
             String ouath_id = jwtService.getOauthId();
             String PhotoUrl = "";
-            if(userProvider.checkExistOauthId(ouath_id) == false)
+            if(userService.checkExistOauthId(ouath_id) == false)
             { //oauth_id 확인
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
             }
 
-            if (userProvider.duplicateNick(postUserReq.getNickname())) {
+            if (userService.duplicateNick(postUserReq.getNickname())) {
                 //닉네임 중복확인
                 throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
             }
@@ -148,9 +147,9 @@ public class UserController {
                 throw new BaseException(BaseResponseStatus.POST_USERS_NICKNAME_LENGTH);
             }
 
-            if(Objects.equals(postUserReq.getPhoto().getOriginalFilename().toString(),"noimage") )
+            if(Objects.equals(postUserReq.getPhoto().getOriginalFilename(),"noimage") )
             { //회원가입시 프로필 사진설정 없다면 기본 이미지로 지정
-                PhotoUrl = default_Img.toString();
+                PhotoUrl = default_Img;
             }
             else {
                 //사진이미지 존재한다면 해당 사진업로드
@@ -174,7 +173,7 @@ public class UserController {
         try {
             int tokenIdx = jwtService.getUserIdx();
             if(userIdx == tokenIdx && !(userIdx == 0)) {
-                return new BaseResponse<>(userProvider.getMyInfo(userIdx));
+                return new BaseResponse<>(userService.getMyInfo(userIdx));
             } else {
                 return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
             }
@@ -195,7 +194,7 @@ public class UserController {
             int tokenIdx = jwtService.getUserIdx();
             if (userIdx != tokenIdx)
                 throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
-            GetUserSimpleInfo userSimpleInfo = userProvider.getUserSimpleInfo(userIdx);
+            GetUserSimpleInfo userSimpleInfo = userService.getUserSimpleInfo(userIdx);
             return new BaseResponse<>(userSimpleInfo);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -223,12 +222,12 @@ public class UserController {
                 {
                     throw new BaseException(BaseResponseStatus.POST_USERS_NICKNAME_LENGTH);
                 }
-                if(userProvider.checkDuplicateNick(postUserInfoReq.getNickname(), userIdx))
+                if(userService.ModifyNickNameCheck(postUserInfoReq.getNickname(), userIdx))
                 { //닉네임 중복확인
                     throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
                 }
                 //이전에 저장되어있던 사진파일 삭제
-                String currentPhoto = userProvider.getCurrentUserPhoto(userIdx);
+                String currentPhoto = userService.getCurrentUserPhoto(userIdx);
 
                 if(!Objects.equals(currentPhoto,default_Img))
                 { //이전에 사진이 기본이미지가 아니라면
@@ -239,9 +238,9 @@ public class UserController {
                     }
                 }
 
-                if(Objects.equals(postUserInfoReq.getPhoto().getOriginalFilename().toString(),"noimage"))
+                if(Objects.equals(postUserInfoReq.getPhoto().getOriginalFilename(),"noimage"))
                 { //기본이미지로 변경할 경우
-                    PhotoUrl = default_Img.toString();
+                    PhotoUrl = default_Img;
                 }
                 else {
                     //다른이미지로 변경한 경우
@@ -295,13 +294,13 @@ public class UserController {
             List<GetMyReviewRes> reviewList;
             switch (sort) {
                 case "recent":
-                    reviewList = userProvider.getMyReviews(userIdx, userJwtIdx, "created_at");
+                    reviewList = userService.getMyReviews(userIdx, userJwtIdx, "created_at");
                     break;
                 case "like":
-                    reviewList = userProvider.getMyReviews(userIdx, userJwtIdx, "r.like_cnt");
+                    reviewList = userService.getMyReviews(userIdx, userJwtIdx, "r.like_cnt");
                     break;
                 case "rate":
-                    reviewList = userProvider.getMyReviews(userIdx, userJwtIdx, "rate");
+                    reviewList = userService.getMyReviews(userIdx, userJwtIdx, "rate");
                     break;
                 default:
                     reviewList = null;
@@ -325,7 +324,7 @@ public class UserController {
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
-            List<GetMyMovieLikedRes> result = userProvider.getMyMoviesLiked(userIdx, userJwtIdx);
+            List<GetMyMovieLikedRes> result = userService.getMyMoviesLiked(userIdx, userJwtIdx);
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
