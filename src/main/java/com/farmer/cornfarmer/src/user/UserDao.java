@@ -1,5 +1,6 @@
 package com.farmer.cornfarmer.src.user;
 
+import com.farmer.cornfarmer.src.user.enums.UserSocialType;
 import com.farmer.cornfarmer.src.user.model.PostUserInfoReq;
 import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.src.user.model.GetUserInfo;
@@ -131,10 +132,10 @@ public class UserDao {
     }
 
 
-    public int createUser(String id, String oauth_channel) {
+    public int createUser(String id, UserSocialType oauth_channel) {
         String createUserQuery = "insert into user (oauth_id, nickname, oauth_channel, active) values (?,?,?,?)";
 
-        this.jdbcTemplate.update(createUserQuery, id, "", oauth_channel, false);
+        this.jdbcTemplate.update(createUserQuery, id, "", oauth_channel.toString(), false);
 
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);

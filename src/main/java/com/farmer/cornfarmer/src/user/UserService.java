@@ -5,6 +5,7 @@ import com.farmer.cornfarmer.src.movie.GenreRepository;
 import com.farmer.cornfarmer.src.movie.OttRepository;
 import com.farmer.cornfarmer.src.user.domain.User;
 import com.farmer.cornfarmer.src.user.domain.*;
+import com.farmer.cornfarmer.src.user.enums.UserSocialType;
 import com.farmer.cornfarmer.src.user.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
@@ -268,7 +269,7 @@ public class UserService {
         return jwt;
     }
 
-    public int createUser(String id, String oauth_channel) throws BaseException {
+    public int createUser(String id, UserSocialType oauth_channel) throws BaseException {
         int result = 0;
         try {
             if(false != checkExistOauthId(id))

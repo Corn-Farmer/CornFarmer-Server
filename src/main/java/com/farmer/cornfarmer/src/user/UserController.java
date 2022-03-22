@@ -8,16 +8,15 @@ import com.farmer.cornfarmer.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.farmer.cornfarmer.utils.S3Uploader;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Date;
+
 import java.util.List;
 import java.util.Objects;
 
-import static com.farmer.cornfarmer.config.Constant.DEFAULT_IMG;
+import static com.farmer.cornfarmer.config.Constant.*;
+import static com.farmer.cornfarmer.src.user.enums.UserSocialType.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,7 +56,7 @@ public class UserController {
                 }
             } else {
                 //db에 oauthid 존재하지 않는경우 디비에 삽입하고 리턴
-                int userIdx = userService.createUser(id, "kakao");
+                int userIdx = userService.createUser(id, KAKAO);
                 PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userIdx);
                 return new BaseResponse<>(postLoginRes);
             }
@@ -91,7 +90,7 @@ public class UserController {
                 }
             } else {
                 //db에 oauthid 존재하지 않는경우 디비에 삽입하고 리턴
-                int userIdx = userService.createUser(id, "naver");
+                int userIdx = userService.createUser(id, NAVER);
                 PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userIdx);
                 return new BaseResponse<>(postLoginRes);
             }
@@ -107,15 +106,8 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/")
-    public BaseResponse<PostUserRes> join(
-            @RequestParam String nickname,
-            @RequestPart(required = false) MultipartFile photo,
-            @RequestParam String is_male,
-            @RequestParam Date birth,
-            @RequestParam List<String> ottList,
-            @RequestParam List<String> genreList) throws BaseException {
+    public BaseResponse<PostUserRes> join(@ModelAttribute PostUserReq postUserReq) throws BaseException {
         try {
-            PostUserReq postUserReq = new PostUserReq(nickname, photo, is_male, birth, ottList, genreList);
             //kakao naver.
             String ouath_id = jwtService.getOauthId();
             String PhotoUrl = "";
@@ -141,7 +133,7 @@ public class UserController {
             }
             else {
                 //사진이미지 존재한다면 해당 사진업로드
-                PhotoUrl = S3Uploader.upload(postUserReq.getPhoto(), "user");
+                PhotoUrl = S3Uploader.upload(postUserReq.getPhoto(), S3_USER_DIR_NAME);
             }
             PostUserRes postUserRes = userService.createUserInfo(postUserReq, PhotoUrl, ouath_id);
             return new BaseResponse<>(postUserRes);
@@ -196,16 +188,12 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/{userIdx}")
-    public BaseResponse<PostLoginRes> modifyMyInfo(@PathVariable int userIdx, @RequestParam String nickname,
-                                                   @RequestPart(required = false) MultipartFile photo,
-                                                   @RequestParam List<String> ottList,
-                                                   @RequestParam List<String> genreList){
+    public BaseResponse<PostLoginRes> modifyMyInfo(@PathVariable int userIdx, @ModelAttribute PostUserInfoReq postUserInfoReq){
         try{
             int tokenIdx = jwtService.getUserIdx();
 
             String PhotoUrl = "";
-            if(userIdx == tokenIdx && !(userIdx == 0)){
-                PostUserInfoReq postUserInfoReq = new PostUserInfoReq(nickname, photo, ottList, genreList);
+            if(userIdx == tokenIdx && userIdx != 0){
                 if(postUserInfoReq.getNickname().length() < 3 || postUserInfoReq.getNickname().length() > 6)
                 {
                     throw new BaseException(BaseResponseStatus.POST_USERS_NICKNAME_LENGTH);
@@ -220,7 +208,7 @@ public class UserController {
                 if(!Objects.equals(currentPhoto,DEFAULT_IMG))
                 { //이전에 사진이 기본이미지가 아니라면
                     //이전에 존재하는 사진 삭제
-                    currentPhoto = currentPhoto.replace("https://cornfarmer.s3.ap-northeast-2.amazonaws.com/", "");
+                    currentPhoto = currentPhoto.replace(S3_USER_IMG_PATH, "");
                     if (S3Uploader.isPhotoExist(currentPhoto)) {
                         S3Uploader.delete(currentPhoto);
                     }
@@ -232,7 +220,7 @@ public class UserController {
                 }
                 else {
                     //다른이미지로 변경한 경우
-                    PhotoUrl = S3Uploader.upload(postUserInfoReq.getPhoto(), "user");
+                    PhotoUrl = S3Uploader.upload(postUserInfoReq.getPhoto(), S3_USER_DIR_NAME);
                 }
                 return new BaseResponse<>(userService.modifyMyInfo(userIdx, postUserInfoReq, PhotoUrl));
             } else {
