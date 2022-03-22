@@ -10,7 +10,6 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Getter
-@Setter
 @NoArgsConstructor//(access = AccessLevel.PROTECTED)
 @Entity
 @IdClass(UserLikeOttPK.class)

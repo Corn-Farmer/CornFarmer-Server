@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
-@Setter
 @NoArgsConstructor//(access = AccessLevel.PROTECTED)
 @Entity
 @IdClass(UserLikeGenrePK.class)
