@@ -27,7 +27,6 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final ReviewDao reviewDao;
     private final JwtService jwtService;
     private final MovieRepository movieRepository;
     private final ReviewRepository reviewRepository;
