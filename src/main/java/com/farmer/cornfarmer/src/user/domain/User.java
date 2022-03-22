@@ -1,6 +1,7 @@
 package com.farmer.cornfarmer.src.user.domain;
 
 import com.farmer.cornfarmer.src.common.domain.BaseTimeEntity;
+import com.farmer.cornfarmer.src.review.domain.Report;
 import com.farmer.cornfarmer.src.user.enums.ActiveType;
 import com.farmer.cornfarmer.src.user.enums.Gender;
 import com.farmer.cornfarmer.src.user.enums.UserSocialType;
@@ -52,4 +53,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserLikeGenre> userLikeGenreList = new ArrayList<>();
 
+    public void updateInactive() {
+        this.active = ActiveType.INACTIVE;
+    }
 }

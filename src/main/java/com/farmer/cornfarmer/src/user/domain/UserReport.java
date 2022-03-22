@@ -1,8 +1,6 @@
 package com.farmer.cornfarmer.src.user.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,6 +9,12 @@ import javax.persistence.*;
 @Entity
 public class UserReport {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long idx;
+
     Long userIdx;
+
+    public UserReport(long userIdx){
+        this.userIdx = userIdx;
+    }
 }

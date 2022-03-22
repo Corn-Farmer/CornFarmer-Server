@@ -5,6 +5,7 @@ import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.review.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/reviews")
 public class ReviewController {
 
-    final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private final ReviewProvider reviewProvider;
-    @Autowired
     private final ReviewService reviewService;
-    @Autowired
     private final JwtService jwtService;
-
-
-    public ReviewController(ReviewProvider reviewProvider, ReviewService reviewService, JwtService jwtService) {
-        this.reviewProvider = reviewProvider;
-        this.reviewService = reviewService;
-        this.jwtService = jwtService;
-    }
 
     /**
      * 후기 작성 API
@@ -41,7 +30,7 @@ public class ReviewController {
     @PostMapping()    // POST 방식의 요청을 매핑하기 위한 어노테이션
     public BaseResponse<PostReviewRes> postReview(@RequestBody @Valid PostReviewReq postReviewReq) {
         try {
-            int userIdx = jwtService.getUserIdx();
+            long userIdx = jwtService.getUserIdx();
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
@@ -59,9 +48,9 @@ public class ReviewController {
      */
     @ResponseBody
     @PutMapping("/{reviewIdx}")
-    public BaseResponse putReview(@PathVariable int reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq) {
+    public BaseResponse putReview(@PathVariable long reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq) {
         try {
-            int userIdx = jwtService.getUserIdx();
+            long userIdx = jwtService.getUserIdx();
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
@@ -79,9 +68,9 @@ public class ReviewController {
      */
     @ResponseBody
     @DeleteMapping("/{reviewIdx}")
-    public BaseResponse deleteReview(@PathVariable int reviewIdx) {
+    public BaseResponse deleteReview(@PathVariable long reviewIdx) {
         try {
-            int userIdx = jwtService.getUserIdx();
+            long userIdx = jwtService.getUserIdx();
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
@@ -99,9 +88,9 @@ public class ReviewController {
      */
     @ResponseBody
     @PutMapping("/{reviewIdx}/like")
-    public BaseResponse<PutLikeReviewRes> putLikeReview(@PathVariable int reviewIdx) {
+    public BaseResponse<PutLikeReviewRes> putLikeReview(@PathVariable long reviewIdx) {
         try {
-            int userIdx = jwtService.getUserIdx();
+            long userIdx = jwtService.getUserIdx();
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
@@ -119,15 +108,16 @@ public class ReviewController {
      */
     @ResponseBody
     @PostMapping("/{reviewIdx}/report")
-    public BaseResponse<PostReportRes> postReviewReport(@PathVariable int reviewIdx, @RequestBody @Valid PostReportReq postReportReq) {
+    public BaseResponse<PostReportRes> postReviewReport(@PathVariable long reviewIdx, @RequestBody @Valid PostReportReq postReportReq) {
         try {
-            int userIdx = jwtService.getUserIdx();
+            long userIdx = jwtService.getUserIdx();
             if(userIdx == 0){
                 return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
             }
-            PostReportRes postReportRes = reviewService.createReviewReport(reviewIdx, userIdx, postReportReq);
+            PostReportRes postReportRes = reviewService.createReport(reviewIdx, userIdx, postReportReq);
             return new BaseResponse<>(postReportRes);
         } catch (BaseException exception) {
+            exception.printStackTrace();
             return new BaseResponse<>(exception.getStatus());
         }
     }

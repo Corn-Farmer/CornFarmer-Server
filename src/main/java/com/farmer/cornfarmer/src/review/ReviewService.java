@@ -4,12 +4,15 @@ import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.movie.MovieRepository;
 import com.farmer.cornfarmer.src.movie.domain.Movie;
+import com.farmer.cornfarmer.src.review.domain.Report;
 import com.farmer.cornfarmer.src.review.domain.Review;
 import com.farmer.cornfarmer.src.review.model.*;
+import com.farmer.cornfarmer.src.user.UserReportRepository;
 import com.farmer.cornfarmer.src.user.UserRepository;
 import com.farmer.cornfarmer.src.user.domain.User;
 import com.farmer.cornfarmer.src.user.domain.UserLikeReview;
 import com.farmer.cornfarmer.src.user.domain.UserLikeReviewPK;
+import com.farmer.cornfarmer.src.user.domain.UserReport;
 import com.farmer.cornfarmer.src.user.enums.ActiveType;
 import com.farmer.cornfarmer.utils.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final UserLikeReviewRepository userLikeReviewRepository;
+    private final ReportRepository reportRepository;
+    private final UserReportRepository userReportRepository;
 
     @Transactional
     public PostReviewRes createReview(long userIdx, PostReviewReq postReviewReq) throws BaseException {
@@ -83,9 +88,6 @@ public class ReviewService {
                     .orElseThrow(EntityNotFoundException::new);
             Review review = reviewRepository.findById(reviewIdx)
                     .orElseThrow(EntityNotFoundException::new);
-            if(review.getActive().equals(ActiveType.INACTIVE)){  //논리적으로 삭제된 리뷰인지 확인
-                throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
-            }
             UserLikeReviewPK id = new UserLikeReviewPK(user.getUserIdx(),review.getReviewIdx());
             if (!userLikeReviewRepository.existsById(id)) {
                 userLikeReviewRepository.save(new UserLikeReview(user,review));  //좋아요 생성, review 테이블의 like_cnt를 +1
@@ -101,21 +103,26 @@ public class ReviewService {
     }
 
     @Transactional
-    public PostReportRes createReviewReport(int reviewIdx, int userIdx, PostReportReq postReportReq) throws BaseException {
+    public PostReportRes createReport(long reviewIdx, long userIdx, PostReportReq postReportReq) throws BaseException {
         validateReviewExist(reviewIdx);  //해당 review가 존재하는지 확인
         try {
-            PostReportRes postReportRes = reviewDao.createReviewReport(reviewIdx, userIdx, postReportReq);
-            return postReportRes;
+            Review review = reviewRepository.findById(reviewIdx)
+                    .orElseThrow(EntityNotFoundException::new);
+            User user = userRepository.findById(userIdx)
+                    .orElseThrow(EntityNotFoundException::new);
+            Report report = Report.createReport(review,user,postReportReq);
+            reportRepository.save(report);
+            if(postReportReq.isReportUser()){
+                userReportRepository.save(new UserReport(review.getWriter().getUserIdx()));
+            }
+            if(postReportReq.isBanUser()){
+                User writer = userRepository.findById(review.getWriter().getUserIdx())
+                                .orElseThrow(EntityNotFoundException::new);
+                writer.updateInactive();
+            }
+            return new PostReportRes(report.getReportIdx());
         } catch (Exception exception) {
-            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-        }
-    }
-
-    public boolean checkReviewLike(long reviewIdx, int userIdx) throws BaseException {
-        try {
-            boolean result = reviewDao.checkReviewLike(reviewIdx, userIdx);
-            return result;
-        } catch (Exception exception) {
+            exception.printStackTrace();
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
     }
@@ -125,13 +132,12 @@ public class ReviewService {
                 .orElseThrow(EntityNotFoundException::new);
         if (userIdx != review.getWriter().getUserIdx())   //리뷰 작성자와 접근한 유저가 일치하는지 확인
             throw new BaseException(BaseResponseStatus.INVALID_USER_JWT);
-        if(review.getActive().equals(ActiveType.INACTIVE)){  //논리적으로 삭제된 리뷰인지 확인
-            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
-        }
     }
 
-    public void validateReviewExist(long reviewIdx) throws BaseException {  //물리적으로 삭제된 리뷰인지 확인
-        if ( !reviewRepository.existsById(reviewIdx)) {
+    public void validateReviewExist(long reviewIdx) throws BaseException {
+        Review review = reviewRepository.findById(reviewIdx)
+                .orElseThrow(EntityNotFoundException::new);
+        if(review.getActive().equals(ActiveType.INACTIVE)){  //논리적으로 삭제된 리뷰인지 확인
             throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
         }
     }

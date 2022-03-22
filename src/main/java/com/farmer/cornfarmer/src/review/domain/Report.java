@@ -1,25 +1,27 @@
 package com.farmer.cornfarmer.src.review.domain;
 
 import com.farmer.cornfarmer.src.common.domain.BaseTimeEntity;
+import com.farmer.cornfarmer.src.review.model.PostReportReq;
 import com.farmer.cornfarmer.src.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Report {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long reportIdx;
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Review.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "review_idx")
     private Review review;
 
@@ -32,4 +34,12 @@ public class Report {
 
     @CreationTimestamp
     private Timestamp created_at;
+
+    public static Report createReport(Review review, User user, PostReportReq postReportReq) {
+        Report report = new Report();
+        report.setReview(review);
+        report.setWriter(user);
+        report.setContents(postReportReq.getReport());
+        return report;
+    }
 }

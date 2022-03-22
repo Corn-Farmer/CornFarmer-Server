@@ -15,7 +15,7 @@ public class PostReviewReq {
     @NotNull(message = "movieIdx 값이 유효하지 않습니다.")
     @Positive
     //movieIdx가 NULL이거나 음수 또는 0이면 ExceptionAdvisor가 REQUEST_ERROR에러를 발생시킨다.
-    private int movieIdx;
+    private long movieIdx;
 
     @NotBlank(message = "content 값이 유효하지 않습니다.")
     @Size(min = 5, message = "5 글자 이상 입력해주세요.")
