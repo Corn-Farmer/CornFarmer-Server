@@ -35,6 +35,19 @@ public class JwtService {
                 .compact();
     }
 
+    public String createEmptyJwt(int user_idx, String oauth_id) {
+        Date now = new Date();
+        return Jwts.builder()
+                .setHeaderParam("type", "jwt")
+                .claim("user_idx", user_idx)
+                .claim("oauth_channel", null)
+                .claim("oauth_id", oauth_id)
+                .claim("nickname", null)
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis() + 1 * (1000 * 60 * 60 * 24 * 365)))
+                .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
+                .compact();
+    }
 
     public boolean checkJwt(String jwt) throws Exception {
         try { //jwt 유효성 검증

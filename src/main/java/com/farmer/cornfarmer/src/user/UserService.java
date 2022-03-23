@@ -256,11 +256,6 @@ public class UserService {
         return id;
     }
 
-    public String emptyJwt(String Oauth_id) {
-        String jwt = jwtService.createJwt(userDao.getUserIdx(Oauth_id), null, Oauth_id, null);
-        return jwt;
-    }
-
     public int createUser(String id, UserSocialType oauth_channel) throws BaseException {
         int result = 0;
         try {

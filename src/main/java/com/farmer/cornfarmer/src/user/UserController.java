@@ -39,7 +39,6 @@ public class UserController {
     public BaseResponse<PostLoginRes> kakaoLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException {
         String cornfarmer = "inactiveUser";
         String accessToken = postLoginReq.getAccessToken();
-        System.out.println("accessToken(kakaoLogin) : " + accessToken);
         try {
             String id = userService.getKakaoOauthId(accessToken);
             if (userService.checkExistOauthId(id) && !Objects.equals(userService.checkOauthId(id),"")) {
@@ -52,13 +51,14 @@ public class UserController {
                 else
                 {
                     //oautid는 저장됐지만 회원가입은 안한경우
-                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userService.getUserIdx(id));
+                    int userIdx = userService.getUserIdx(id);
+                    PostLoginRes postLoginRes = new PostLoginRes(true, jwtService.createEmptyJwt(userIdx, id), userIdx);
                     return new BaseResponse<>(postLoginRes);
                 }
             } else {
                 //db에 oauthid 존재하지 않는경우 디비에 삽입하고 리턴
                 int userIdx = userService.createUser(id, KAKAO);
-                PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userIdx);
+                PostLoginRes postLoginRes = new PostLoginRes(true, jwtService.createEmptyJwt(userIdx, id), userIdx);
                 return new BaseResponse<>(postLoginRes);
             }
         } catch (BaseException exception) {
@@ -76,7 +76,6 @@ public class UserController {
     public BaseResponse<PostLoginRes> naverLogin(@RequestBody PostLoginReq postLoginReq) throws BaseException { //카카오 엑세스토큰 받아옴
         String cornfarmer = "inactiveUser";
         String accessToken = postLoginReq.getAccessToken();
-        System.out.println("accessToken(naverLogin) : " + accessToken);
         try {
             String id = userService.getNaverOauthId(accessToken);
             if (userService.checkExistOauthId(id) && !Objects.equals(userService.checkOauthId(id),"")) {
@@ -86,13 +85,14 @@ public class UserController {
                     PostLoginRes postLoginRes = userService.naverLogIn(id);
                     return new BaseResponse<>(postLoginRes);
                 } else { //oautid는 저장됐지만 회원가입은 안한경우
-                    PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userService.getUserIdx(id));
+                    int userIdx = userService.getUserIdx(id);
+                    PostLoginRes postLoginRes = new PostLoginRes(true, jwtService.createEmptyJwt(userIdx, id), userIdx);
                     return new BaseResponse<>(postLoginRes);
                 }
             } else {
                 //db에 oauthid 존재하지 않는경우 디비에 삽입하고 리턴
                 int userIdx = userService.createUser(id, NAVER);
-                PostLoginRes postLoginRes = new PostLoginRes(true, userService.emptyJwt(id), userIdx);
+                PostLoginRes postLoginRes = new PostLoginRes(true, jwtService.createEmptyJwt(userIdx, id), userIdx);
                 return new BaseResponse<>(postLoginRes);
             }
         } catch (BaseException exception) {
@@ -190,10 +190,6 @@ public class UserController {
 
             String PhotoUrl = "";
             if(userIdx == tokenIdx && userIdx != 0){
-                if(postUserInfoReq.getNickname().length() < 3 || postUserInfoReq.getNickname().length() > 6)
-                {
-                    throw new BaseException(BaseResponseStatus.POST_USERS_NICKNAME_LENGTH);
-                }
                 if(userService.ModifyNickNameCheck(postUserInfoReq.getNickname(), userIdx))
                 { //닉네임 중복확인
                     throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
