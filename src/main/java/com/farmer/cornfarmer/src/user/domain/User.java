@@ -4,10 +4,7 @@ import com.farmer.cornfarmer.src.common.domain.BaseTimeEntity;
 import com.farmer.cornfarmer.src.user.enums.ActiveType;
 import com.farmer.cornfarmer.src.user.enums.Gender;
 import com.farmer.cornfarmer.src.user.enums.UserSocialType;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -53,4 +50,27 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserLikeGenre> userLikeGenreList = new ArrayList<>();
 
+    @Builder(access = AccessLevel.PACKAGE)
+    private User(String oauthId, UserSocialType oauthChannel, String nickname, String photo,
+                 Gender gender, ActiveType active, Date birth) {
+        this.socialInfo = SocialInfo.of(oauthId, oauthChannel);
+        this.nickname = nickname;
+        this.photo = photo;
+        this.gender = gender;
+        this.active = active;
+        this.birth = birth;
+    }
+
+    public static User of(String oauthId, UserSocialType oauthChannel, String nickname, String photo,
+                          Gender gender, Date birth) {
+        return User.builder()
+                .oauthId(oauthId)
+                .oauthChannel(oauthChannel)
+                .nickname(nickname)
+                .photo(photo)
+                .gender(gender)
+                .active(ActiveType.ACTIVE)
+                .birth(birth)
+                .build();
+    }
 }
