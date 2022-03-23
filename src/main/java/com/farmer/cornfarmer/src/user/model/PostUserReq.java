@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class PostUserReq {
 
     @NotNull
+    @Size(min = 3, max = 6)
     private String nickname;
 
     private MultipartFile photo;

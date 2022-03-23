@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.farmer.cornfarmer.utils.S3Uploader;
 
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,11 +107,12 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/")
-    public BaseResponse<PostUserRes> join(@ModelAttribute PostUserReq postUserReq) throws BaseException {
+    public BaseResponse<PostUserRes> join(@Valid @ModelAttribute PostUserReq postUserReq) throws BaseException {
         try {
             //kakao naver.
             String ouath_id = jwtService.getOauthId();
             String PhotoUrl = "";
+
             if(userService.checkExistOauthId(ouath_id) == false)
             { //oauth_id 확인
                 throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
@@ -119,12 +121,6 @@ public class UserController {
             if (userService.duplicateNick(postUserReq.getNickname())) {
                 //닉네임 중복확인
                 throw new BaseException(BaseResponseStatus.DUPLICATE_NICKNAME);
-            }
-
-            if(postUserReq.getNickname().length() < 3 || postUserReq.getNickname().length() > 6)
-            {
-                //닉네임 길이체크
-                throw new BaseException(BaseResponseStatus.POST_USERS_NICKNAME_LENGTH);
             }
 
             if(Objects.equals(postUserReq.getPhoto().getOriginalFilename(),"noimage") )
@@ -188,7 +184,7 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/{userIdx}")
-    public BaseResponse<PostLoginRes> modifyMyInfo(@PathVariable int userIdx, @ModelAttribute PostUserInfoReq postUserInfoReq){
+    public BaseResponse<PostLoginRes> modifyMyInfo(@PathVariable int userIdx, @Valid @ModelAttribute PostUserInfoReq postUserInfoReq){
         try{
             int tokenIdx = jwtService.getUserIdx();
 
