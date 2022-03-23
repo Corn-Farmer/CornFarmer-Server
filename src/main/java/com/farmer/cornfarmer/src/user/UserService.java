@@ -11,6 +11,7 @@ import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -36,16 +38,6 @@ public class UserService {
     private final UserOttRepository userOttRepository;
     private final UserGenreRepository userGenreRepository;
 
-    @Autowired
-    public UserService(UserDao userDao,  JwtService jwtService, UserRepository userRepository, GenreRepository genreRepository,OttRepository ottRepository, UserOttRepository userOttRepository, UserGenreRepository userGenreRepository ) {
-        this.userDao = userDao;
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-        this.ottRepository = ottRepository;
-        this.genreRepository = genreRepository;
-        this.userOttRepository = userOttRepository;
-        this.userGenreRepository = userGenreRepository;
-    }
     @Transactional(readOnly = true)
     public List<GetMyReviewRes> getMyReviews(int userIdx, int userJwtIdx, String sort) throws BaseException {
         validateUser(userIdx, userJwtIdx);   //pathvariable userId와 로그인한 유저 정보(userJwtIdx)가 동일한지 확인
