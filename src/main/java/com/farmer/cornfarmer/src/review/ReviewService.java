@@ -5,7 +5,6 @@ import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.review.model.*;
 import com.farmer.cornfarmer.src.user.UserDao;
-import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,5 @@
 package com.farmer.cornfarmer.src.oauth;
 
-import com.farmer.cornfarmer.src.user.UserProvider;
 import com.farmer.cornfarmer.src.user.UserService;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
