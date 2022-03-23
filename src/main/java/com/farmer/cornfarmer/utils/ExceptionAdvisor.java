@@ -1,5 +1,6 @@
 package com.farmer.cornfarmer.utils;
 
+import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import org.springframework.validation.BindingResult;
@@ -23,5 +24,10 @@ public class ExceptionAdvisor {
         }
 
         return new BaseResponse<>(BaseResponseStatus.REQUEST_ERROR);
+    }
+
+    @ExceptionHandler(BaseException.class)
+    public BaseResponse<String> processBaseError(BaseException exception) {
+        return new BaseResponse<>(exception.getStatus());
     }
 }

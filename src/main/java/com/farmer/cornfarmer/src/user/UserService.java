@@ -51,12 +51,9 @@ public class UserService {
 
     public boolean checkExistOauthId(String oauth_id) throws BaseException {
         //db에 oauthid 존재하는지 확인
-        try {
-            return UserServiceUtils.checkExistOauthId(userRepository,oauth_id);
-        }catch(Exception exception){
-            exception.printStackTrace();
-            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
-        }
+
+        UserServiceUtils.validateExistOauthId(userRepository,oauth_id);
+        return true;
     }
 
     public String checkOauthId(String oauth_id) throws BaseException {
@@ -256,18 +253,20 @@ public class UserService {
         return id;
     }
 
-    public int createUser(String id, UserSocialType oauth_channel) throws BaseException {
+    public int createUser(String oauthId, UserSocialType oauth_channel) throws BaseException {
         int result = 0;
-        try {
-            if(false != checkExistOauthId(id))
-            {
-                throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
-            }
-            result = userDao.createUser(id, oauth_channel);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            throw new BaseException(BaseResponseStatus.POST_USERS_CREATE_FAILED);
-        }
+        UserServiceUtils.validateExistOauthId(userRepository, oauthId);
+        result = userDao.createUser(oauthId, oauth_channel);
+//        try {
+//            if(false != checkExistOauthId(id))
+//            {
+//                throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
+//            }
+//            result = userDao.createUser(oauthId, oauth_channel);
+//        } catch (Exception exception) {
+//            exception.printStackTrace();
+//            throw new BaseException(BaseResponseStatus.POST_USERS_CREATE_FAILED);
+//        }
         return result;
     }
 

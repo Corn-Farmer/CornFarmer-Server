@@ -1,5 +1,7 @@
 package com.farmer.cornfarmer.src.user;
 
+import com.farmer.cornfarmer.config.BaseException;
+import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.movie.GenreRepository;
 import com.farmer.cornfarmer.src.movie.OttRepository;
 import com.farmer.cornfarmer.src.movie.domain.Genre;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.farmer.cornfarmer.config.BaseResponseStatus.POST_USERS_INVALID_OATUH_ID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserServiceUtils {
@@ -206,8 +209,10 @@ public class UserServiceUtils {
         return user.getPhoto();
     }
 
-    static boolean checkExistOauthId(UserRepository userRepository,String oauth_id)
-    {
-        return userRepository.existsUsersBySocialInfo_OauthChannel(oauth_id);
+    static void validateExistOauthId(UserRepository userRepository,String oauthId) throws BaseException {
+        if (!userRepository.existsUsersBySocialInfo_OauthId(oauthId)) {
+            throw new BaseException(BaseResponseStatus.POST_USERS_INVALID_OATUH_ID);
+        }
     }
+
 }

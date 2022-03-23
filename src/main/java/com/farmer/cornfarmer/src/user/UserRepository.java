@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsUserByNickname(String nickname);
-    boolean existsUsersBySocialInfo_OauthChannel(String oauth_id);
+    boolean existsUsersBySocialInfo_OauthId(String oauth_id);
     User findUserByUserIdx(Long user_idx);
     User findUserBySocialInfo_OauthId(String oauth_id);
 
