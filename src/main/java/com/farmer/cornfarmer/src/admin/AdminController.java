@@ -155,7 +155,7 @@ public class AdminController {
      */
     @ResponseBody
     @DeleteMapping("/reviews/{reviewIdx}")
-    public BaseResponse deleteReview(@PathVariable int reviewIdx) {
+    public BaseResponse deleteReview(@PathVariable long reviewIdx) {
         try {
             //admin 계정인지 검증
             adminService.deleteReview(reviewIdx);

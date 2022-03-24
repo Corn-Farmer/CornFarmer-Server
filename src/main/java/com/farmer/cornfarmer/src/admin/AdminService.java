@@ -3,7 +3,13 @@ package com.farmer.cornfarmer.src.admin;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.admin.model.*;
+import com.farmer.cornfarmer.src.review.ReviewRepository;
+import com.farmer.cornfarmer.src.review.ReviewService;
+import com.farmer.cornfarmer.src.review.domain.Review;
+import com.farmer.cornfarmer.src.user.UserRepository;
+import com.farmer.cornfarmer.src.user.enums.ActiveType;
 import com.farmer.cornfarmer.utils.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +17,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static com.farmer.cornfarmer.config.BaseResponseStatus.*;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -23,22 +31,17 @@ public class AdminService {
     private final AdminDao adminDao;
     private final AdminProvider adminProvider;
     private final JwtService jwtService;
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public AdminService(AdminDao adminDao, AdminProvider adminProvider, JwtService jwtService) {
-        this.adminDao = adminDao;
-        this.adminProvider = adminProvider;
-        this.jwtService = jwtService;
-    }
 
     @Transactional
-    public void deleteReview(int reviewIdx) throws BaseException {
-        adminProvider.validateReviewExist(reviewIdx); //이미 삭제된 리뷰인지 확인
+    public void deleteReview(long reviewIdx) throws BaseException {
+        validateReviewExist(reviewIdx); //이미 삭제된 리뷰인지 확인
         try {
-            int result = adminDao.deleteReview(reviewIdx);
-            if (result == 0) {
-                throw new BaseException(BaseResponseStatus.DELETE_FAIL_REVIEW);
-            }
+            Review review = reviewRepository.findById(reviewIdx)
+                    .orElseThrow(EntityNotFoundException::new);
+            review.delete();
         } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
 
@@ -146,6 +149,14 @@ public class AdminService {
             }
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void validateReviewExist(long reviewIdx) throws BaseException {
+        Review review = reviewRepository.findById(reviewIdx)
+                .orElseThrow(EntityNotFoundException::new);
+        if(review.getActive().equals(ActiveType.INACTIVE)){  //논리적으로 삭제된 리뷰인지 확인
+            throw new BaseException(BaseResponseStatus.FAILED_TO_FIND_REVIEW);
         }
     }
 }
