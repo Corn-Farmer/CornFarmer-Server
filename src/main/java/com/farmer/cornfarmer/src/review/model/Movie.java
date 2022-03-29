@@ -1,4 +1,4 @@
-package com.farmer.cornfarmer.src.admin.model;
+package com.farmer.cornfarmer.src.review.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Movie {
-    private int movieIdx;
+    private long movieIdx;
     private String movieTitle;
     private String moviePhoto;
 }

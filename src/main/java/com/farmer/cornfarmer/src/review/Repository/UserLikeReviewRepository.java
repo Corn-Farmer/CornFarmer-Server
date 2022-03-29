@@ -1,4 +1,4 @@
-package com.farmer.cornfarmer.src.review;
+package com.farmer.cornfarmer.src.review.Repository;
 
 import com.farmer.cornfarmer.src.user.domain.UserLikeReview;
 import com.farmer.cornfarmer.src.user.domain.UserLikeReviewPK;

@@ -1,24 +1,24 @@
-package com.farmer.cornfarmer.src.admin.model;
+package com.farmer.cornfarmer.src.review.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
-@AllArgsConstructor
 public class GetReviewRes {
-    private int reviewIdx;
+    private long reviewIdx;
     private Movie movie;
     private String userNickName;
-    private int userIdx;
+    private long userIdx;
     private String content;
     private float rate;
-    private int likeCnt;
-    private String createdAt;
+    private long likeCnt;
+    private LocalDateTime createdAt;
 
 
-    public GetReviewRes(int review_idx, int movie_idx, int user_idx, String contents, float rate, int like_cnt, String created_at, String movie_title, String movie_photo, String user_nickName) {
+    public GetReviewRes(long review_idx, long movie_idx, long user_idx, String contents, float rate, long like_cnt, LocalDateTime created_at, String movie_title, String user_nickName, String movie_photo) {
         this.reviewIdx = review_idx;
         this.movie = new Movie(movie_idx, movie_title, movie_photo);
         this.userIdx = user_idx;

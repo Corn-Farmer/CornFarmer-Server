@@ -2,8 +2,12 @@ package com.farmer.cornfarmer.src.review;
 
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
+import com.farmer.cornfarmer.src.review.Repository.UserLikeReviewRepository;
+import com.farmer.cornfarmer.src.review.model.GetReviewRes;
 import com.farmer.cornfarmer.src.movie.MovieRepository;
 import com.farmer.cornfarmer.src.movie.domain.Movie;
+import com.farmer.cornfarmer.src.review.Repository.ReportRepository;
+import com.farmer.cornfarmer.src.review.Repository.ReviewRepository;
 import com.farmer.cornfarmer.src.review.domain.Report;
 import com.farmer.cornfarmer.src.review.domain.Review;
 import com.farmer.cornfarmer.src.review.model.*;
@@ -16,12 +20,11 @@ import com.farmer.cornfarmer.src.user.domain.UserReport;
 import com.farmer.cornfarmer.src.user.enums.ActiveType;
 import com.farmer.cornfarmer.utils.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -141,5 +144,29 @@ public class ReviewService {
         }
     }
 
+    //관리자용 API
+    @Transactional(readOnly = true)
+    public List<GetReviewRes> getAllReviewsAdmin() throws BaseException {
+        try {
+            List<GetReviewRes> reviewResList = reviewRepository.findAllReviewList();
+            return reviewResList;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void deleteReviewAdmin(long reviewIdx) throws BaseException {
+        validateReviewExist(reviewIdx); //이미 삭제된 리뷰인지 확인
+        try {
+            Review review = reviewRepository.findById(reviewIdx)
+                    .orElseThrow(EntityNotFoundException::new);
+            review.delete();
+        } catch (Exception exception) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+
+        }
+    }
 
 }
