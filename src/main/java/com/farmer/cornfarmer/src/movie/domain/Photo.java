@@ -9,16 +9,15 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@IdClass(PhotoPK.class)
 @Table(name = "movie_photo")
 public class Photo {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long photoIdx;
-
     @ManyToOne
     @JoinColumn(name = "movie_idx")
     private Movie movie;
 
-    private Long photo;
+    @Id
+    @Column(name = "photo")
+    private String photo;
 }
