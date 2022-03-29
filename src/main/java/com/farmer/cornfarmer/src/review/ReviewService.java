@@ -30,7 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final JwtService jwtService;
     private final MovieRepository movieRepository;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
