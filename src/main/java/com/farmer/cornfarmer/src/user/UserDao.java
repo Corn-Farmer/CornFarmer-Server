@@ -148,6 +148,13 @@ public class UserDao {
         return result;
     }
 
+    public boolean checkBan(int src_user_idx, int dest_user_idx) {
+        String checkBanQuery = "select exists(select * from ban where src_user_idx = ? and dest_user_idx = ?)";
+        Object[] checkBanParam = new Object[]{src_user_idx, dest_user_idx};
+        Boolean result = this.jdbcTemplate.queryForObject(checkBanQuery, boolean.class, checkBanParam);
+        return result;
+    }
+
     public boolean checkGenreUser(int genre_idx, int user_idx) {
         String checkUserOttQuery = "select exists(select genre_idx from user_genre where genre_idx = ? and user_idx = ?)";
         Object[] checkUserOttParam = new Object[]{genre_idx, user_idx};

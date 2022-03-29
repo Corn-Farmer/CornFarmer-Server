@@ -49,6 +49,16 @@ public class UserProvider {
         }
     }
 
+    public boolean checkBan(int src_user_idx, int dest_user_idx) throws BaseException {
+        //db에 oauthid 존재하는지 확인
+        try {
+            return userDao.checkBan(src_user_idx, dest_user_idx);
+        }catch(Exception exception){
+            exception.printStackTrace();
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
     public String checkOauthId(String oauth_id) throws BaseException {
         //db에 oauthid 존재하는지 확인
         try {

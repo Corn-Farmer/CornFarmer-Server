@@ -103,6 +103,10 @@ public class ReviewService {
         reviewProvider.validateReviewExist(reviewIdx);  //해당 review가 존재하는지 확인
         try {
             PostReportRes postReportRes = reviewDao.createReviewReport(reviewIdx, userIdx, postReportReq);
+            if (postReportReq.isBanUser()){
+                int writerIdx = reviewDao.getReviewIdx(reviewIdx);
+                reviewDao.createUserBan(userIdx, writerIdx);
+            }
             return postReportRes;
         } catch (Exception exception) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);

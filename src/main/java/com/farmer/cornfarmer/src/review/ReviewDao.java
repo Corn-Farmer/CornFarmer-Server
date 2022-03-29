@@ -86,4 +86,10 @@ public class ReviewDao {
         String getReviewIdxQuery = "select count(*) from review where review_idx = ? and active = ?";
         return this.jdbcTemplate.queryForObject(getReviewIdxQuery, int.class, reviewIdx, 1);
     }
+
+    public void createUserBan(int userIdx, int writerIdx) {
+        String query = "insert into ban (src_user_idx, dest_user_idx) values (?,?) ";
+        Object[] params = new Object[]{userIdx, writerIdx};
+        this.jdbcTemplate.update(query, params);
+    }
 }

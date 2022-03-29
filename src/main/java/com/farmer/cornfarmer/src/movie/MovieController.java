@@ -33,12 +33,15 @@ public class MovieController {
     @Autowired
     private final MovieService movieService;
     @Autowired
+    private final UserProvider userProvider;
+    @Autowired
     private final JwtService jwtService;
 
 
-    public MovieController(MovieProvider movieProvider, MovieService movieService, JwtService jwtService) {
+    public MovieController(MovieProvider movieProvider, MovieService movieService, UserProvider userProvider, JwtService jwtService) {
         this.movieProvider = movieProvider;
         this.movieService = movieService;
+        this.userProvider = userProvider;
         this.jwtService = jwtService;
     }
 
@@ -301,9 +304,13 @@ public class MovieController {
             //writer 정보 채우기
             for (int k = 0; k < reviewList.size(); k++) {
                 int writeridx = reviewList.get(k).getUserIdx();
-                Writer writer = movieProvider.getWriter(writeridx);
-
-                reviewList.get(k).setWriter(writer);
+                if (userProvider.checkBan(userIdx, writeridx)) {
+                    reviewList.remove(k);
+                }
+                else {
+                    Writer writer = movieProvider.getWriter(writeridx);
+                    reviewList.get(k).setWriter(writer);
+                }
             }
             getMovieDetail.setReviewList(reviewList);
 
