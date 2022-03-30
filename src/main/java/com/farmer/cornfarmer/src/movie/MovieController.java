@@ -304,7 +304,9 @@ public class MovieController {
             //writer 정보 채우기
             for (int k = 0; k < reviewList.size(); k++) {
                 int writeridx = reviewList.get(k).getUserIdx();
+                System.out.println("writeridx : "+writeridx);
                 if (userProvider.checkBan(userIdx, writeridx)) {
+                    System.out.println("checkBan true : " + userIdx + writeridx);
                     reviewList.remove(k);
                 }
                 else {
@@ -313,7 +315,7 @@ public class MovieController {
                 }
             }
             getMovieDetail.setReviewList(reviewList);
-
+            System.out.println("reviewList.size : " + reviewList.size());
             return new BaseResponse<>(getMovieDetail);
         } catch (BaseException exception) {
 
