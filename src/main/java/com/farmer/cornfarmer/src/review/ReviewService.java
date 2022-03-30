@@ -103,10 +103,8 @@ public class ReviewService {
         reviewProvider.validateReviewExist(reviewIdx);  //해당 review가 존재하는지 확인
         try {
             PostReportRes postReportRes = reviewDao.createReviewReport(reviewIdx, userIdx, postReportReq);
-            System.out.println("postReportReq.isBanUser() : "+ postReportReq.isBanUser());
             if (postReportReq.isBanUser()){
-                int writerIdx = reviewDao.getReviewIdx(reviewIdx);
-                System.out.println(userIdx + " ban "+ writerIdx);
+                int writerIdx = reviewDao.getUserIdx(reviewIdx);
                 reviewDao.createUserBan(userIdx, writerIdx);
             }
             return postReportRes;
