@@ -13,7 +13,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Review extends BaseTimeEntity {
@@ -40,19 +40,20 @@ public class Review extends BaseTimeEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<UserLikeReview> reviewLikedByUserList = new ArrayList<>();
 
-    public static Review createReview( PostReviewReq postReviewReq, Movie movie,User user){
-        Review review = new Review();
-        review.setWriter(user);
-        review.setContents(postReviewReq.getContent());
-        review.setRate(postReviewReq.getRate());
-        review.setActive(ActiveType.ACTIVE);
-        review.setMovie(movie);
-        return review;
+
+    @Builder
+    private Review(PostReviewReq postReviewReq, Movie movie, User user) {
+        this.contents = postReviewReq.getContent();
+        this.movie = movie;
+        this.writer = user;
+        this.rate = postReviewReq.getRate();
+        this.active = ActiveType.ACTIVE;
     }
 
 
     public void update(PutReviewReq putReviewReq) {
-        this.contents = putReviewReq.getContent();;
+        this.contents = putReviewReq.getContent();
+        ;
         this.rate = putReviewReq.getRate();
     }
 

@@ -8,7 +8,6 @@ import com.farmer.cornfarmer.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,8 +30,8 @@ public class ReviewController {
     public BaseResponse<PostReviewRes> postReview(@RequestBody @Valid PostReviewReq postReviewReq) {
         try {
             long userIdx = jwtService.getUserIdx();
-            if(userIdx == 0){
-                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            if (userIdx == 0) {
+                return new BaseResponse<>(BaseResponseStatus.EMPTY_JWT);
             }
             PostReviewRes postReviewRes = reviewService.createReview(userIdx, postReviewReq);
             return new BaseResponse<>(postReviewRes);
@@ -48,11 +47,11 @@ public class ReviewController {
      */
     @ResponseBody
     @PutMapping("/{reviewIdx}")
-    public BaseResponse putReview(@PathVariable long reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq) {
+    public <T> BaseResponse<T> putReview(@PathVariable long reviewIdx, @RequestBody @Valid PutReviewReq putReviewReq) {
         try {
             long userIdx = jwtService.getUserIdx();
-            if(userIdx == 0){
-                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            if (userIdx == 0) {
+                return new BaseResponse<>(BaseResponseStatus.EMPTY_JWT);
             }
             reviewService.modifyReview(reviewIdx, userIdx, putReviewReq);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
@@ -68,11 +67,11 @@ public class ReviewController {
      */
     @ResponseBody
     @DeleteMapping("/{reviewIdx}")
-    public BaseResponse deleteReview(@PathVariable long reviewIdx) {
+    public <T> BaseResponse<T> deleteReview(@PathVariable long reviewIdx) {
         try {
             long userIdx = jwtService.getUserIdx();
-            if(userIdx == 0){
-                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            if (userIdx == 0) {
+                return new BaseResponse<>(BaseResponseStatus.EMPTY_JWT);
             }
             reviewService.deleteReview(reviewIdx, userIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
@@ -91,8 +90,8 @@ public class ReviewController {
     public BaseResponse<PutLikeReviewRes> putLikeReview(@PathVariable long reviewIdx) {
         try {
             long userIdx = jwtService.getUserIdx();
-            if(userIdx == 0){
-                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            if (userIdx == 0) {
+                return new BaseResponse<>(BaseResponseStatus.EMPTY_JWT);
             }
             PutLikeReviewRes putLikeReviewRes = reviewService.likeReview(reviewIdx, userIdx);
             return new BaseResponse<>(putLikeReviewRes);
@@ -111,8 +110,8 @@ public class ReviewController {
     public BaseResponse<PostReportRes> postReviewReport(@PathVariable long reviewIdx, @RequestBody @Valid PostReportReq postReportReq) {
         try {
             long userIdx = jwtService.getUserIdx();
-            if(userIdx == 0){
-                return new BaseResponse(BaseResponseStatus.EMPTY_JWT);
+            if (userIdx == 0) {
+                return new BaseResponse<>(BaseResponseStatus.EMPTY_JWT);
             }
             PostReportRes postReportRes = reviewService.createReport(reviewIdx, userIdx, postReportReq);
             return new BaseResponse<>(postReportRes);
