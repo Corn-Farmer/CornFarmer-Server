@@ -1,5 +1,6 @@
 package com.farmer.cornfarmer.src.admin.model;
 
+import com.farmer.cornfarmer.src.review.model.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

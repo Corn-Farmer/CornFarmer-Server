@@ -3,7 +3,7 @@ package com.farmer.cornfarmer.src.admin;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.admin.model.*;
-import com.farmer.cornfarmer.src.review.ReviewRepository;
+import com.farmer.cornfarmer.src.review.repository.ReviewRepository;
 import com.farmer.cornfarmer.src.review.ReviewService;
 import com.farmer.cornfarmer.src.review.domain.Review;
 import com.farmer.cornfarmer.src.user.UserRepository;

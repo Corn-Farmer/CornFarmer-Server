@@ -3,7 +3,7 @@ package com.farmer.cornfarmer.src.admin;
 import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponse;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
-import com.farmer.cornfarmer.src.admin.model.GetReviewRes;
+import com.farmer.cornfarmer.src.review.model.GetReviewRes;
 import com.farmer.cornfarmer.src.admin.model.*;
 import com.farmer.cornfarmer.utils.JwtService;
 import com.farmer.cornfarmer.utils.S3Uploader;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import static com.farmer.cornfarmer.config.BaseResponseStatus.REQUEST_ERROR;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/ex")
 public class AdminController {
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());

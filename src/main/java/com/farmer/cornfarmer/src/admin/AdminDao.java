@@ -2,9 +2,11 @@ package com.farmer.cornfarmer.src.admin;
 
 
 import com.farmer.cornfarmer.src.admin.model.*;
+import com.farmer.cornfarmer.src.review.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import com.farmer.cornfarmer.src.review.model.GetReviewRes;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -20,25 +22,8 @@ public class AdminDao {
     }
 
     public List<GetReviewRes> getAllReviews() {
-        //review 테이블의 정보 저장
-        String query = "select * , (select p.photo from movie_photo p where p.movie_idx = r.movie_idx limit 1) as movie_photo from review as r " +
-                "left join movie as m on r.movie_idx = m.movie_idx " +
-                "left join user u on r.user_idx = u.user_idx where r.active = ?";
-        List<GetReviewRes> getReviewResList = jdbcTemplate.query(query,
-                (rs, rowNum) -> new GetReviewRes(
-                        rs.getInt("r.review_idx"),
-                        rs.getInt("r.movie_idx"),
-                        rs.getInt("r.user_idx"),
-                        rs.getString("r.contents"),
-                        rs.getFloat("r.rate"),
-                        rs.getInt("r.like_cnt"),
-                        rs.getString("r.created_at"),
-                        rs.getString("m.movie_title"),
-                        rs.getString("movie_photo"),
-                        rs.getString("u.nickname")
-                ), 1);
 
-        return getReviewResList;
+        return null;
     }
 
     public int getReviewIdx(long reviewIdx) {

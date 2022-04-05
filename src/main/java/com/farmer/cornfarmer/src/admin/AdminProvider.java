@@ -4,6 +4,7 @@ import com.farmer.cornfarmer.config.BaseException;
 import com.farmer.cornfarmer.config.BaseResponseStatus;
 import com.farmer.cornfarmer.src.admin.model.*;
 
+import com.farmer.cornfarmer.src.review.model.GetReviewRes;
 import com.farmer.cornfarmer.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
